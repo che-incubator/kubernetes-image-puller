@@ -1,0 +1,42 @@
+kind: Template
+apiVersion: v1
+metadata:
+  labels:
+    app: kubernetes-image-puller
+  name: kubernetes-image-puller
+objects:
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    labels:
+      app: kubernetes-image-puller
+    name: kubernetes-image-puller
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 2
+    selector:
+      app: kubernetes-image-puller
+    strategy:
+      type: "Recreate"
+    template:
+      metadata:
+        labels:
+          app: kubernetes-image-puller
+      spec:
+        containers:
+        - name: kubernetes-image-puller
+          image: ${IMAGE}:${IMAGE_TAG}
+          imagePullPolicy: IfNotPresent
+          envFrom:
+          - configMapRef:
+              name: k8s-image-puller
+        serviceAccountName: ${SERVICEACCOUNT_NAME}
+parameters:
+- name: SERVICEACCOUNT_NAME
+  value: k8s-image-puller
+- name: SERVICE_ACCT_CREDENTIALS_SECRET
+  value: k8s-image-puller-token
+- name: IMAGE
+  value: kubernetes-image-puller
+- name: IMAGE_TAG
+  value: latest

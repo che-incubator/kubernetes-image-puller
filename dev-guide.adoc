@@ -1,0 +1,89 @@
+= Dev guide for k8s-image-puller
+
+== High level overview
+
+The bulk of the logic is in package `utils`. Here, we have three generic interfaces:
+
+* `operations.go` has abstracted functions, and is how implementations of the puller should interact with the cluster. These functions handle resource creation/deletion and also ensuring no issues occur in that process.
+* `clusterutils.go` is a lower-level interface to the cluster, meant to be called from `operations.go` functions. It is responsible for holding k8s-specific logic, actually interfacing with the cluster API, and waiting for resources to be created.
+* `auth.go` contains logic for authenticating with fabric8-auth and getting tokens for users, and is only used in the multi-cluster case.
+
+The functions in `operations.go` are called from `puller.go` files in `pkg`, with separate cases for single and multi cluster.
+
+Implementations in `pkg` basically create a k8s client config, get auth data if necessary), set up some channels, and start goroutines that recreates the daemonset on a delay. In the multicluster case, we start a goroutine for each cluster we're caching images on.
+
+At a high level, the flow in multi-cluster mode is
+
+. Get the rh-che service account token using the secret used for rh-che. Use this service account token for authenticating with fabric-oso-proxy
+. For each user in `cfg.ImpersonateUsers`, start a goroutine to create a daemonset impersonating that user.
+** The users to impersonate are chosen such that each user proxies to a different tenant cluster
+** The fabric8-oso-proxy will use the rhche bearer token to get the correct token for manipulating the tenant clusters, and the impersonate header to proxy the request to the correct cluster.
+
+== Single cluster vs Multi cluster
+The image puller is designed to run on the che.openshift.io clusters; as such it includes a fair bit of logic for running in the production cluster and creating daemonsets on tenant clusters.
+
+The key logic for creating daemonsets is split between `pkg/multi-cluster`, which handles the production case, and `pkg/single-cluster`, which can run anywhere to test basic things.
+
+This means that testing changes can be tricky -- you can't run the multi-cluster code locally, and the single-cluster configuration won't necessarily work perfectly in the multi-cluster case.
+
+== Code structure
+* `cfg` - read configuration from env vars into global vars. This can be accessed anywhere via e.g. `cfg.MultiCluster`
+
+* `cmd` - Entrypoint for service; switches between single cluster and multi cluster mode.
+
+* `deploy` - `yaml` files necessary for deploying k8s-image-puller locally
+
+* `docker` - dockerfiles
+
+* `openshift` - `yaml` files used when deploying _to production_
+
+* `pkg` - core logic for the single- or multi-cluster puller. Should satisfy the interface
++
+[source,go]
+----
+type Puller interface {
+  CacheImages()
+}
+----
+
+* `utils` - generic utility files, described above
+
+* `vendor` - dependencies
+
+== Makefile targets
+
+The included Makefile supports
+|===
+| Target | Function
+
+| build
+| Run the go build for k8s-image-puller
+
+| docker
+| Build a docker container (see below)
+
+| local-setup
+| Create the serviceaccount that is required for testing the puller locally
+
+| local-deploy
+| Create deploy resources -- configmap and deployment -- for k8s-image-puller deployed locally (i.e. in single-cluster mode)
+
+| clean
+| Remove build artifacts.
+|===
+
+== The docker build
+
+Currently, the docker build is set up to simply copy the build binary into a distroless image; this was done initially since the version of docker that shipped with minishift did not support multi-stage builds. This means that a local binary has to be created before the docker image is built. (This is a TODO for the repo).
+
+== Outstanding issues
+* The docker build should be improved to take advantage of multi-stage builds, rather than requiring a local build that is copied into a docker image
+
+* The version of `client-go` is quite old; in particular, newer versions have migrated to use go modules isntead of Glide, so updating would require restructuring how dependencies are pulled in
+
+* Currently k8s-image-puller starts a pod with regular containers, which limits us in a number of ways:
+** We bump into memory limits more readily, since for a daemonset it's calculated per pod. This can cause failures on larger clusters unexpectedly (e.g. 75 pods * `40Mi` per pod is `~3Gi`)
+** Some containers cannot be cached since they cannot be slept (e.g. from scratch)
+
++
+we could instead try to use init containers, so that pods don't have to stay running constantly.

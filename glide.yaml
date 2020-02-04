@@ -1,0 +1,4 @@
+package: github.com/redhat-developer/kubernetes-image-puller
+import:
+- package: k8s.io/client-go
+  version: v10.0.0

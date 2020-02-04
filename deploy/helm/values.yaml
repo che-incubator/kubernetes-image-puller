@@ -1,0 +1,6 @@
+image: 
+  repository: quay.io/openshiftio/kubernetes-image-puller
+  tag: latest
+serviceAccount:
+  name: k8s-image-puller
+  credentialsToken: k8s-image-puller-token
