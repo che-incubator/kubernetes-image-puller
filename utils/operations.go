@@ -15,7 +15,7 @@ package utils
 import (
 	"log"
 
-	"github.com/redhat-developer/kubernetes-image-puller/cfg"
+	"github.com/che-incubator/kubernetes-image-puller/cfg"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"

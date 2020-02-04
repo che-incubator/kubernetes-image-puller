@@ -16,9 +16,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/redhat-developer/kubernetes-image-puller/cfg"
-	multicluster "github.com/redhat-developer/kubernetes-image-puller/pkg/multi-cluster"
-	singlecluster "github.com/redhat-developer/kubernetes-image-puller/pkg/single-cluster"
+	"github.com/che-incubator/kubernetes-image-puller/cfg"
+	multicluster "github.com/che-incubator/kubernetes-image-puller/pkg/multi-cluster"
+	singlecluster "github.com/che-incubator/kubernetes-image-puller/pkg/single-cluster"
 )
 
 func main() {

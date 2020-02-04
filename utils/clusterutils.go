@@ -17,7 +17,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/redhat-developer/kubernetes-image-puller/cfg"
+	"github.com/che-incubator/kubernetes-image-puller/cfg"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"

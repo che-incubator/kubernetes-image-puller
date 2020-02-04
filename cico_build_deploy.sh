@@ -46,9 +46,9 @@ function setup_golang() {
   mkdir -p $HOME/go $HOME/go/src $HOME/go/bin $HOME/go/pkg
   export GOPATH=$HOME/go
   export PATH=${GOPATH}/bin:$PATH
-  mkdir -p ${GOPATH}/src/github.com/redhat-developer
-  cp -r $HOME/payload ${GOPATH}/src/github.com/redhat-developer/kubernetes-image-puller
-  cd ${GOPATH}/src/github.com/redhat-developer/kubernetes-image-puller
+  mkdir -p ${GOPATH}/src/github.com/che-incubator
+  cp -r $HOME/payload ${GOPATH}/src/github.com/che-incubator/kubernetes-image-puller
+  cd ${GOPATH}/src/github.com/che-incubator/kubernetes-image-puller
 }
 
 # Simplify tagging and pushing

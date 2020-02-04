@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/redhat-developer/kubernetes-image-puller/cfg"
-	"github.com/redhat-developer/kubernetes-image-puller/utils"
+	"github.com/che-incubator/kubernetes-image-puller/cfg"
+	"github.com/che-incubator/kubernetes-image-puller/utils"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
