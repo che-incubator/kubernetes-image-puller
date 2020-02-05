@@ -1,26 +1,27 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: kubernetes-image-puller
+  name: {{ .Values.appName }}
   labels:
-    app: kubernetes-image-puller
+    app: {{ .Values.appName }}
 spec:
   replicas: 1
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: kubernetes-image-puller
+      app:  {{ .Values.appName }}
   strategy:
     type: "Recreate"
   template:
     metadata:
       labels:
-        app: kubernetes-image-puller
+        app: {{ .Values.appName }}
     spec:
       containers:
-      - name: kubernetes-image-puller
+      - name: {{ .Values.appName }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
         envFrom:
         - configMapRef:
-            name: k8s-image-puller
+            name: {{ .Values.configMap.name }}
       serviceAccountName: {{ .Values.serviceAccount.name }}

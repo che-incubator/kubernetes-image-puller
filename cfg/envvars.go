@@ -22,19 +22,13 @@ import (
 
 // Env vars used for configuration
 const (
-	intervalEnvVar             = "CACHING_INTERVAL_HOURS"
-	daemonsetNameEnvVar        = "DAEMONSET_NAME"
-	namespaceEnvVar            = "NAMESPACE"
-	impersonateUsersEnvVar     = "IMPERSONATE_USERS"
-	proxyURLEnvVar             = "OPENSHIFT_PROXY_URL"
-	imagesEnvVar               = "IMAGES"
-	serviceAccountIDEnvVar     = "SERVICE_ACCOUNT_ID"
-	serviceAccountSecretEnvVar = "SERVICE_ACCOUNT_SECRET"
-	oidcProviderEnvVar         = "OIDC_PROVIDER"
-	cachingMemRequestEnvVar    = "CACHING_MEMORY_REQUEST"
-	cachingMemLimitEnvVar      = "CACHING_MEMORY_LIMIT"
-	multiCluster               = "MULTICLUSTER"
-	nodeSelectorEnvVar         = "NODE_SELECTOR"
+	intervalEnvVar          = "CACHING_INTERVAL_HOURS"
+	daemonsetNameEnvVar     = "DAEMONSET_NAME"
+	namespaceEnvVar         = "NAMESPACE"
+	imagesEnvVar            = "IMAGES"
+	cachingMemRequestEnvVar = "CACHING_MEMORY_REQUEST"
+	cachingMemLimitEnvVar   = "CACHING_MEMORY_LIMIT"
+	nodeSelectorEnvVar      = "NODE_SELECTOR"
 )
 
 // Default values where applicable
@@ -96,18 +90,6 @@ func processNodeSelectorEnvVar() map[string]string {
 		log.Fatalf("Failed to unmarshal node selector json: %s", err)
 	}
 	return nodeSelector
-}
-
-func processImpersonateUsers() []string {
-	rawUsers := getEnvVarOrExit(impersonateUsersEnvVar)
-	users := strings.Split(rawUsers, ",")
-	if len(users) == 0 {
-		log.Fatalf("No users found in env var %s", impersonateUsersEnvVar)
-	}
-	for idx := range users {
-		users[idx] = strings.TrimSpace(users[idx])
-	}
-	return users
 }
 
 func getEnvVarOrExit(envVar string) string {

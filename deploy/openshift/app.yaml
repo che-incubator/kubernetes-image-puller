@@ -5,8 +5,8 @@ metadata:
     app: kubernetes-image-puller
   name: kubernetes-image-puller
 objects:
-- kind: DeploymentConfig
-  apiVersion: v1
+- kind: Deployment
+  apiVersion: apps/v1
   metadata:
     labels:
       app: kubernetes-image-puller
@@ -15,7 +15,8 @@ objects:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
-      app: kubernetes-image-puller
+      matchLabels:
+        app: kubernetes-image-puller
     strategy:
       type: "Recreate"
     template:
@@ -37,6 +38,6 @@ parameters:
 - name: SERVICE_ACCT_CREDENTIALS_SECRET
   value: k8s-image-puller-token
 - name: IMAGE
-  value: kubernetes-image-puller
+  value: quay.io/openshiftio/kubernetes-image-puller
 - name: IMAGE_TAG
   value: latest
