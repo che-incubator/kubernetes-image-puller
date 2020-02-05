@@ -16,18 +16,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/che-incubator/kubernetes-image-puller/cfg"
-	multicluster "github.com/che-incubator/kubernetes-image-puller/pkg/multi-cluster"
 	singlecluster "github.com/che-incubator/kubernetes-image-puller/pkg/single-cluster"
 )
 
 func main() {
 	log.SetOutput(os.Stdout)
-
-	if cfg.MultiCluster {
-		multicluster.CacheImages()
-	} else {
-		log.Printf("Running in single-cluster mode")
-		singlecluster.CacheImages()
-	}
+	log.Printf("Running in single-cluster mode")
+	singlecluster.CacheImages()
 }

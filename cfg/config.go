@@ -13,33 +13,21 @@
 package cfg
 
 var (
-	DaemonsetName        string
-	Namespace            string
-	Images               map[string]string
-	ImpersonateUsers     []string
-	ServiceAccountID     string
-	ServiceAccountSecret string
-	OidcProvider         string
-	ProxyURL             string
-	CachingMemRequest    string
-	CachingMemLimit      string
-	CachingInterval      int
-	MultiCluster         bool
-	NodeSelector         map[string]string
+	DaemonsetName     string
+	Namespace         string
+	Images            map[string]string
+	CachingMemRequest string
+	CachingMemLimit   string
+	CachingInterval   int
+	NodeSelector      map[string]string
 )
 
 func init() {
 	DaemonsetName = getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName)
 	Namespace = getEnvVarOrDefault(namespaceEnvVar, defaultNamespace)
 	Images = processImagesEnvVar()
-	ImpersonateUsers = processImpersonateUsers()
-	ServiceAccountID = getEnvVarOrExit(serviceAccountIDEnvVar)
-	ServiceAccountSecret = getEnvVarOrExit(serviceAccountSecretEnvVar)
-	OidcProvider = getEnvVarOrExit(oidcProviderEnvVar)
-	ProxyURL = getEnvVarOrExit(proxyURLEnvVar)
 	CachingInterval = getCachingInterval()
 	CachingMemRequest = getEnvVarOrDefault(cachingMemRequestEnvVar, defaultCachingMemRequest)
 	CachingMemLimit = getEnvVarOrDefault(cachingMemLimitEnvVar, defaultCachingMemLimit)
-	MultiCluster = getEnvVarOrDefaultBool(multiCluster, defaultMultiCluster)
 	NodeSelector = processNodeSelectorEnvVar()
 }
