@@ -12,7 +12,7 @@ set -e
 
 LOCAL_IMAGE_NAME='kubernetes-image-puller'
 REGISTRY='quay.io'
-ORGANIZATION='openshiftio'
+ORGANIZATION='eclipse'
 RHEL_IMAGE_NAME='rhel-kubernetes-image-puller'
 CENTOS_IMAGE_NAME='kubernetes-image-puller'
 
