@@ -6,8 +6,11 @@ all: build docker
 
 .PHONY: build docker
 
-build:
+build: test
 	GOOS=linux go build -v -o ./bin/${BINARY_NAME} ./cmd/main.go
+
+test:
+	go test -v ./...
 
 docker: build
 	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .

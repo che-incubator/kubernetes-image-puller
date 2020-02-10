@@ -12,6 +12,16 @@
 
 package cfg
 
+type Config struct {
+	DaemonsetName     string
+	Namespace         string
+	Images            map[string]string
+	CachingMemRequest string
+	CachingMemLimit   string
+	CachingInterval   int
+	NodeSelector      map[string]string
+}
+
 var (
 	DaemonsetName     string
 	Namespace         string
@@ -22,12 +32,14 @@ var (
 	NodeSelector      map[string]string
 )
 
-func init() {
-	DaemonsetName = getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName)
-	Namespace = getEnvVarOrDefault(namespaceEnvVar, defaultNamespace)
-	Images = processImagesEnvVar()
-	CachingInterval = getCachingInterval()
-	CachingMemRequest = getEnvVarOrDefault(cachingMemRequestEnvVar, defaultCachingMemRequest)
-	CachingMemLimit = getEnvVarOrDefault(cachingMemLimitEnvVar, defaultCachingMemLimit)
-	NodeSelector = processNodeSelectorEnvVar()
+func NewConfig() Config {
+	return Config{
+		DaemonsetName:     getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName),
+		Namespace:         getEnvVarOrDefault(namespaceEnvVar, defaultNamespace),
+		Images:            processImagesEnvVar(),
+		CachingInterval:   getCachingInterval(),
+		CachingMemRequest: getEnvVarOrDefault(cachingMemRequestEnvVar, defaultCachingMemRequest),
+		CachingMemLimit:   getEnvVarOrDefault(cachingMemLimitEnvVar, defaultCachingMemLimit),
+		NodeSelector:      processNodeSelectorEnvVar(),
+	}
 }
