@@ -31,6 +31,7 @@ var terminationGracePeriodSeconds = int64(1)
 
 // Set up watch on daemonset
 func watchDaemonset(clientset *kubernetes.Clientset) watch.Interface {
+	cfg := cfg.GetConfig()
 	watch, err := clientset.AppsV1().DaemonSets(cfg.Namespace).Watch(metav1.ListOptions{
 		FieldSelector:        fmt.Sprintf("metadata.name=%s", cfg.DaemonsetName),
 		IncludeUninitialized: true,
@@ -41,11 +42,9 @@ func watchDaemonset(clientset *kubernetes.Clientset) watch.Interface {
 	return watch
 }
 
-// Create the daemonset, using to-be-cached images as init containers. Blocks
-// until daemonset is ready.
-func createDaemonset(clientset *kubernetes.Clientset) error {
-	log.Printf("Creating daemonset")
-	toCreate := &appsv1.DaemonSet{
+func getDaemonset() *appsv1.DaemonSet {
+	cfg := cfg.GetConfig()
+	return &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: cfg.DaemonsetName,
 		},
@@ -70,6 +69,14 @@ func createDaemonset(clientset *kubernetes.Clientset) error {
 			},
 		},
 	}
+}
+
+// Create the daemonset, using to-be-cached images as init containers. Blocks
+// until daemonset is ready.
+func createDaemonset(clientset *kubernetes.Clientset) error {
+	log.Printf("Creating daemonset")
+	cfg := cfg.GetConfig()
+	toCreate := getDaemonset()
 	dsWatch := watchDaemonset(clientset)
 	defer dsWatch.Stop()
 	watchChan := dsWatch.ResultChan()
@@ -115,6 +122,7 @@ func waitDaemonsetReady(c <-chan watch.Event) error {
 }
 
 func checkDaemonsetReadiness(clientset *kubernetes.Clientset) {
+	cfg := cfg.GetConfig()
 	// Loop 30 times, sleeping for 3 seconds each time -- 90 seconds total wait.
 	for i := 0; i < 30; i++ {
 		ds, err := clientset.AppsV1().DaemonSets(cfg.Namespace).Get(cfg.DaemonsetName, metav1.GetOptions{
@@ -142,6 +150,7 @@ func checkDaemonsetReadiness(clientset *kubernetes.Clientset) {
 // is deleted.
 func deleteDaemonset(clientset *kubernetes.Clientset) {
 	log.Println("Deleting daemonset")
+	cfg := cfg.GetConfig()
 
 	dsWatch := watchDaemonset(clientset)
 	defer dsWatch.Stop()
@@ -177,6 +186,7 @@ func waitDaemonsetDeleted(c <-chan watch.Event) {
 
 // Get array of all images in containers to be cached.
 func getContainers() []corev1.Container {
+	cfg := cfg.GetConfig()
 	images := cfg.Images
 	containers := make([]corev1.Container, len(images))
 	idx := 0

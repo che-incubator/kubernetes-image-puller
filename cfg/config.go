@@ -22,17 +22,7 @@ type Config struct {
 	NodeSelector      map[string]string
 }
 
-var (
-	DaemonsetName     string
-	Namespace         string
-	Images            map[string]string
-	CachingMemRequest string
-	CachingMemLimit   string
-	CachingInterval   int
-	NodeSelector      map[string]string
-)
-
-func NewConfig() Config {
+func GetConfig() Config {
 	return Config{
 		DaemonsetName:     getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName),
 		Namespace:         getEnvVarOrDefault(namespaceEnvVar, defaultNamespace),

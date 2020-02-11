@@ -10,7 +10,7 @@ build: test
 	GOOS=linux go build -v -o ./bin/${BINARY_NAME} ./cmd/main.go
 
 test:
-	go test -v ./...
+	go test -v ./cfg... ./pkg... ./utils...
 
 docker: build
 	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .

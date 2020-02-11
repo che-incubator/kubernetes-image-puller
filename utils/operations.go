@@ -42,6 +42,8 @@ func RefreshCache(clientset *kubernetes.Clientset) {
 // recreates it if necessary
 func EnsureDaemonsetExists(clientset *kubernetes.Clientset) {
 	log.Printf("Checking that daemonset exists.")
+
+	cfg := cfg.GetConfig()
 	daemonset, err :=
 		clientset.
 			AppsV1().
@@ -58,6 +60,7 @@ func EnsureDaemonsetExists(clientset *kubernetes.Clientset) {
 // it if it does. Useful for ensuring no daemonset is already present from a
 // previous rollout.
 func DeleteDaemonsetIfExists(clientset *kubernetes.Clientset) {
+	cfg := cfg.GetConfig()
 	daemonset, err :=
 		clientset.
 			AppsV1().
@@ -78,6 +81,7 @@ func DeleteDaemonsetIfExists(clientset *kubernetes.Clientset) {
 
 // LogNumNodesScheduled logs the basic status of the daemonset.
 func LogNumNodesScheduled(clientset *kubernetes.Clientset, user string) {
+	cfg := cfg.GetConfig()
 	daemonset, err :=
 		clientset.
 			AppsV1().

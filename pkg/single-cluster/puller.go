@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path"
 	"sync"
 	"syscall"
 	"time"
@@ -12,16 +13,33 @@ import (
 	"github.com/che-incubator/kubernetes-image-puller/utils"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 // CacheImages starts and maintains a daemonset to ensure images are
 // cached.
 func CacheImages() {
 	// Set up kubernetes client
-	config, err := rest.InClusterConfig()
+	// Look in
+	// 1) $KUBECONFIG -- For testing
+	// 2) ~/.kube/config -- For testing
+	// 3) InClusterConfig
+
+	var config *rest.Config
+	var err error
+	defaultKubeConfigPath := path.Join(os.Getenv("HOME"), ".kube", "config")
+	if kubeConfigEnv := os.Getenv("KUBECONFIG"); kubeConfigEnv != "" {
+		config, err = clientcmd.BuildConfigFromFlags("", kubeConfigEnv)
+	} else if _, err := os.Stat(defaultKubeConfigPath); err == nil {
+		config, err = clientcmd.BuildConfigFromFlags("", defaultKubeConfigPath)
+	} else {
+		config, err = rest.InClusterConfig()
+	}
+
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	shutdownChan := make(chan os.Signal, 1)
@@ -35,6 +53,7 @@ func CacheImages() {
 func cacheImagesLocally(config *rest.Config,
 	shutdownChan chan os.Signal,
 	wg *sync.WaitGroup) {
+	cfg := cfg.GetConfig()
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
