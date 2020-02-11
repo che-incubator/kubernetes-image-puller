@@ -74,7 +74,6 @@ func getDaemonset() *appsv1.DaemonSet {
 // Create the daemonset, using to-be-cached images as init containers. Blocks
 // until daemonset is ready.
 func createDaemonset(clientset *kubernetes.Clientset) error {
-	log.Printf("Creating daemonset")
 	cfg := cfg.GetConfig()
 	toCreate := getDaemonset()
 	dsWatch := watchDaemonset(clientset)
