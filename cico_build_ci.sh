@@ -19,5 +19,4 @@ export SCRIPT_DIR
 load_jenkins_vars
 install_deps
 build
-tag_and_push_nightly
-
+tag_and_push_ci
