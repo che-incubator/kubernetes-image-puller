@@ -29,15 +29,17 @@ func CacheImages() {
 	var err error
 	defaultKubeConfigPath := path.Join(os.Getenv("HOME"), ".kube", "config")
 	if kubeConfigEnv := os.Getenv("KUBECONFIG"); kubeConfigEnv != "" {
-		config, err = clientcmd.BuildConfigFromFlags("", kubeConfigEnv)
+		if config, err = clientcmd.BuildConfigFromFlags("", kubeConfigEnv); err != nil {
+			log.Fatalf("Error building REST Config: %v", err)
+		}
 	} else if _, err := os.Stat(defaultKubeConfigPath); err == nil {
-		config, err = clientcmd.BuildConfigFromFlags("", defaultKubeConfigPath)
+		if config, err = clientcmd.BuildConfigFromFlags("", defaultKubeConfigPath); err != nil {
+			log.Fatalf("Error building REST Config: %v", err)
+		}
 	} else {
-		config, err = rest.InClusterConfig()
-	}
-
-	if err != nil {
-		log.Fatalf(err.Error())
+		if config, err = rest.InClusterConfig(); err != nil {
+			log.Fatalf("Error building REST Config: %v", err)
+		}
 	}
 
 	var wg sync.WaitGroup
@@ -57,7 +59,7 @@ func cacheImagesLocally(config *rest.Config,
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		log.Printf(err.Error())
+		log.Printf("Error creating Clientset: %v", err)
 	}
 
 	// Clean up existing deployment if necessary

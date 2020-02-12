@@ -38,7 +38,6 @@ const (
 	defaultCachingMemRequest = "1Mi"
 	defaultCachingMemLimit   = "5Mi"
 	defaultCachingInterval   = 1
-	defaultMultiCluster      = true
 	defaultNodeSelector      = "{}"
 )
 
