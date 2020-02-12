@@ -6,8 +6,14 @@ all: build docker
 
 .PHONY: build docker
 
-build:
+build: test
 	GOOS=linux go build -v -o ./bin/${BINARY_NAME} ./cmd/main.go
+
+lint:
+	golangci-lint run -v
+
+test:
+	go test -v ./cfg... ./pkg... ./utils...
 
 docker: build
 	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .
