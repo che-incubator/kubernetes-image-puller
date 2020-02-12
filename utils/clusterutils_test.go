@@ -37,8 +37,8 @@ func TestGetContainers(t *testing.T) {
 		{
 			name: "two containers",
 			want: []corev1.Container{{
-				Name:            "che-machine-exec",
-				Image:           "eclipse/che-machine-exec:nightly",
+				Name:            "che-theia",
+				Image:           "eclipse/che-theia:nightly",
 				Command:         defaultCommand,
 				Args:            defaultArgs,
 				ImagePullPolicy: corev1.PullAlways,
@@ -51,7 +51,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 			}},
-			images: "che-machine-exec=eclipse/che-machine-exec:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly",
+			images: "che-theia=eclipse/che-theia:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly",
 		}, {
 			name: "four containers",
 			want: []corev1.Container{{
@@ -76,14 +76,14 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 			}, {
-				Name:            "che-machine-exec",
-				Image:           "quay.io/eclipse/che-machine-exec:nightly",
+				Name:            "che-theia",
+				Image:           "quay.io/eclipse/che-theia:nightly",
 				Command:         defaultCommand,
 				Args:            defaultArgs,
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 			}},
-			images: "che-sidecar-java=quay.io/eclipse/che-sidecar-java:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly;che-devfile-registry=quay.io/eclipse/che-devfile-registry:nightly;che-machine-exec=quay.io/eclipse/che-machine-exec:nightly",
+			images: "che-sidecar-java=quay.io/eclipse/che-sidecar-java:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly;che-devfile-registry=quay.io/eclipse/che-devfile-registry:nightly;che-theia=quay.io/eclipse/che-theia:nightly",
 		},
 	}
 	for _, c := range testcases {
