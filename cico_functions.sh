@@ -18,6 +18,7 @@ function load_jenkins_vars() {
 }
 
 function install_deps() {
+  REGISTRY="quay.io"
   # Update machine, get required deps in place
   yum -y -d 1 update
   yum -y -d 1 install epel-release
