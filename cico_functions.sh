@@ -21,7 +21,7 @@ function install_deps() {
   REGISTRY="quay.io"
   # Update machine, get required deps in place
 
-  /usr/bin/setenforce 0 || true
+  /usr/sbin/setenforce 0 || true
 
   yum -y -d 1 update
   yum -y -d 1 install epel-release
