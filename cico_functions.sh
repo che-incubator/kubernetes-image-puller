@@ -64,9 +64,9 @@ function tag_and_push_ci() {
 
   set_git_commit_tag
   docker tag ${LOCAL_IMAGE_NAME}  "${REGISTRY}/${ORGANIZATION}/${IMAGE}:${GIT_COMMIT_TAG}"
-  docker push ${LOCAL_IMAGE_NAME} "${REGISTRY}/${ORGANIZATION}/${IMAGE}:${GIT_COMMIT_TAG}"
+  docker push "${REGISTRY}/${ORGANIZATION}/${IMAGE}:${GIT_COMMIT_TAG}"
   docker tag ${LOCAL_IMAGE_NAME}  "${REGISTRY}/${ORGANIZATION}/${IMAGE}:latest"
-  docker push ${LOCAL_IMAGE_NAME} "${REGISTRY}/${ORGANIZATION}/${IMAGE}:latest"
+  docker push "${REGISTRY}/${ORGANIZATION}/${IMAGE}:latest"
 }
 
 function tag_and_push_nightly() {
@@ -75,4 +75,5 @@ function tag_and_push_nightly() {
   IMAGE="kubernetes-image-puller"
   LOCAL_IMAGE_NAME="kubernetes-image-puller"
   docker tag ${LOCAL_IMAGE_NAME}  "${REGISTRY}/${ORGANIZATION}/${IMAGE}:nightly"
+  docker push  "${REGISTRY}/${ORGANIZATION}/${IMAGE}:nightly"
 }
