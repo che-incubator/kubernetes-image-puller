@@ -10,7 +10,7 @@ func TestEnvVars(t *testing.T) {
 
 	defer unsetEnv()
 
-	os.Setenv("IMAGES", "che-server=eclipse/che-server:nightly")
+	os.Setenv("IMAGES", "che-machine-exec=quay.io/eclipse/che-machine-exec:nightly")
 	os.Setenv("CACHING_INTERVAL_HOURS", "5")
 
 	type testcase struct {
@@ -27,7 +27,7 @@ func TestEnvVars(t *testing.T) {
 				DaemonsetName: "kubernetes-image-puller",
 				Namespace:     "k8s-image-puller",
 				Images: map[string]string{
-					"che-server": "eclipse/che-server:nightly",
+					"che-machine-exec": "quay.io/eclipse/che-machine-exec:nightly",
 				},
 				CachingMemRequest: "1Mi",
 				CachingMemLimit:   "5Mi",
@@ -46,7 +46,7 @@ func TestEnvVars(t *testing.T) {
 				DaemonsetName: "custom-daemonset-name",
 				Namespace:     "my-namespace",
 				Images: map[string]string{
-					"che-server": "eclipse/che-server:nightly",
+					"che-machine-exec": "quay.io/eclipse/che-machine-exec:nightly",
 				},
 				CachingMemRequest: "1Mi",
 				CachingMemLimit:   "5Mi",

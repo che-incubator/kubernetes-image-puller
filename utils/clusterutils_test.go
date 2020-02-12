@@ -37,8 +37,8 @@ func TestGetContainers(t *testing.T) {
 		{
 			name: "two containers",
 			want: []corev1.Container{{
-				Name:            "che-server",
-				Image:           "eclipse/che-server:nightly",
+				Name:            "che-machine-exec",
+				Image:           "eclipse/che-machine-exec:nightly",
 				Command:         defaultCommand,
 				Args:            defaultArgs,
 				ImagePullPolicy: corev1.PullAlways,
@@ -51,12 +51,12 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 			}},
-			images: "che-server=eclipse/che-server:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly",
+			images: "che-machine-exec=eclipse/che-machine-exec:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly",
 		}, {
 			name: "four containers",
 			want: []corev1.Container{{
-				Name:            "che-server",
-				Image:           "eclipse/che-server:nightly",
+				Name:            "che-sidecar-java",
+				Image:           "quay.io/eclipse/che-sidecar-java:nightly",
 				Command:         defaultCommand,
 				Args:            defaultArgs,
 				ImagePullPolicy: corev1.PullAlways,
@@ -83,7 +83,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 			}},
-			images: "che-server=eclipse/che-server:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly;che-devfile-registry=quay.io/eclipse/che-devfile-registry:nightly;che-machine-exec=quay.io/eclipse/che-machine-exec:nightly",
+			images: "che-sidecar-java=quay.io/eclipse/che-sidecar-java:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly;che-devfile-registry=quay.io/eclipse/che-devfile-registry:nightly;che-machine-exec=quay.io/eclipse/che-machine-exec:nightly",
 		},
 	}
 	for _, c := range testcases {
