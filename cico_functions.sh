@@ -25,7 +25,9 @@ function install_deps() {
 
   yum -y -d 1 update
   yum -y -d 1 install epel-release
-  yum -y -d 1 install --enablerepo=epel docker make golang git
+  yum -y -d 1 install --enablerepo=epel docker make golang
+  yum -y install  https://centos7.iuscommunity.org/ius-release.rpm
+  yum -y install  git2u-all
   systemctl start docker
 
   # Login to quay.io
