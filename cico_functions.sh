@@ -34,6 +34,7 @@ function install_deps() {
 
 function build() {
   LOCAL_IMAGE_NAME="kubernetes-image-puller"
+  docker run -v $(pwd):/go/src/github.com/che-incubator/kubernetes-image-puller -w /go/src/github.com/che-incubator/kubernetes-image-puller golang:1.13 make build
   docker build -t ${LOCAL_IMAGE_NAME} -f ./docker/Dockerfile.centos .
 }
 
