@@ -1,15 +1,8 @@
-FROM golang:1.13 AS build
-
-RUN mkdir -p $GOPATH/src/github.com/che-incubator/kubernetes-image-puller
-ADD . $GOPATH/src/github.com/che-incubator/kubernetes-image-puller
-WORKDIR $GOPATH/src/github.com/che-incubator/kubernetes-image-puller
-RUN ["make", "build"]
-
 FROM registry.centos.org/centos:7
 
 RUN yum update -y -d 1 \
     && yum clean all -y \
     && rm -rf /var/cache/yum
 
-COPY --from=build /go/src/github.com/che-incubator/kubernetes-image-puller/bin/kubernetes-image-puller /
+COPY "./bin/kubernetes-image-puller" "/"
 CMD ["/kubernetes-image-puller"]
