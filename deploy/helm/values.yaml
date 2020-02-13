@@ -1,18 +1,17 @@
 appName: kubernetes-image-puller
 image: 
-  repository: quay.io/openshiftio/kubernetes-image-puller
+  repository: quay.io/eclipse/kubernetes-image-puller
   tag: latest
 serviceAccount:
   name: k8s-image-puller
-  credentialsToken: k8s-image-puller-token
 configMap:
   name: k8s-image-puller
   images: >
     java11-maven=quay.io/eclipse/che-java11-maven:nightly;
-    che-theia=eclipse/che-theia:7.0.0;
-    java-plugin-runner=eclipse/che-remote-plugin-runner-java8:7.0.0;
+    che-theia=eclipse/che-theia:next;
+    java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
   cachingIntervalHours: 1
-  cachingMemoryRequest: "1Mi"
-  cachingMemoryLimit: "5Mi"
+  cachingMemoryRequest: "10Mi"
+  cachingMemoryLimit: "20Mi"
   nodeSelector: "{}"
 
