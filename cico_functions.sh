@@ -33,23 +33,10 @@ function install_deps() {
 
   # Login to quay.io
   docker login -u "${QUAY_ECLIPSE_CHE_USERNAME}" -p "${QUAY_ECLIPSE_CHE_PASSWORD}" "${REGISTRY}"
-  setup_golang
-}
-
-# Perform necessary GOPATH setup to make project buildable
-function setup_golang() {
-  go version
-  mkdir -p "$HOME"/go "$HOME"/go/src "$HOME"/go/bin "$HOME"/go/pkg
-  export GOPATH=$HOME/go
-  export PATH=${GOPATH}/bin:$PATH
-  mkdir -p "${GOPATH}"/src/github.com/che-incubator
-  cp -r "$HOME"/payload "${GOPATH}"/src/github.com/che-incubator/kubernetes-image-puller
-  cd "${GOPATH}"/src/github.com/che-incubator/kubernetes-image-puller || exit
 }
 
 function build() {
   LOCAL_IMAGE_NAME="kubernetes-image-puller"
-  make build
   docker build -t ${LOCAL_IMAGE_NAME} -f ./docker/Dockerfile.centos .
 }
 
