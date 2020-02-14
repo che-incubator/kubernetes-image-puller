@@ -1,16 +1,38 @@
+kind: Template
 apiVersion: v1
-kind: ConfigMap
 metadata:
-  name: k8s-image-puller
-type: Opaque
-data:
-  IMAGES: >
-    java11-maven=quay.io/eclipse/che-java11-maven:nightly;
-    che-theia=eclipse/che-theia:7.0.0;
-    java-plugin-runner=eclipse/che-remote-plugin-runner-java8:7.0.0;
-  DAEMONSET_NAME: "kubernetes-image-puller"
-  CACHING_INTERVAL_HOURS: "1"
-  NAMESPACE: "k8s-image-puller"
-  CACHING_MEMORY_REQUEST: "1Mi"
-  CACHING_MEMORY_LIMIT: "5Mi"
-  NODE_SELECTOR: "{}"
+  labels:
+    app: kubernetes-image-puller
+  name: kubernetes-image-puller
+objects:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: k8s-image-puller
+  type: Opaque
+  data:
+    IMAGES: ${IMAGES}
+    DAEMONSET_NAME: ${DAEMONSET_NAME}
+    CACHING_INTERVAL_HOURS: ${CACHING_INTERVAL_HOURS}
+    NAMESPACE: ${NAMESPACE}
+    CACHING_MEMORY_REQUEST: ${CACHING_MEMORY_REQUEST}
+    CACHING_MEMORY_LIMIT: ${CACHING_MEMORY_LIMIT}
+    NODE_SELECTOR: ${NODE_SELECTOR}
+parameters:
+- name: IMAGES
+  value: >
+      java11-maven=quay.io/eclipse/che-java11-maven:nightly;
+      che-theia=eclipse/che-theia:next;
+      java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
+- name: DAEMONSET_NAME
+  value: "kubernetes-image-puller"
+- name: CACHING_INTERVAL_HOURS
+  value: "1"
+- name: NAMESPACE
+  value: "k8s-image-puller"
+- name: CACHING_MEMORY_REQUEST
+  value: "10Mi"
+- name: CACHING_MEMORY_LIMIT
+  value: "20Mi"
+- name: NODE_SELECTOR
+  value: "{}"

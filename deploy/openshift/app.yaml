@@ -35,9 +35,7 @@ objects:
 parameters:
 - name: SERVICEACCOUNT_NAME
   value: k8s-image-puller
-- name: SERVICE_ACCT_CREDENTIALS_SECRET
-  value: k8s-image-puller-token
 - name: IMAGE
-  value: quay.io/openshiftio/kubernetes-image-puller
+  value: quay.io/eclipse/kubernetes-image-puller
 - name: IMAGE_TAG
   value: latest
