@@ -3,7 +3,7 @@
 ## Requirements
 This is an upstream version of the [kubernetes-image-puller](https://github.com/redhat-developer/kubernetes-image-puller).  Where the downstream puller requires integrations with [fabric-oso-proxy](https://github.com/fabric8-services/fabric8-oso-proxy) and [fabric8-auth](https://github.com/fabric8-services/fabric8-auth), and impersonates users in multiple clusters, this application is meant to run on a single cluster, and pre-pull Eclipse Che images.
 
-To cache images, this app creates a Daemonset on the desired cluster, which in turn creates a pod on each node in the cluster consisting of a list of containers with command `sleep infinity`. This ensures that all nodes in the cluster have those images cached. We also periodically check the health of the daemonset and re-create it if necessary.
+To cache images, this app creates a Daemonset on the desired cluster, which in turn creates a pod on each node in the cluster consisting of a list of containers with command `sleep 30d`. This ensures that all nodes in the cluster have those images cached. We also periodically check the health of the daemonset and re-create it if necessary.
 
 The application can be deployed via Helm or by processing and applying OpenShift Templates.
 
@@ -14,12 +14,12 @@ The config values to be set are:
 | Env Var | Usage | Default |
 | -- | -- | -- |
 | `CACHING_INTERVAL_HOURS` | Interval, in hours, between checking health of daemonsets | `"1"` |
-| `CACHING_MEMORY_REQUEST` | The container memory request | `10Mi` |
-| `CACHING_MEMORY_LIMIT` | The container memory limit | `20Mi` |
+| `CACHING_MEMORY_REQUEST` | The memory request for each cached image when the puller is running | `10Mi` |
+| `CACHING_MEMORY_LIMIT` | The memory limit for each cached image when the puller is running | `20Mi` |
 | `DAEMONSET_NAME`         | Name of daemonset to be created | `kubernetes-image-puller` |
-| `NAMESPACE`              | Namespace where daemonset is to be created. Shared for all users | `k8s-image-puller` |
+| `NAMESPACE`              | Namespace where daemonset is to be created | `k8s-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
-| `NODE_SELECTOR` | The node selector to run the daemonsets on particular nodes. | `'{}'` |
+| `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
 
 ### Configuration - Helm 
 
@@ -62,6 +62,18 @@ The following values can be set:
 To set values, changes `deploy/helm/values.yaml` or use `--set property.name=value`
 
 ### Installation - Openshift
+
+#### Openshift special consideration - Project Quotas
+
+OpenShift has a notion of [project quotas](https://docs.openshift.com/container-platform/4.3/applications/quotas/quotas-setting-per-project.html) to limit the aggregate resource consumption per project/namespace.  The namespace that the image puller is deployed in must have enough memory to run each container for each node in the cluster:
+
+```
+(memory limit) * (number of images) * (number of nodes in cluster)
+```
+
+For example, running the image puller that caches 5 images on 20 nodes, with a container memory limit of `20Mi`, your namespace would need a quota of `2000Mi`.
+
+#### Installing the image puller
 
 `oc new-project k8s-image-puller`
 
