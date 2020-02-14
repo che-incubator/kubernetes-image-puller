@@ -71,18 +71,20 @@ Make docker image:
 docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} .
 ```
 
-## Testing locally
-It's possible to run a simplified version of kubernetes-image-puller locally in minishift. This version avoids most of the complexity in the `oso-proxy` version, so its usefulness is limited.
+## Testing
 
-Note: to run the commands below, you will need to be an admin user.
-
-```
-oc adm policy add-cluster-role-to-user cluster-admin admin
-oc login -u admin -p any
-oc new-project k8s-image-puller
-make docker
-make local-setup
-make local-deploy
+```shell
+make test
 ```
 
-This uses the `yaml` files in the `./deploy` directory to create a kubernetes image puller locally, that, in turn, creates a daemonset in the current namespace.
+Will run unit tests.
+
+End to end tests require [kind](https://github.com/kubernetes-sigs/kind):
+
+```shell
+GO111MODULE="on" go get sigs.k8s.io/kind@v0.7.0
+
+./hack/run-e2e.sh
+```
+
+Will start a kind cluster and run the end-to-end tests in `./e2e`.  To remove the cluster after running the tests, pass the `--rm` argument to the script, or run `kind delete cluster --name k8s-image-puller-e2e`.
