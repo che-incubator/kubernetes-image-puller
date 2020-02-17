@@ -13,13 +13,13 @@ Implementations in `pkg` basically create a k8s client config, set up some chann
 
 == Code structure
 
-* `cfg` - read configuration from env vars into global vars. This can be accessed by running `cfg.GetConfig()`
+* `cfg` - read configuration from env vars into global vars. This can be accessed by calling `cfg.GetConfig()`
 
 * `cmd` - Entrypoint for service
 
 * `deploy` - Helm chart and openshift templates to deploy the image puller
 
-* `docker` - dockerfiles_
+* `docker` - dockerfiles
 
 * `pkg` - core logic for the puller. Should satisfy the interface
 +
