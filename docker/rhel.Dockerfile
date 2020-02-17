@@ -16,7 +16,7 @@ FROM devtools/go-toolset-rhel7:1.12.12-4  as builder
 ENV PATH=/opt/rh/go-toolset-1.12/root/usr/bin:$PATH \
     GOPATH=/go/
 USER root
-WORKDIR /go/src/github.com/redhat-developer/kubernetes-image-puller/
+WORKDIR /go/src/github.com/che-incubator/kubernetes-image-puller/
 COPY . .
 
 RUN adduser appuser && \
