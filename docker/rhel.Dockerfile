@@ -20,7 +20,7 @@ WORKDIR /go/src/github.com/che-incubator/kubernetes-image-puller/
 COPY . .
 
 RUN adduser appuser && \
-    GOOS=linux go build -o ./bin/kubernetes-image-puller ./cmd/main.go
+    GOOS=linux go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8-minimal
 FROM ubi8-minimal:8.1-398
@@ -32,9 +32,9 @@ COPY --from=builder /etc/pki/tls/certs/ca-bundle.crt                  /etc/pki/t
 COPY --from=builder /etc/passwd /etc/passwd
 
 USER appuser
-COPY --from=builder /go/src/github.com/redhat-developer/kubernetes-image-puller/bin/kubernetes-image-puller / 
+COPY --from=builder /go/src/github.com/che-incubator/kubernetes-image-puller/bin/kubernetes-image-puller / 
 # NOTE: To use this container, need a configmap. See example at ./deploy/openshift/configmap.yaml
-# See also https://github.com/redhat-developer/kubernetes-image-puller#configuration
+# See also https://github.com/che-incubator/kubernetes-image-puller#configuration
 CMD ["/kubernetes-image-puller"]
 
 # append Brew metadata here
