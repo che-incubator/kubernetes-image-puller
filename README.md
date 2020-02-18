@@ -105,7 +105,7 @@ The provided Makefile has two parameters:
 ### Manual
 Build:
 ```bash
-GOOS=linux go build -v -o ./bin/che-image-caching ./cmd/main.go
+GOOS=linux go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
 ```
 Make docker image:
 ```bash
