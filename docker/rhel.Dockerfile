@@ -14,13 +14,14 @@
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/devtools/go-toolset-rhel7
 FROM devtools/go-toolset-rhel7:1.12.12-4  as builder
 ENV PATH=/opt/rh/go-toolset-1.12/root/usr/bin:$PATH \
+    GO111MODULE=on \
     GOPATH=/go/
 USER root
 WORKDIR /go/src/github.com/che-incubator/kubernetes-image-puller/
 COPY . .
 
 RUN adduser appuser && \
-    GOOS=linux go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
+    make build 
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8-minimal
 FROM ubi8-minimal:8.1-398
