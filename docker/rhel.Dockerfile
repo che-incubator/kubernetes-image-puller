@@ -12,12 +12,29 @@
 # NOTE: using registry.access.redhat.com/rhel8/go-toolset does not work (user is requested to use registry.redhat.io)
 # NOTE: using registry.redhat.io/rhel8/go-toolset requires login, which complicates automation
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/devtools/go-toolset-rhel7
-FROM registry.access.redhat.com/devtools/go-toolset-rhel7:1.12.12-4  as builder
+FROM registry.access.redhat.com/devtools/go-toolset-rhel7:1.12.12-4 as builder
+
+ARG BOOTSTRAP=true
+ENV BOOTSTRAP=${BOOTSTRAP}
+
 ENV PATH=/opt/rh/go-toolset-1.12/root/usr/bin:$PATH \
-    GO111MODULE=on \
-    GOPATH=/go/
+    GO111MODULE=on
+
 USER root
-WORKDIR /go/src/github.com/che-incubator/kubernetes-image-puller/
+
+WORKDIR /kubernetes-image-puller
+COPY go.mod .
+COPY go.sum .
+# built in Brew, use tarball in lookaside cache; built locally, comment this out
+# COPY resources.tgz /tmp/resources.tgz
+# build locally, fetch mods
+RUN if [[ ${BOOTSTRAP} != "false" ]]; then \
+      go mod download; \
+    elif [[ -f /tmp/resources.tgz ]]; then \
+      tar xvf /tmp/resources.tgz -C /; \
+      rm -f /tmp/resources.tgz; \
+    fi
+
 COPY . .
 
 RUN adduser appuser && \
@@ -33,7 +50,7 @@ COPY --from=builder /etc/pki/tls/certs/ca-bundle.crt                  /etc/pki/t
 COPY --from=builder /etc/passwd /etc/passwd
 
 USER appuser
-COPY --from=builder /go/src/github.com/che-incubator/kubernetes-image-puller/bin/kubernetes-image-puller / 
+COPY --from=builder /kubernetes-image-puller/bin/kubernetes-image-puller /
 # NOTE: To use this container, need a configmap. See example at ./deploy/openshift/configmap.yaml
 # See also https://github.com/che-incubator/kubernetes-image-puller#configuration
 CMD ["/kubernetes-image-puller"]

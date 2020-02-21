@@ -15,7 +15,7 @@ lint:
 test:
 	go test -v ./cfg... ./pkg... ./utils...
 
-docker: build
+docker:
 	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .
 
 local-setup:
