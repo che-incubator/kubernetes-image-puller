@@ -45,13 +45,21 @@ The included Makefile supports
 | docker
 | Build a docker container (see below)
 
+| docker-dev
+| Build a docker container without multi-stage builds, for compatibility (see below).
+
 | clean
 | Remove build artifacts.
 |===
 
 == The docker build
 
-Currently, the docker build is set up to simply copy the build binary into a distroless image; this was done initially since the version of docker that shipped with minishift did not support multi-stage builds. This means that a local binary has to be created before the docker image is built. (This is a TODO for the repo).
+The docker build, by default, will use a multi-stage build that
+1. Grabs all dependencies defined in `go.mod` (`--target=dependencies`)
+2. Builds the Go project (`--target=builder`)
+3. Copies the binary into a clean image
+
+Since multi-stage builds are not supported by all versions of docker, there is also a simpler dockerfile (see `./docker/dev.Dockerfile`) that copies an already-built binary into a distroless image. This build can be invoked using the `docker-dev` target in the Makefile.
 
 == Outstanding issues
 
