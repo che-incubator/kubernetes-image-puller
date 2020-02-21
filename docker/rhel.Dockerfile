@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2020 Red Hat, Inc.
+# Copyright (c) 2020 Red Hat, Inc.
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
 # which is available at https://www.eclipse.org/legal/epl-2.0/
@@ -12,7 +12,7 @@
 # NOTE: using registry.access.redhat.com/rhel8/go-toolset does not work (user is requested to use registry.redhat.io)
 # NOTE: using registry.redhat.io/rhel8/go-toolset requires login, which complicates automation
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/devtools/go-toolset-rhel7
-FROM devtools/go-toolset-rhel7:1.12.12-4  as builder
+FROM registry.access.redhat.com/devtools/go-toolset-rhel7:1.12.12-4  as builder
 ENV PATH=/opt/rh/go-toolset-1.12/root/usr/bin:$PATH \
     GO111MODULE=on \
     GOPATH=/go/
@@ -24,7 +24,7 @@ RUN adduser appuser && \
     make build 
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8-minimal
-FROM ubi8-minimal:8.1-398
+FROM registry.access.redhat.com/ubi8-minimal:8.1-398
 USER root
 # CRW-528 copy actual cert
 COPY --from=builder /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/pki/ca-trust/extracted/pem/
