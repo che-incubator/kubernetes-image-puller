@@ -23,9 +23,11 @@ function install_deps() {
 
   /usr/sbin/setenforce 0 || true
 
-  yum -y -d 1 update
-  yum -y -d 1 install epel-release
-  yum -y -d 1 install --enablerepo=epel docker make git
+  yum install -d1 -y yum-utils device-mapper-persistent-data lvm2
+  yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  yum install -d1 -y docker-ce \
+    git \
+    make
   systemctl start docker
 
   # Login to quay.io
