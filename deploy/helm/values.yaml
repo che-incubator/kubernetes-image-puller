@@ -1,7 +1,6 @@
 appName: kubernetes-image-puller
 image: 
-  #repository: quay.io/eclipse/kubernetes-image-puller
-  repository: quay.io/crw/imagepuller-rhel8
+  repository: quay.io/eclipse/kubernetes-image-puller
   tag: latest
 serviceAccount:
   name: k8s-image-puller

@@ -21,15 +21,9 @@ objects:
 parameters:
 - name: IMAGES
   value: >
-      che-java-sidecar=quay.io/eclipse/che-sidecar-java:8-0cfbacb;
-      che-sidecar-dependency-analytics=quay.io/eclipse/che-sidecar-dependency-analytics:0.0.13-a38cb0c;
-      stacks-java-rhel8=quay.io/crw/stacks-java-rhel8@sha256:db19cfebe33f0fbc1307d95a1700366fcb5fc869486fda6f0023bc059474c7c5;
-      ms-vscode-go=quay.io/eclipse/che-sidecar-go:1.12.9-304cd66;
-      che-theia=quay.io/eclipse/che-theia:7.9.1;
-      stacks-golang=quay.io/crw/stacks-golang-rhel8@sha256:f46f852c9cb50856b30161377b5fc7c5b2d388df5e68204304b654d244dc4f96;
-      pluginbroker-metadata=quay.io/crw/pluginbroker-metadata-rhel8:2.1;
-      pluginbroker-artifacts-rhel8:2.1;
-      che-jwtproxy=quay.io/crw/jwtproxy-rhel8:2.1;
+      java11-maven=quay.io/eclipse/che-java11-maven:nightly;
+      che-theia=eclipse/che-theia:next;
+      java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
 - name: DAEMONSET_NAME
   value: "kubernetes-image-puller"
 - name: CACHING_INTERVAL_HOURS
