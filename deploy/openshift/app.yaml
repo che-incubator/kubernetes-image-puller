@@ -36,6 +36,6 @@ parameters:
 - name: SERVICEACCOUNT_NAME
   value: k8s-image-puller
 - name: IMAGE
-  value: quay.io/eclipse/kubernetes-image-puller
+  value: quay.io/crw/imagepuller-rhel8
 - name: IMAGE_TAG
-  value: latest
+  value: '2.1'
