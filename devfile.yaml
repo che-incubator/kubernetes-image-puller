@@ -6,7 +6,7 @@ projects:
       location: 'https://github.com/che-incubator/kubernetes-image-puller.git'
       type: git
       branch: master
-    clonePath: src/github.com/redhat-developer/kubernetes-image-puller
+    clonePath: src/github.com/che-incubator/kubernetes-image-puller
 attributes:
   persistVolumes: 'false'
 components:
