@@ -1,5 +1,5 @@
 metadata:
-  name: kubernetes-image-puller
+  generateName: kubernetes-image-puller-
 projects:
   - name: kubernetes-image-puller
     source:
