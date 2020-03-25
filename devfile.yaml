@@ -1,0 +1,40 @@
+metadata:
+  generateName: kubernetes-image-puller-
+projects:
+  - name: kubernetes-image-puller
+    source:
+      location: 'https://github.com/che-incubator/kubernetes-image-puller.git'
+      type: git
+      branch: master
+attributes:
+  persistVolumes: 'false'
+components:
+  - id: ms-vscode/go/latest
+    memoryLimit: 512Mi
+    preferences:
+      go.lintTool: golangci-lint
+      go.lintFlags: '--fast'
+    type: chePlugin
+    alias: go-plugin
+  - mountSources: true
+    endpoints:
+      - name: 8080/tcp
+        port: 8080
+    memoryLimit: 2Gi
+    type: dockerimage
+    image: 'quay.io/eclipse/che-golang-1.12:nightly'
+    alias: go-cli
+    env:
+      - value: '/go:$(CHE_PROJECTS_ROOT)'
+        name: GOPATH
+      - value: /tmp/.cache
+        name: GOCACHE
+apiVersion: 1.0.0
+commands:
+  - name: build kubernetes-image-puller
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/kubernetes-image-puller'
+        type: exec
+        command: go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
+        component: go-cli
+
