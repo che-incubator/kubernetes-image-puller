@@ -9,16 +9,14 @@
 #   Red Hat, Inc. - initial API and implementation
 #
 
-# NOTE: using registry.access.redhat.com/rhel8/go-toolset does not work (user is requested to use registry.redhat.io)
-# NOTE: using registry.redhat.io/rhel8/go-toolset requires login, which complicates automation
-# https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/devtools/go-toolset-rhel7
-FROM registry.access.redhat.com/devtools/go-toolset-rhel7:1.12.12-4 as builder
+# https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8/go-toolset
+FROM registry.access.redhat.com/ubi8/go-toolset:1.13.4 as builder
+ENV PATH=/opt/rh/go-toolset-1.13/root/usr/bin:$PATH \
+    GO111MODULE=on
 
 ARG BOOTSTRAP=true
 ENV BOOTSTRAP=${BOOTSTRAP}
 
-ENV PATH=/opt/rh/go-toolset-1.12/root/usr/bin:$PATH \
-    GO111MODULE=on
 
 USER root
 
@@ -41,7 +39,7 @@ RUN adduser appuser && \
     make build 
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8-minimal
-FROM registry.access.redhat.com/ubi8-minimal:8.1-398
+FROM registry.access.redhat.com/ubi8-minimal:8.2-267
 USER root
 # CRW-528 copy actual cert
 COPY --from=builder /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/pki/ca-trust/extracted/pem/
