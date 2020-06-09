@@ -8,10 +8,12 @@ configMap:
   name: k8s-image-puller
   images: >
     java11-maven=quay.io/eclipse/che-java11-maven:nightly;
-    che-theia=eclipse/che-theia:next;
+    che-theia=quay.io/eclipse/che-theia:next;
     java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
   cachingIntervalHours: 1
   cachingMemoryRequest: "10Mi"
   cachingMemoryLimit: "20Mi"
+  cachingCpuRequest: ".05"
+  cachingCpuLimit: ".2"
   nodeSelector: "{}"
 

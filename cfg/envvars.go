@@ -28,6 +28,8 @@ const (
 	imagesEnvVar            = "IMAGES"
 	cachingMemRequestEnvVar = "CACHING_MEMORY_REQUEST"
 	cachingMemLimitEnvVar   = "CACHING_MEMORY_LIMIT"
+	cachingCpuRequestEnvVar = "CACHING_CPU_REQUEST"
+	cachingCpuLimitEnvVar   = "CACHING_CPU_LIMIT"
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
 )
 
@@ -38,6 +40,8 @@ const (
 	defaultCachingMemRequest = "1Mi"
 	defaultCachingMemLimit   = "5Mi"
 	defaultCachingInterval   = 1
+	defaultCachingCpuRequest = ".05"
+	defaultCachingCpuLimit   = ".2"
 	defaultNodeSelector      = "{}"
 )
 

@@ -31,6 +31,8 @@ func TestEnvVars(t *testing.T) {
 				},
 				CachingMemRequest: "1Mi",
 				CachingMemLimit:   "5Mi",
+				CachingCpuRequest: ".05",
+				CachingCpuLimit:   ".2",
 				CachingInterval:   5,
 				NodeSelector:      map[string]string{},
 			},
@@ -38,9 +40,10 @@ func TestEnvVars(t *testing.T) {
 		{
 			name: "overrides",
 			env: map[string]string{
-				"DAEMONSET_NAME": "custom-daemonset-name",
-				"NAMESPACE":      "my-namespace",
-				"NODE_SELECTOR":  "{\"type\": \"compute\"}",
+				"DAEMONSET_NAME":      "custom-daemonset-name",
+				"NAMESPACE":           "my-namespace",
+				"NODE_SELECTOR":       "{\"type\": \"compute\"}",
+				"CACHING_CPU_REQUEST": ".055",
 			},
 			want: Config{
 				DaemonsetName: "custom-daemonset-name",
@@ -50,6 +53,8 @@ func TestEnvVars(t *testing.T) {
 				},
 				CachingMemRequest: "1Mi",
 				CachingMemLimit:   "5Mi",
+				CachingCpuRequest: ".055",
+				CachingCpuLimit:   ".2",
 				CachingInterval:   5,
 				NodeSelector: map[string]string{
 					"type": "compute",

@@ -18,6 +18,8 @@ type Config struct {
 	Images            map[string]string
 	CachingMemRequest string
 	CachingMemLimit   string
+	CachingCpuRequest string
+	CachingCpuLimit   string
 	CachingInterval   int
 	NodeSelector      map[string]string
 }
@@ -30,6 +32,8 @@ func GetConfig() Config {
 		CachingInterval:   getCachingInterval(),
 		CachingMemRequest: getEnvVarOrDefault(cachingMemRequestEnvVar, defaultCachingMemRequest),
 		CachingMemLimit:   getEnvVarOrDefault(cachingMemLimitEnvVar, defaultCachingMemLimit),
+		CachingCpuRequest: getEnvVarOrDefault(cachingCpuRequestEnvVar, defaultCachingCpuRequest),
+		CachingCpuLimit:   getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
 		NodeSelector:      processNodeSelectorEnvVar(),
 	}
 }

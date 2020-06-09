@@ -10,14 +10,18 @@ import (
 )
 
 var (
-	defaultLimit                = resource.MustParse("5Mi")
-	defaultRequest              = resource.MustParse("1Mi")
+	defaultMemoryLimit          = resource.MustParse("5Mi")
+	defaultMemoryRequest        = resource.MustParse("1Mi")
+	defaultCpuLimit             = resource.MustParse(".2")
+	defaultCpuRequest           = resource.MustParse(".05")
 	defaultResourceRequirements = corev1.ResourceRequirements{
 		Limits: corev1.ResourceList{
-			"memory": defaultLimit,
+			"memory": defaultMemoryLimit,
+			"cpu":    defaultCpuLimit,
 		},
 		Requests: corev1.ResourceList{
-			"memory": defaultRequest,
+			"memory": defaultMemoryRequest,
+			"cpu":    defaultCpuRequest,
 		},
 	}
 

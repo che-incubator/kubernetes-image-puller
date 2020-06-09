@@ -193,9 +193,11 @@ func getContainers() []corev1.Container {
 	cachedImageResources := corev1.ResourceRequirements{
 		Limits: corev1.ResourceList{
 			"memory": resource.MustParse(cfg.CachingMemLimit),
+			"cpu":    resource.MustParse(cfg.CachingCpuLimit),
 		},
 		Requests: corev1.ResourceList{
 			"memory": resource.MustParse(cfg.CachingMemRequest),
+			"cpu":    resource.MustParse(cfg.CachingCpuRequest),
 		},
 	}
 
