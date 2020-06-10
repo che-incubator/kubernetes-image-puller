@@ -3,10 +3,12 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.configMap.name }}
 data:
-  IMAGES: {{ .Values.configMap.images }}
+  IMAGES: "{{ .Values.configMap.images }}"
   DAEMONSET_NAME: "kubernetes-image-puller"
   CACHING_INTERVAL_HOURS: "{{ .Values.configMap.cachingIntervalHours }}"
-  NAMESPACE: {{ .Release.Namespace }}
-  CACHING_MEMORY_REQUEST: {{ .Values.configMap.cachingMemoryRequest }}
-  CACHING_MEMORY_LIMIT:  {{ .Values.configMap.cachingMemoryLimit }}
+  NAMESPACE: "{{ .Release.Namespace }}"
+  CACHING_MEMORY_REQUEST: "{{ .Values.configMap.cachingMemoryRequest }}"
+  CACHING_MEMORY_LIMIT: "{{ .Values.configMap.cachingMemoryLimit }}"
+  CACHING_CPU_REQUEST: "{{ .Values.configMap.cachingCpuRequest }}"
+  CACHING_CPU_LIMIT: "{{ .Values.configMap.cachingCpuLimit }}"
   NODE_SELECTOR: "{{ .Values.configMap.nodeSelector }}"
