@@ -36,7 +36,7 @@ function install_deps() {
 
 function build() {
   LOCAL_IMAGE_NAME="kubernetes-image-puller"
-  docker build -t ${LOCAL_IMAGE_NAME} -f ./docker/centos.Dockerfile .
+  docker build -t ${LOCAL_IMAGE_NAME} -f ./docker/Dockerfile .
 }
 
 
