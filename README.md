@@ -22,7 +22,8 @@ The config values to be set are:
 | `CACHING_CPU_REQUEST` | The CPU request for each cached image when the puller is running | `.05` or 50 millicores |
 | `CACHING_CPU_LIMIT` | The CPU limit for each cached image when the puller is running | `.2` or 200 millicores |
 | `DAEMONSET_NAME`         | Name of daemonset to be created | `kubernetes-image-puller` |
-| `NAMESPACE`              | Namespace where daemonset is to be created | `k8s-image-puller` |
+| `DEPLOYMENT_NAME`        | Name of the deployment to be created | `kubernetes-image-puller` |
+| `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
 
@@ -32,7 +33,7 @@ The following values can be set:
 
 | Value                            | Usage                                                        | Default                                               |
 | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
-| `appName`                        | The value of `DAEMONSET_NAME` to be set in the ConfigMap     | `kubernetes-image-puller`                             |
+| `appName`                        | The value of `DAEMONSET_NAME` and `DEPLOYMENT_NAME` to be set in the ConfigMap     | `kubernetes-image-puller`                             |
 | `image.repository`               | The repository to pull the image from                        | `quay.io/eclpise/kubernetes-image-puller`             |
 | `image.tag`                      | The image tag to pull                                        | `latest`                                              |
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
@@ -55,6 +56,7 @@ The following values can be set:
 | `IMAGE`                           | Name of image used for main pod | `quay.io/eclpise/kubernetes-image-puller` |
 | `IMAGE_TAG`                       | Tag of image used for main pod | `latest` |
 | `DAEMONSET_NAME` | The value of `DAEMONSET_NAME` to be set in the ConfigMap | `"kubernetes-image-puller"` |
+| `DEPLOYMENT_NAME` | The value of `DEPLOYMENT_NAME` to be set in the ConfigMap | `"kubernetes-image-puller"` |
 | `CACHING_INTERVAL_HOURS` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"` |
 | `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"` |
 | `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"` |
@@ -64,7 +66,7 @@ The following values can be set:
 
 ### Installation - Helm
 
-`kubectl create namespace k8s-image-puller`
+`kubectl create namespace kubernetes-image-puller`
 
 `helm install kubernetes-image-puller -n k8s-image-puller deploy/helm`
 

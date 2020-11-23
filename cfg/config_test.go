@@ -24,8 +24,9 @@ func TestEnvVars(t *testing.T) {
 			name: "default",
 			env:  map[string]string{},
 			want: Config{
-				DaemonsetName: "kubernetes-image-puller",
-				Namespace:     "k8s-image-puller",
+				DeploymentName: "kubernetes-image-puller",
+				DaemonsetName:  "kubernetes-image-puller",
+				Namespace:      "k8s-image-puller",
 				Images: map[string]string{
 					"che-theia": "quay.io/eclipse/che-theia:nightly",
 				},
@@ -46,8 +47,9 @@ func TestEnvVars(t *testing.T) {
 				"CACHING_CPU_REQUEST": ".055",
 			},
 			want: Config{
-				DaemonsetName: "custom-daemonset-name",
-				Namespace:     "my-namespace",
+				DeploymentName: "kubernetes-image-puller",
+				DaemonsetName:  "custom-daemonset-name",
+				Namespace:      "my-namespace",
 				Images: map[string]string{
 					"che-theia": "quay.io/eclipse/che-theia:nightly",
 				},

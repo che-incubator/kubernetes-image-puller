@@ -1,24 +1,24 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: {{ .Values.appName }}
+  name: {{ .Values.deploymentName }}
   labels:
-    app: {{ .Values.appName }}
+    app: {{ .Values.deploymentName }}
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app:  {{ .Values.appName }}
+      app:  {{ .Values.deploymentName }}
   strategy:
     type: "Recreate"
   template:
     metadata:
       labels:
-        app: {{ .Values.appName }}
+        app: {{ .Values.deploymentName }}
     spec:
       containers:
-      - name: {{ .Values.appName }}
+      - name: {{ .Values.deploymentName }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
         envFrom:

@@ -42,11 +42,32 @@ func watchDaemonset(clientset *kubernetes.Clientset) watch.Interface {
 	return watch
 }
 
-func getDaemonset() *appsv1.DaemonSet {
+func getImagePullerDeployment(clientset *kubernetes.Clientset) *appsv1.Deployment {
+	cfg := cfg.GetConfig()
+	deployment, err := clientset.AppsV1().Deployments(cfg.Namespace).Get(cfg.DeploymentName, metav1.GetOptions{})
+	if err != nil {
+		log.Fatalf("Failed to get Deployment: %v", err)
+	}
+	return deployment
+}
+
+func getOwnerReferenceFromDeployment(deployment *appsv1.Deployment) metav1.OwnerReference {
+	return metav1.OwnerReference{
+		APIVersion: "apps/v1",
+		Kind:       "Deployment",
+		Name:       deployment.Name,
+		UID:        deployment.UID,
+	}
+}
+
+func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 	cfg := cfg.GetConfig()
 	return &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: cfg.DaemonsetName,
+			OwnerReferences: []metav1.OwnerReference{
+				getOwnerReferenceFromDeployment(deployment),
+			},
 		},
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
@@ -75,7 +96,8 @@ func getDaemonset() *appsv1.DaemonSet {
 // until daemonset is ready.
 func createDaemonset(clientset *kubernetes.Clientset) error {
 	cfg := cfg.GetConfig()
-	toCreate := getDaemonset()
+	thisDeployment := getImagePullerDeployment(clientset)
+	toCreate := getDaemonset(thisDeployment)
 	dsWatch := watchDaemonset(clientset)
 	defer dsWatch.Stop()
 	watchChan := dsWatch.ResultChan()

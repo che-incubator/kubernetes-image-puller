@@ -14,6 +14,7 @@ package cfg
 
 type Config struct {
 	DaemonsetName     string
+	DeploymentName    string
 	Namespace         string
 	Images            map[string]string
 	CachingMemRequest string
@@ -27,6 +28,7 @@ type Config struct {
 func GetConfig() Config {
 	return Config{
 		DaemonsetName:     getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName),
+		DeploymentName:    getEnvVarOrDefault(deploymentNameEnvVar, defaultDeploymentName),
 		Namespace:         getEnvVarOrDefault(namespaceEnvVar, defaultNamespace),
 		Images:            processImagesEnvVar(),
 		CachingInterval:   getCachingInterval(),

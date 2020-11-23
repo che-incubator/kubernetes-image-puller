@@ -9,8 +9,8 @@ objects:
   apiVersion: apps/v1
   metadata:
     labels:
-      app: kubernetes-image-puller
-    name: kubernetes-image-puller
+      app: ${DEPLOYMENT_NAME}
+    name: ${DEPLOYMENT_NAME}
   spec:
     replicas: 1
     revisionHistoryLimit: 2
@@ -22,7 +22,7 @@ objects:
     template:
       metadata:
         labels:
-          app: kubernetes-image-puller
+          app: ${DEPLOYMENT_NAME}
       spec:
         containers:
         - name: kubernetes-image-puller
@@ -33,6 +33,8 @@ objects:
               name: k8s-image-puller
         serviceAccountName: ${SERVICEACCOUNT_NAME}
 parameters:
+- name: DEPLOYMENT_NAME
+  value: kubernetes-image-puller
 - name: SERVICEACCOUNT_NAME
   value: k8s-image-puller
 - name: IMAGE

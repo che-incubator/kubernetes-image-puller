@@ -23,6 +23,7 @@ import (
 // Env vars used for configuration
 const (
 	intervalEnvVar          = "CACHING_INTERVAL_HOURS"
+	deploymentNameEnvVar    = "DEPLOYMENT_NAME"
 	daemonsetNameEnvVar     = "DAEMONSET_NAME"
 	namespaceEnvVar         = "NAMESPACE"
 	imagesEnvVar            = "IMAGES"
@@ -35,6 +36,7 @@ const (
 
 // Default values where applicable
 const (
+	defaultDeploymentName    = "kubernetes-image-puller"
 	defaultDaemonsetName     = "kubernetes-image-puller"
 	defaultNamespace         = "k8s-image-puller"
 	defaultCachingMemRequest = "1Mi"
