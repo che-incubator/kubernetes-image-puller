@@ -22,7 +22,6 @@ The config values to be set are:
 | `CACHING_CPU_REQUEST` | The CPU request for each cached image when the puller is running | `.05` or 50 millicores |
 | `CACHING_CPU_LIMIT` | The CPU limit for each cached image when the puller is running | `.2` or 200 millicores |
 | `DAEMONSET_NAME`         | Name of daemonset to be created | `kubernetes-image-puller` |
-| `DEPLOYMENT_NAME`        | Name of the deployment to be created | `kubernetes-image-puller` |
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
@@ -33,7 +32,7 @@ The following values can be set:
 
 | Value                            | Usage                                                        | Default                                               |
 | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
-| `appName`                        | The value of `DAEMONSET_NAME` and `DEPLOYMENT_NAME` to be set in the ConfigMap     | `kubernetes-image-puller`                             |
+| `deploymentName`                 | The value of `DAEMONSET_NAME` to be set in the ConfigMap, as well as the name of the deployment     | `kubernetes-image-puller`                             |
 | `image.repository`               | The repository to pull the image from                        | `quay.io/eclpise/kubernetes-image-puller`             |
 | `image.tag`                      | The image tag to pull                                        | `latest`                                              |
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
