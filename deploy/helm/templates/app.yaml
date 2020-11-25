@@ -21,6 +21,9 @@ spec:
       - name: {{ .Values.deploymentName }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: IfNotPresent
+        env:
+        - name: DEPLOYMENT_NAME
+          value: {{ .Values.deploymentName }}
         envFrom:
         - configMapRef:
             name: {{ .Values.configMap.name }}

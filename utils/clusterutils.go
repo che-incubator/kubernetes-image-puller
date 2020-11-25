@@ -44,7 +44,7 @@ func watchDaemonset(clientset *kubernetes.Clientset) watch.Interface {
 
 func getImagePullerDeployment(clientset *kubernetes.Clientset) *appsv1.Deployment {
 	cfg := cfg.GetConfig()
-	deployment, err := clientset.AppsV1().Deployments(cfg.Namespace).Get(cfg.DeploymentName, metav1.GetOptions{})
+	deployment, err := clientset.AppsV1().Deployments(cfg.Namespace).Get("kubernetes-image-puller", metav1.GetOptions{})
 	if err != nil {
 		log.Fatalf("Failed to get Deployment: %v", err)
 	}

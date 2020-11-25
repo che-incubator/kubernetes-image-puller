@@ -20,15 +20,12 @@ objects:
     CACHING_CPU_REQUEST: ${CACHING_CPU_REQUEST}
     CACHING_CPU_LIMIT: ${CACHING_CPU_LIMIT}
     NODE_SELECTOR: ${NODE_SELECTOR}
-    DEPLOYMENT_NAME: ${DEPLOYMENT_NAME}
 parameters:
 - name: IMAGES
   value: >
       java11-maven=quay.io/eclipse/che-java11-maven:nightly;
-      che-theia=eclipse/che-theia:next;
+      che-theia=quay.io/eclipse/che-theia:next;
       java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
-- name: DEPLOYMENT_NAME
-  value: "kubernetes-image-puller"
 - name: DAEMONSET_NAME
   value: "kubernetes-image-puller"
 - name: CACHING_INTERVAL_HOURS

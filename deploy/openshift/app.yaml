@@ -9,7 +9,7 @@ objects:
   apiVersion: apps/v1
   metadata:
     labels:
-      app: ${DEPLOYMENT_NAME}
+      app: kubernetes-image-puller
     name: ${DEPLOYMENT_NAME}
   spec:
     replicas: 1
@@ -22,12 +22,15 @@ objects:
     template:
       metadata:
         labels:
-          app: ${DEPLOYMENT_NAME}
+          app: kubernetes-image-puller
       spec:
         containers:
         - name: kubernetes-image-puller
           image: ${IMAGE}:${IMAGE_TAG}
           imagePullPolicy: IfNotPresent
+          env:
+          - name: DEPLOYMENT_NAME
+            value: ${DEPLOYMENT_NAME}
           envFrom:
           - configMapRef:
               name: k8s-image-puller

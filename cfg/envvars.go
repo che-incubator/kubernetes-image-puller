@@ -23,7 +23,6 @@ import (
 // Env vars used for configuration
 const (
 	intervalEnvVar          = "CACHING_INTERVAL_HOURS"
-	deploymentNameEnvVar    = "DEPLOYMENT_NAME"
 	daemonsetNameEnvVar     = "DAEMONSET_NAME"
 	namespaceEnvVar         = "NAMESPACE"
 	imagesEnvVar            = "IMAGES"
