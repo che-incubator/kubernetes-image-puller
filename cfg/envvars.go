@@ -35,6 +35,7 @@ const (
 
 // Default values where applicable
 const (
+	defaultDeploymentName    = "kubernetes-image-puller"
 	defaultDaemonsetName     = "kubernetes-image-puller"
 	defaultNamespace         = "k8s-image-puller"
 	defaultCachingMemRequest = "1Mi"

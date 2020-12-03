@@ -10,7 +10,7 @@ objects:
   metadata:
     labels:
       app: kubernetes-image-puller
-    name: kubernetes-image-puller
+    name: ${DEPLOYMENT_NAME}
   spec:
     replicas: 1
     revisionHistoryLimit: 2
@@ -28,11 +28,16 @@ objects:
         - name: kubernetes-image-puller
           image: ${IMAGE}:${IMAGE_TAG}
           imagePullPolicy: IfNotPresent
+          env:
+          - name: DEPLOYMENT_NAME
+            value: ${DEPLOYMENT_NAME}
           envFrom:
           - configMapRef:
               name: k8s-image-puller
         serviceAccountName: ${SERVICEACCOUNT_NAME}
 parameters:
+- name: DEPLOYMENT_NAME
+  value: kubernetes-image-puller
 - name: SERVICEACCOUNT_NAME
   value: k8s-image-puller
 - name: IMAGE
