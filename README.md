@@ -55,7 +55,7 @@ The following values can be set:
 | `IMAGE`                           | Name of image used for main pod | `quay.io/eclpise/kubernetes-image-puller` |
 | `IMAGE_TAG`                       | Tag of image used for main pod | `latest` |
 | `DAEMONSET_NAME` | The value of `DAEMONSET_NAME` to be set in the ConfigMap | `"kubernetes-image-puller"` |
-| `DEPLOYMENT_NAME` | The value of `DEPLOYMENT_NAME` to be set in the ConfigMap | `"kubernetes-image-puller"` |
+| `DEPLOYMENT_NAME` | The name of the image puller deployment | `"kubernetes-image-puller"` |
 | `CACHING_INTERVAL_HOURS` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"` |
 | `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"` |
 | `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"` |
