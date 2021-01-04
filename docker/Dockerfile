@@ -39,7 +39,7 @@ RUN adduser appuser && \
     make build 
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8-minimal
-FROM registry.access.redhat.com/ubi8-minimal:8.2-345
+FROM registry.access.redhat.com/ubi8-minimal:8.3-230
 USER root
 # CRW-528 copy actual cert
 COPY --from=builder /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/pki/ca-trust/extracted/pem/
