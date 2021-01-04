@@ -11,7 +11,7 @@
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8/go-toolset
 FROM registry.access.redhat.com/ubi8/go-toolset:1.14.12-5 as builder
-ENV PATH=/opt/rh/go-toolset-1.13/root/usr/bin:$PATH \
+ENV PATH=/opt/rh/go-toolset-1.14/root/usr/bin:$PATH \
     GO111MODULE=on
 
 ARG BOOTSTRAP=true
