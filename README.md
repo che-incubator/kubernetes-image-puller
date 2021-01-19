@@ -1,7 +1,7 @@
 [![master](https://ci.centos.org/buildStatus/icon?subject=master&job=devtools-che-incubator-kubernetes-image-puller-build-master/)](https://ci.centos.org/job/devtools-che-incubator-kubernetes-image-puller-build-master/)
 [![nightly](https://ci.centos.org/buildStatus/icon?subject=nightly&job=devtools-kubernetes-image-puller-nightly/)](https://ci.centos.org/job/devtools-kubernetes-image-puller-nightly/)
 
-[![Contribute](https://camo.githubusercontent.com/7ca4f6be43fb5eb61a73ba6d40b3481d93ef5813/68747470733a2f2f6368652e6f70656e73686966742e696f2f666163746f72792f7265736f75726365732f666163746f72792d636f6e747269627574652e737667)](https://che.openshift.io/f?url=https://github.com/che-incubator/kubernetes-image-puller)
+[![Contribute](https://www.eclipse.org/che/contribute.svg)](https://che.openshift.io/f?url=https://github.com/che-incubator/kubernetes-image-puller)
 
 ## Requirements
 This is an upstream version of the [kubernetes-image-puller](https://github.com/redhat-developer/kubernetes-image-puller).  Where the downstream puller requires integrations with [fabric-oso-proxy](https://github.com/fabric8-services/fabric8-oso-proxy) and [fabric8-auth](https://github.com/fabric8-services/fabric8-auth), and impersonates users in multiple clusters, this application is meant to run on a single cluster, and pre-pull Eclipse Che images.
