@@ -39,5 +39,6 @@ if [[ "${BASEBRANCH}" != "${BRANCH}" ]]; then
       git branch "${BRANCH}"
     fi
   }
+  git pull origin "${BRANCH}" || true
   git push origin "${BRANCH}"
 fi
