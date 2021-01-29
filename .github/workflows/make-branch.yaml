@@ -6,6 +6,12 @@ on:
       branch:
         description: 'The branch to create. Should be in format 7.yy.x'
         required: true
+      branchfrom:
+        description: 'The source branch from which to branch, eg., main'
+        default: 'master'
+      forceflag:
+        description: 'To force creation of .x branch, use --force flag here'
+        default: ''
 jobs:
   build:
     name: Create branch
@@ -18,4 +24,4 @@ jobs:
           git config --global user.name "Mykhailo Kuznietsov"
           git config --global user.email "mkuznets@redhat.com"
           export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          .github/bin/make-branch.sh --branch ${{ github.event.inputs.branch }}
+          .github/bin/make-branch.sh --branch ${{ github.event.inputs.branch }} --branchfrom ${{ github.event.inputs.branchfrom }} ${{ github.event.inputs.forceflag }}
