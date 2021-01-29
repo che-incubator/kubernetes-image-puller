@@ -1,0 +1,21 @@
+name: Create branch
+on:
+  # to be run once every 3 weeks for a 7.yy.0 release, so we can get a stable 7.yy.x branch for use by downstream consumers
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'The branch to create. Should be in format 7.yy.x'
+        required: true
+jobs:
+  build:
+    name: Create branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create branch
+        run: |
+          git config --global user.name "Mykhailo Kuznietsov"
+          git config --global user.email "mkuznets@redhat.com"
+          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          .github/bin/make-branch.sh --branch ${{ github.event.inputs.branch }}
