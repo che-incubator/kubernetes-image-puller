@@ -22,6 +22,7 @@ type Config struct {
 	CachingCpuLimit   string
 	CachingInterval   int
 	NodeSelector      map[string]string
+	ImagePullSecrets  []string
 }
 
 func GetConfig() Config {
@@ -35,5 +36,6 @@ func GetConfig() Config {
 		CachingCpuRequest: getEnvVarOrDefault(cachingCpuRequestEnvVar, defaultCachingCpuRequest),
 		CachingCpuLimit:   getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
 		NodeSelector:      processNodeSelectorEnvVar(),
+		ImagePullSecrets:  processImagePullSecretsEnvVar(),
 	}
 }

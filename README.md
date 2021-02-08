@@ -25,6 +25,7 @@ The config values to be set are:
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
+| `IMAGE_PULL_SECRETS` | List of image pull secrets, in the format `pullsecret1;...` to add to pods created by the daemonset       | `""` |
 
 ### Configuration - Helm 
 
@@ -44,6 +45,7 @@ The following values can be set:
 | `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05`                                                 |
 | `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap  | `.2`                                                  |
 | `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
+| `configMap.imagePullSecrets` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 
 ### Configuration - Openshift
 
@@ -62,6 +64,7 @@ The following values can be set:
 | `CACHING_CPU_REQUEST` | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05` |
 | `CACHING_CPU_LIMIT` | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap | `.2` |
 | `NODE_SELECTOR` | The value of `NODE_SELECTOR` to be set in the ConfigMap | `"{}"` |
+| `IMAGE_PULL_SECRETS` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 
 ### Installation - Helm
 

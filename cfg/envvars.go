@@ -31,6 +31,7 @@ const (
 	cachingCpuRequestEnvVar = "CACHING_CPU_REQUEST"
 	cachingCpuLimitEnvVar   = "CACHING_CPU_LIMIT"
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
+	imagePullSecretsEnvVar  = "IMAGE_PULL_SECRETS"
 )
 
 // Default values where applicable
@@ -44,6 +45,7 @@ const (
 	defaultCachingCpuRequest = ".05"
 	defaultCachingCpuLimit   = ".2"
 	defaultNodeSelector      = "{}"
+	defaultImagePullSecret   = ""
 )
 
 func getCachingInterval() int {
@@ -94,6 +96,21 @@ func processNodeSelectorEnvVar() map[string]string {
 		log.Fatalf("Failed to unmarshal node selector json: %s", err)
 	}
 	return nodeSelector
+}
+
+func processImagePullSecretsEnvVar() []string {
+	rawImagePullSecrets := getEnvVarOrDefault(imagePullSecretsEnvVar, defaultImagePullSecret)
+	rawImagePullSecrets = strings.TrimSpace(rawImagePullSecrets)
+	pullSecrets := strings.Split(rawImagePullSecrets, ";")
+	for i, secret := range pullSecrets {
+		pullSecrets[i] = strings.TrimSpace(secret)
+	}
+	// If last element is empty, remove it
+	if pullSecrets[len(pullSecrets)-1] == "" {
+		pullSecrets = pullSecrets[:len(pullSecrets)-1]
+	}
+
+	return pullSecrets
 }
 
 func getEnvVarOrExit(envVar string) string {
