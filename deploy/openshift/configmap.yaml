@@ -20,6 +20,7 @@ objects:
     CACHING_CPU_REQUEST: ${CACHING_CPU_REQUEST}
     CACHING_CPU_LIMIT: ${CACHING_CPU_LIMIT}
     NODE_SELECTOR: ${NODE_SELECTOR}
+    IMAGE_PULL_SECRETS: ${IMAGE_PULL_SECRETS}
 parameters:
 - name: IMAGES
   value: >
@@ -42,3 +43,5 @@ parameters:
   value: ".2"
 - name: NODE_SELECTOR
   value: "{}"
+- name: IMAGE_PULL_SECRETS
+  value: ""

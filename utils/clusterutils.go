@@ -68,6 +68,14 @@ func getOwnerReferenceFromDeployment(deployment *appsv1.Deployment) metav1.Owner
 
 func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 	cfg := cfg.GetConfig()
+
+	imgPullSecrets := []corev1.LocalObjectReference{}
+	for _, secretName := range cfg.ImagePullSecrets {
+		imgPullSecrets = append(imgPullSecrets, corev1.LocalObjectReference{
+			Name: secretName,
+		})
+	}
+
 	return &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: cfg.DaemonsetName,
@@ -92,6 +100,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					NodeSelector:                  cfg.NodeSelector,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					Containers:                    getContainers(),
+					ImagePullSecrets:              imgPullSecrets,
 				},
 			},
 		},

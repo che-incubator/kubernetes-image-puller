@@ -1,9 +1,10 @@
 package cfg
 
 import (
-	"github.com/google/go-cmp/cmp"
 	"os"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestEnvVars(t *testing.T) {
@@ -35,6 +36,7 @@ func TestEnvVars(t *testing.T) {
 				CachingCpuLimit:   ".2",
 				CachingInterval:   5,
 				NodeSelector:      map[string]string{},
+				ImagePullSecrets:  []string{},
 			},
 		},
 		{
@@ -44,6 +46,7 @@ func TestEnvVars(t *testing.T) {
 				"NAMESPACE":           "my-namespace",
 				"NODE_SELECTOR":       "{\"type\": \"compute\"}",
 				"CACHING_CPU_REQUEST": ".055",
+				"IMAGE_PULL_SECRETS":  "secret1; secret2",
 			},
 			want: Config{
 				DaemonsetName: "custom-daemonset-name",
@@ -59,6 +62,7 @@ func TestEnvVars(t *testing.T) {
 				NodeSelector: map[string]string{
 					"type": "compute",
 				},
+				ImagePullSecrets: []string{"secret1", "secret2"},
 			},
 		},
 	}

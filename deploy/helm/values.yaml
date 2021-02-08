@@ -16,4 +16,4 @@ configMap:
   cachingCpuRequest: ".05"
   cachingCpuLimit: ".2"
   nodeSelector: "{}"
-
+  imagePullSecrets: ""
