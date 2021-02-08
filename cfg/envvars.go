@@ -34,6 +34,7 @@ const (
 	cachingCpuLimitEnvVar   = "CACHING_CPU_LIMIT"
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
 	affinityEnvVar          = "AFFINITY"
+	imagePullSecretsEnvVar  = "IMAGE_PULL_SECRETS"
 )
 
 // Default values where applicable
@@ -48,6 +49,7 @@ const (
 	defaultCachingCpuLimit   = ".2"
 	defaultNodeSelector      = "{}"
 	defaultAffinity          = "{}"
+	defaultImagePullSecret   = ""
 )
 
 func getCachingInterval() int {
@@ -107,6 +109,21 @@ func processAffinityEnvVar() *corev1.Affinity {
 		log.Fatalf("Failed to unmarshal affinity json: %s", err)
 	}
 	return affinity
+}
+
+func processImagePullSecretsEnvVar() []string {
+	rawImagePullSecrets := getEnvVarOrDefault(imagePullSecretsEnvVar, defaultImagePullSecret)
+	rawImagePullSecrets = strings.TrimSpace(rawImagePullSecrets)
+	pullSecrets := strings.Split(rawImagePullSecrets, ";")
+	for i, secret := range pullSecrets {
+		pullSecrets[i] = strings.TrimSpace(secret)
+	}
+	// If last element is empty, remove it
+	if pullSecrets[len(pullSecrets)-1] == "" {
+		pullSecrets = pullSecrets[:len(pullSecrets)-1]
+	}
+
+	return pullSecrets
 }
 
 func getEnvVarOrExit(envVar string) string {
