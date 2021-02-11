@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/bash -xe
 # Release process automation script. 
 # Used to create a branch
 BASEBRANCH=main
 FORCENEWBRANCH=0 # unless forced, don't create a new branch if one already exists. Use with caution!
+REPO=git@github.com:che-incubator/kubernetes-image-puller.git
 
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -30,15 +31,12 @@ fi
 # create new branch off ${BASEBRANCH} (recreate only if --force'd)
 if [[ "${BASEBRANCH}" != "${BRANCH}" ]]; then
   git fetch
+  git branch -D "${BRANCH}" || true
   git checkout "${BASEBRANCH}" || true
-  git branch --set-upstream-to="origin/${BRANCH}" "${BRANCH}" -q || { 
-    if [[ ${FORCENEWBRANCH} -eq 0 ]]; then 
-      echo "[INFO] Branch ${BRANCH} already exists: nothing to do!"
-    else 
-      echo "[INFO] Branch ${BRANCH} already exists: deleting and recreating branch"
-      git push origin ":${BRANCH}"
-      git branch "${BRANCH}"
-      git push origin "${BRANCH}"
-    fi
-  }
+  # if branch exists and FORCENEWBRANCH true, delete from remote before creating new branch
+  if [[ $(git ls-remote --heads ${REPO} "refs/heads/${BRANCH}" || true) != "" ]] && [[ ${FORCENEWBRANCH} -eq 1 ]]; then
+    git push origin ":${BRANCH}"
+  fi
+  git branch "${BRANCH}"
+  git push origin "${BRANCH}"
 fi
