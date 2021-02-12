@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	v1 "k8s.io/api/core/v1"
 )
 
 func TestEnvVars(t *testing.T) {
@@ -36,7 +37,7 @@ func TestEnvVars(t *testing.T) {
 				CachingCpuLimit:   ".2",
 				CachingInterval:   5,
 				NodeSelector:      map[string]string{},
-				Affinity:          "{}",
+				Affinity:          &v1.Affinity{},
 			},
 		},
 		{
@@ -46,7 +47,7 @@ func TestEnvVars(t *testing.T) {
 				"NAMESPACE":           "my-namespace",
 				"NODE_SELECTOR":       "{\"type\": \"compute\"}",
 				"CACHING_CPU_REQUEST": ".055",
-				"AFFINITY":            "{\"affinity\":{\"nodeAffinity\":{\"requiredDuringSchedulingIgnoredDuringExecution\":{\"nodeSelectorTerms\":[{\"matchExpressions\":[{\"key\":\"kubernetes.io/e2e-az-name\",\"operator\":\"In\",\"values\":[\"e2e-az1\",\"e2e-az2\"]}]}]}}}}",
+				"AFFINITY":            "{\"nodeAffinity\":{\"requiredDuringSchedulingIgnoredDuringExecution\":{\"nodeSelectorTerms\":[{\"matchExpressions\":[{\"key\":\"kubernetes.io/e2e-az-name\",\"operator\":\"In\",\"values\":[\"e2e-az1\",\"e2e-az2\"]}]}]}}}",
 			},
 			want: Config{
 				DaemonsetName: "custom-daemonset-name",
@@ -62,7 +63,23 @@ func TestEnvVars(t *testing.T) {
 				NodeSelector: map[string]string{
 					"type": "compute",
 				},
-				Affinity: "{\"affinity\":{\"nodeAffinity\":{\"requiredDuringSchedulingIgnoredDuringExecution\":{\"nodeSelectorTerms\":[{\"matchExpressions\":[{\"key\":\"kubernetes.io/e2e-az-name\",\"operator\":\"In\",\"values\":[\"e2e-az1\",\"e2e-az2\"]}]}]}}}}",
+				Affinity: &v1.Affinity{
+					NodeAffinity: &v1.NodeAffinity{
+						RequiredDuringSchedulingIgnoredDuringExecution: &v1.NodeSelector{
+							NodeSelectorTerms: []v1.NodeSelectorTerm{
+								{
+									MatchExpressions: []v1.NodeSelectorRequirement{
+										{
+											Key:      "kubernetes.io/e2e-az-name",
+											Operator: v1.NodeSelectorOpIn,
+											Values:   []string{"e2e-az1", "e2e-az2"},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 	}

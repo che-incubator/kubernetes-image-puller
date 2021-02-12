@@ -18,6 +18,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	corev1 "k8s.io/api/core/v1"
 )
 
 // Env vars used for configuration
@@ -96,6 +98,15 @@ func processNodeSelectorEnvVar() map[string]string {
 		log.Fatalf("Failed to unmarshal node selector json: %s", err)
 	}
 	return nodeSelector
+}
+
+func processAffinityEnvVar() *corev1.Affinity {
+	rawAffinity := getEnvVarOrDefault(affinityEnvVar, defaultAffinity)
+	affinity := &corev1.Affinity{}
+	if err := json.Unmarshal([]byte(rawAffinity), affinity); err != nil {
+		log.Fatalf("Failed to unmarshal affinity json: %s", err)
+	}
+	return affinity
 }
 
 func getEnvVarOrExit(envVar string) string {
