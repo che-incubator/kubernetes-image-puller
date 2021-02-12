@@ -13,6 +13,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -68,6 +69,12 @@ func getOwnerReferenceFromDeployment(deployment *appsv1.Deployment) metav1.Owner
 
 func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 	cfg := cfg.GetConfig()
+
+	affinity := corev1.Affinity{}
+	if err := json.Unmarshal([]byte(cfg.Affinity), &affinity); err != nil {
+		log.Fatalf("Failed to unmarshal affinity json: %s", err)
+	}
+
 	return &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: cfg.DaemonsetName,
@@ -92,6 +99,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					NodeSelector:                  cfg.NodeSelector,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					Containers:                    getContainers(),
+					Affinity:                      &affinity,
 				},
 			},
 		},
