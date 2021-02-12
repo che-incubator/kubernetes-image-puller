@@ -25,6 +25,7 @@ The config values to be set are:
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
+| `AFFINITY` | Affinity applied to pods created by the daemonset       | `'{}'` |
 
 ### Configuration - Helm 
 
@@ -44,6 +45,7 @@ The following values can be set:
 | `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05`                                                 |
 | `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap  | `.2`                                                  |
 | `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
+| `configMap.affinity`         | The value of `AFFINITY` to be set in the ConfigMap      | `"{}"`                                                |
 
 ### Configuration - Openshift
 
@@ -62,6 +64,7 @@ The following values can be set:
 | `CACHING_CPU_REQUEST` | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05` |
 | `CACHING_CPU_LIMIT` | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap | `.2` |
 | `NODE_SELECTOR` | The value of `NODE_SELECTOR` to be set in the ConfigMap | `"{}"` |
+| `AFFINITY` | The value of `AFFINITY` to be set in the ConfigMap | `"{}"` |
 
 ### Installation - Helm
 

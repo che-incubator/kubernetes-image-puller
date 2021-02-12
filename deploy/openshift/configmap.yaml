@@ -42,3 +42,5 @@ parameters:
   value: ".2"
 - name: NODE_SELECTOR
   value: "{}"
+- name: AFFINITY
+  value: "{}"

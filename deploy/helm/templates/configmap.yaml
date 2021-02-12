@@ -12,3 +12,4 @@ data:
   CACHING_CPU_REQUEST: "{{ .Values.configMap.cachingCpuRequest }}"
   CACHING_CPU_LIMIT: "{{ .Values.configMap.cachingCpuLimit }}"
   NODE_SELECTOR: "{{ .Values.configMap.nodeSelector }}"
+  AFFINITY: "{{ .Values.configMap.affinity }}"

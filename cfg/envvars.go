@@ -31,6 +31,7 @@ const (
 	cachingCpuRequestEnvVar = "CACHING_CPU_REQUEST"
 	cachingCpuLimitEnvVar   = "CACHING_CPU_LIMIT"
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
+	affinityEnvVar          = "AFFINITY"
 )
 
 // Default values where applicable
@@ -44,6 +45,7 @@ const (
 	defaultCachingCpuRequest = ".05"
 	defaultCachingCpuLimit   = ".2"
 	defaultNodeSelector      = "{}"
+	defaultAffinity          = "{}"
 )
 
 func getCachingInterval() int {
