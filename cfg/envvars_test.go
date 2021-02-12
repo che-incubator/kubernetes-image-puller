@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/assert"
+	v1 "k8s.io/api/core/v1"
 )
 
 func TestProcessImagesEnvVar(t *testing.T) {
@@ -103,4 +104,63 @@ func TestGetEnvVarOrDefault(t *testing.T) {
 	os.Setenv("DEFINED_ENV_VAR", "foo")
 	assert.Equal(t, getEnvVarOrDefault("DEFINED_ENV_VAR", "bar"), "foo", "When a variable is defined it should return it's set value")
 	assert.Equal(t, getEnvVarOrDefault("UNDEFINED_ENV_VAR", "bar"), "bar", "When a variable is undefined it should return the default value")
+}
+
+func Test_processAffinityEnvVar(t *testing.T) {
+	type testcase struct {
+		name          string
+		affinity      string
+		isAffinitySet bool
+		want          *v1.Affinity
+	}
+
+	tests := []testcase{
+		{
+			name:          "default affinity, AFFINITY set",
+			affinity:      "{}",
+			isAffinitySet: true,
+			want:          &v1.Affinity{},
+		},
+		{
+			name:          "requiredDuringSchedulingIgnoredDuringExecution, AFFINITY set",
+			affinity:      "{\"nodeAffinity\":{\"requiredDuringSchedulingIgnoredDuringExecution\":{\"nodeSelectorTerms\":[{\"matchExpressions\":[{\"key\":\"kubernetes.io/e2e-az-name\",\"operator\":\"In\",\"values\":[\"e2e-az1\",\"e2e-az2\"]}]}]}}}",
+			isAffinitySet: true,
+			want: &v1.Affinity{
+				NodeAffinity: &v1.NodeAffinity{
+					RequiredDuringSchedulingIgnoredDuringExecution: &v1.NodeSelector{
+						NodeSelectorTerms: []v1.NodeSelectorTerm{
+							{
+								MatchExpressions: []v1.NodeSelectorRequirement{
+									{
+										Key:      "kubernetes.io/e2e-az-name",
+										Operator: v1.NodeSelectorOpIn,
+										Values:   []string{"e2e-az1", "e2e-az2"},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name:          "default env var, AFFINITY not set",
+			affinity:      "{\"this\": \"shouldn't be set\"}",
+			isAffinitySet: false,
+			want:          &v1.Affinity{},
+		},
+	}
+	for _, c := range tests {
+		t.Run(c.name, func(t *testing.T) {
+			defer os.Clearenv()
+			if c.isAffinitySet {
+				os.Setenv("AFFINITY", c.affinity)
+			}
+			got := processAffinityEnvVar()
+
+			if d := cmp.Diff(c.want, got); d != "" {
+				t.Errorf("(-want, +got): %s", d)
+			}
+		})
+	}
 }
