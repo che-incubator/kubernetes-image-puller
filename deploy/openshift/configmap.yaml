@@ -20,6 +20,7 @@ objects:
     CACHING_CPU_REQUEST: ${CACHING_CPU_REQUEST}
     CACHING_CPU_LIMIT: ${CACHING_CPU_LIMIT}
     NODE_SELECTOR: ${NODE_SELECTOR}
+    NODE_TOLERATION: ${NODE_TOLERATION}
 parameters:
 - name: IMAGES
   value: >
@@ -42,3 +43,5 @@ parameters:
   value: ".2"
 - name: NODE_SELECTOR
   value: "{}"
+- name: NODE_TOLERATION
+  value: "[]"
