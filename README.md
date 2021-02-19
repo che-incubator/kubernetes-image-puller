@@ -25,7 +25,7 @@ The config values to be set are:
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
-| `NODE_TOLERATION` | Node Toleration applied to pods created by daemonset       | `'[]''` |
+| `NODE_TOLERATION` | Node Toleration applied to pods created by daemonset       | `'[]'` |
 
 ### Configuration - Helm 
 
