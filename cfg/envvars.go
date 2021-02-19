@@ -14,6 +14,7 @@ package cfg
 
 import (
 	"encoding/json"
+	corev1 "k8s.io/api/core/v1"
 	"log"
 	"os"
 	"strconv"
@@ -31,6 +32,7 @@ const (
 	cachingCpuRequestEnvVar = "CACHING_CPU_REQUEST"
 	cachingCpuLimitEnvVar   = "CACHING_CPU_LIMIT"
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
+	nodeTolerationEnvVar    = "NODE_TOLERATION"
 )
 
 // Default values where applicable
@@ -44,6 +46,7 @@ const (
 	defaultCachingCpuRequest = ".05"
 	defaultCachingCpuLimit   = ".2"
 	defaultNodeSelector      = "{}"
+	defaultnodeTolerationEnvVar = "[]"
 )
 
 func getCachingInterval() int {
@@ -94,6 +97,16 @@ func processNodeSelectorEnvVar() map[string]string {
 		log.Fatalf("Failed to unmarshal node selector json: %s", err)
 	}
 	return nodeSelector
+}
+
+func processNodeTolerationEnvVar() []corev1.Toleration {
+	rawToleration := getEnvVarOrDefault(nodeTolerationEnvVar, defaultnodeTolerationEnvVar)
+	var toleration []corev1.Toleration
+	err := json.Unmarshal([]byte(rawToleration), &toleration)
+	if err != nil {
+		log.Fatalf("Failed to unmarshal toleration json: %s", err)
+	}
+	return toleration
 }
 
 func getEnvVarOrExit(envVar string) string {

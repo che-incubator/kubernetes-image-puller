@@ -1,6 +1,7 @@
 package cfg
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	"os"
 	"testing"
 
@@ -90,6 +91,57 @@ func TestProcessNodeSElectorEnvVar(t *testing.T) {
 		})
 	}
 }
+func TestProcessNodeTolerationEnvVar(t *testing.T) {
+	type testcase struct {
+		name                string
+		nodeToleration      string
+		isNodeTolerationSet bool
+		want                []corev1.Toleration
+	}
+
+	testcases := []testcase{
+		{
+			name:              "default node selector, NODE_TOLERATION set",
+			nodeToleration:      "[]",
+			isNodeTolerationSet: true,
+			want:                []corev1.Toleration{},
+		},
+		{
+			name:              "compute type, NODE_TOLERATION set",
+			nodeToleration:      "[{\"effect\": \"NoSchedule\",\"key\": \"test\",\"operator\": \"Exist\",\"value\": \"yes\"}]",
+			isNodeTolerationSet: true,
+			want: []corev1.Toleration{
+				{
+					Key:      "test",
+					Operator: "Exist",
+					Value:    "yes",
+					Effect:   "NoSchedule",
+				},
+			},
+		},
+		{
+			name:                "default env var, NODE_TOLERATION not set",
+			nodeToleration:      "[{\"this\": \"shouldn't be set\"}]",
+			isNodeTolerationSet: false,
+			want:                []corev1.Toleration{},
+		},
+	}
+
+	for _, c := range testcases {
+		t.Run(c.name, func(t *testing.T) {
+			defer os.Clearenv()
+			if c.isNodeTolerationSet {
+				os.Setenv("NODE_TOLERATION", c.nodeToleration)
+			}
+			got := processNodeTolerationEnvVar()
+
+			if d := cmp.Diff(c.want, got); d != "" {
+				t.Errorf("(-want, +got): %s", d)
+			}
+		})
+	}
+}
+
 
 func TestGetEnvVarOrDefaultBool(t *testing.T) {
 	defer os.Clearenv()

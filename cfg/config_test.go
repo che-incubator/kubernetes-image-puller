@@ -2,6 +2,7 @@ package cfg
 
 import (
 	"github.com/google/go-cmp/cmp"
+	corev1 "k8s.io/api/core/v1"
 	"os"
 	"testing"
 )
@@ -35,6 +36,7 @@ func TestEnvVars(t *testing.T) {
 				CachingCpuLimit:   ".2",
 				CachingInterval:   5,
 				NodeSelector:      map[string]string{},
+				Toleration:        []corev1.Toleration{},
 			},
 		},
 		{
@@ -44,6 +46,7 @@ func TestEnvVars(t *testing.T) {
 				"NAMESPACE":           "my-namespace",
 				"NODE_SELECTOR":       "{\"type\": \"compute\"}",
 				"CACHING_CPU_REQUEST": ".055",
+				"NODE_TOLERATION":"[{\"effect\": \"NoSchedule\",\"key\": \"app\",\"operator\": \"Equal\",\"value\": \"prod\"}]",
 			},
 			want: Config{
 				DaemonsetName: "custom-daemonset-name",
@@ -58,6 +61,14 @@ func TestEnvVars(t *testing.T) {
 				CachingInterval:   5,
 				NodeSelector: map[string]string{
 					"type": "compute",
+				},
+				Toleration: []corev1.Toleration{
+					{
+						Key:      "app",
+						Operator: "Equal",
+						Value:    "prod",
+						Effect:   "NoSchedule",
+					},
 				},
 			},
 		},

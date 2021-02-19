@@ -90,6 +90,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 				},
 				Spec: corev1.PodSpec{
 					NodeSelector:                  cfg.NodeSelector,
+					Tolerations:                   cfg.Toleration,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					Containers:                    getContainers(),
 				},

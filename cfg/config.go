@@ -12,6 +12,8 @@
 
 package cfg
 
+import corev1 "k8s.io/api/core/v1"
+
 type Config struct {
 	DaemonsetName     string
 	Namespace         string
@@ -22,6 +24,7 @@ type Config struct {
 	CachingCpuLimit   string
 	CachingInterval   int
 	NodeSelector      map[string]string
+	Toleration        []corev1.Toleration
 }
 
 func GetConfig() Config {
@@ -35,5 +38,6 @@ func GetConfig() Config {
 		CachingCpuRequest: getEnvVarOrDefault(cachingCpuRequestEnvVar, defaultCachingCpuRequest),
 		CachingCpuLimit:   getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
 		NodeSelector:      processNodeSelectorEnvVar(),
+		Toleration:        processNodeTolerationEnvVar(),
 	}
 }
