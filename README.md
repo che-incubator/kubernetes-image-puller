@@ -25,7 +25,7 @@ The config values to be set are:
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
-| `IMAGE_PULL_SECRETS` | List of image pull secrets, in the format `pullsecret1;...` to add to pods created by the daemonset       | `""` |
+| `IMAGE_PULL_SECRETS` | List of image pull secrets, in the format `pullsecret1;...` to add to pods created by the daemonset. Those secrets need to be in the same namespace as the image puller and need to be created by a cluster admin.       | `""` |
 
 ### Configuration - Helm 
 
