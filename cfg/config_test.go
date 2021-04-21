@@ -47,7 +47,7 @@ func TestEnvVars(t *testing.T) {
 				"NAMESPACE":           "my-namespace",
 				"NODE_SELECTOR":       "{\"type\": \"compute\"}",
 				"CACHING_CPU_REQUEST": ".055",
-				"AFFINITY":            "{\"nodeAffinity\":{\"requiredDuringSchedulingIgnoredDuringExecution\":{\"nodeSelectorTerms\":[{\"matchExpressions\":[{\"key\":\"kubernetes.io/e2e-az-name\",\"operator\":\"In\",\"values\":[\"e2e-az1\",\"e2e-az2\"]}]}]}}}",
+ 				"AFFINITY":            `{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"kubernetes.io/e2e-az-name","operator":"In","values":["e2e-az1","e2e-az2"]}]}]}}}`,
 			},
 			want: Config{
 				DaemonsetName: "custom-daemonset-name",
