@@ -12,6 +12,8 @@
 
 package cfg
 
+import corev1 "k8s.io/api/core/v1"
+
 type Config struct {
 	DaemonsetName     string
 	Namespace         string
@@ -23,6 +25,7 @@ type Config struct {
 	CachingInterval   int
 	NodeSelector      map[string]string
 	ImagePullSecrets  []string
+	Affinity          *corev1.Affinity
 }
 
 func GetConfig() Config {
@@ -37,5 +40,6 @@ func GetConfig() Config {
 		CachingCpuLimit:   getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
 		NodeSelector:      processNodeSelectorEnvVar(),
 		ImagePullSecrets:  processImagePullSecretsEnvVar(),
+		Affinity:          processAffinityEnvVar(),
 	}
 }

@@ -101,6 +101,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					Containers:                    getContainers(),
 					ImagePullSecrets:              imgPullSecrets,
+					Affinity:                      cfg.Affinity,
 				},
 			},
 		},

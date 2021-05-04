@@ -18,6 +18,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	corev1 "k8s.io/api/core/v1"
 )
 
 // Env vars used for configuration
@@ -32,6 +34,7 @@ const (
 	cachingCpuLimitEnvVar   = "CACHING_CPU_LIMIT"
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
 	imagePullSecretsEnvVar  = "IMAGE_PULL_SECRETS"
+	affinityEnvVar          = "AFFINITY"
 )
 
 // Default values where applicable
@@ -46,6 +49,7 @@ const (
 	defaultCachingCpuLimit   = ".2"
 	defaultNodeSelector      = "{}"
 	defaultImagePullSecret   = ""
+	defaultAffinity          = "{}"
 )
 
 func getCachingInterval() int {
@@ -111,6 +115,15 @@ func processImagePullSecretsEnvVar() []string {
 	}
 
 	return pullSecrets
+}
+
+func processAffinityEnvVar() *corev1.Affinity {
+	rawAffinity := getEnvVarOrDefault(affinityEnvVar, defaultAffinity)
+	affinity := &corev1.Affinity{}
+	if err := json.Unmarshal([]byte(rawAffinity), affinity); err != nil {
+		log.Fatalf("Failed to unmarshal affinity json: %s", err)
+	}
+	return affinity
 }
 
 func getEnvVarOrExit(envVar string) string {
