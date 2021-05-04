@@ -17,3 +17,4 @@ configMap:
   cachingCpuLimit: ".2"
   nodeSelector: "{}"
   imagePullSecrets: ""
+  affinity: "{}"

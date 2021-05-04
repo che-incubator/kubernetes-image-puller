@@ -21,6 +21,7 @@ objects:
     CACHING_CPU_LIMIT: ${CACHING_CPU_LIMIT}
     NODE_SELECTOR: ${NODE_SELECTOR}
     IMAGE_PULL_SECRETS: ${IMAGE_PULL_SECRETS}
+    AFFINITY: ${AFFINITY}
 parameters:
 - name: IMAGES
   value: >
@@ -45,3 +46,5 @@ parameters:
   value: "{}"
 - name: IMAGE_PULL_SECRETS
   value: ""
+- name: AFFINITY
+  value: "{}"
