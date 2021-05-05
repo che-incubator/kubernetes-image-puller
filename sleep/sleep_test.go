@@ -16,6 +16,7 @@ import (
 	"bytes"
 	"flag"
 	"os"
+	"regexp"
 	"testing"
 )
 
@@ -30,7 +31,7 @@ func TestArguments(T *testing.T) {
 	}{
 		{"valid second duration", []string{"1s"}, 0, ""},
 		{"valid ns duration", []string{"1000ns"}, 0, ""},
-		{"invalid day duration", []string{"10d"}, -1, "Invalid duration: time: unknown unit \"d\" in duration \"10d\"\nUsage: invalid day duration <duration>\nSee https://pkg.go.dev/time#ParseDuration\n"},
+		{"invalid day duration", []string{"10d"}, -1, "Invalid duration: time: unknown unit .* in duration .*10d.*"},
 		{"too many args", []string{"a", "b"}, -1, "Usage: too many args <duration>\nSee https://pkg.go.dev/time#ParseDuration\n"},
 	}
 	for _, tc := range cases {
@@ -44,7 +45,8 @@ func TestArguments(T *testing.T) {
 		}
 
 		actualOutput := buf.String()
-		if tc.ExpectedOutput != actualOutput {
+		r, _ := regexp.Compile(tc.ExpectedOutput)
+		if !r.MatchString(actualOutput) {
 			T.Errorf("Wrong output for args: %v, expected %v, got: %v",
 				tc.Args, tc.ExpectedOutput, actualOutput)
 		}
