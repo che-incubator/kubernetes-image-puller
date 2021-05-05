@@ -8,7 +8,7 @@
 # Contributors:
 #   Red Hat, Inc. - initial API and implementation
 #
-
+# must use rhel8/go-toolset in Brew, but can use ubi8/go-toolset upstream
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8/go-toolset
 FROM registry.access.redhat.com/ubi8/go-toolset:1.14.12-17.1618436992 as builder
 ENV PATH=/opt/rh/go-toolset-1.14/root/usr/bin:$PATH \
