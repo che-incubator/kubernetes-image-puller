@@ -19,4 +19,5 @@ RUN yum update -y -d 1 \
     && rm -rf /var/cache/yum
 
 COPY --from=builder "/kubernetes-image-puller/bin/kubernetes-image-puller" "/"
+COPY --from=builder /kubernetes-image-puller/bin/sleep /bin/sleep
 CMD ["/kubernetes-image-puller"]

@@ -243,7 +243,7 @@ func getContainers() []corev1.Container {
 			Name:            name,
 			Image:           image,
 			Command:         []string{"sleep"},
-			Args:            []string{"30d"},
+			Args:            []string{"720h"},
 			Resources:       cachedImageResources,
 			ImagePullPolicy: corev1.PullAlways,
 		}
