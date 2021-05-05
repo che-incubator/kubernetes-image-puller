@@ -26,7 +26,7 @@ var (
 	}
 
 	defaultCommand = []string{"sleep"}
-	defaultArgs    = []string{"30d"}
+	defaultArgs    = []string{"720h"}
 )
 
 // This is the only function that does not require a kubernetes client.  The rest of the tests are in ./e2e

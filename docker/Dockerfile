@@ -50,6 +50,7 @@ COPY --from=builder /etc/passwd /etc/passwd
 
 USER appuser
 COPY --from=builder /kubernetes-image-puller/bin/kubernetes-image-puller /
+COPY --from=builder /kubernetes-image-puller/bin/sleep /bin/sleep
 # NOTE: To use this container, need a configmap. See example at ./deploy/openshift/configmap.yaml
 # See also https://github.com/che-incubator/kubernetes-image-puller#configuration
 CMD ["/kubernetes-image-puller"]
