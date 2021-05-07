@@ -150,7 +150,7 @@ Will start a kind cluster and run the end-to-end tests in `./e2e`.  To remove th
 
 Normally, the image puller cannot pull scratch images, as they do not contain a `sleep` command.
 
-But as of [2021-05-06](https://github.com/che-incubator/kubernetes-image-puller/commit/662f9817d0240043616531d3a2b180a5423c726d), the [latest](https://github.com/che-incubator/kubernetes-image-puller/commit/e28a7fb2b246d43ffb48c8f6fe35090f60c3902c) image puller builds contain a golang-based `sleep` binary that can be copied to your scratch image so that it can then be pulled.
+But as of [2021-05-06](https://github.com/che-incubator/kubernetes-image-puller/commit/662f9817d0240043616531d3a2b180a5423c726d), image puller builds contain a golang-based `sleep` binary that can be copied to your scratch image so that it can then be pulled.
 
 See [this example](https://github.com/eclipse-che/che-machine-exec/commit/62632f753636b5b5ec19ef31ab1928679b193097) showing how to use the sleep command in your container:
 
