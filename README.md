@@ -3,12 +3,11 @@
 
 [![Contribute](https://www.eclipse.org/che/contribute.svg)](https://che.openshift.io/f?url=https://github.com/che-incubator/kubernetes-image-puller)
 
-## Requirements
-This is an upstream version of the [kubernetes-image-puller](https://github.com/redhat-developer/kubernetes-image-puller).  Where the downstream puller requires integrations with [fabric-oso-proxy](https://github.com/fabric8-services/fabric8-oso-proxy) and [fabric8-auth](https://github.com/fabric8-services/fabric8-auth), and impersonates users in multiple clusters, this application is meant to run on a single cluster, and pre-pull Eclipse Che images.
+## About
 
-To cache images, this app creates a Daemonset on the desired cluster, which in turn creates a pod on each node in the cluster consisting of a list of containers with command `sleep 30d`. This ensures that all nodes in the cluster have those images cached. We also periodically check the health of the daemonset and re-create it if necessary.
+To cache images, Kubernetes Image Puller creates a Daemonset on the desired cluster, which in turn creates a pod on each node in the cluster consisting of a list of containers with command `sleep 30d`. This ensures that all nodes in the cluster have those images cached. We also periodically check the health of the daemonset and re-create it if necessary.
 
-The application can be deployed via Helm or by processing and applying OpenShift Templates.
+The application can be deployed via Helm or by processing and applying OpenShift Templates. Also, there is a community supported operator available on the [OperatorHub](https://operatorhub.io/operator/kubernetes-imagepuller-operator).
 
 ## Configuration
 Configuration is done via env vars pulled from `./deploy/helm/templates/configmap.yaml`, or `./deploy/openshift/configmap.yaml`, depending on the deployment method.
