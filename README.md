@@ -70,7 +70,7 @@ The following values can be set:
 
 ### Installation - Helm
 
-`kubectl create namespace kubernetes-image-puller`
+`kubectl create namespace k8s-image-puller`
 
 `helm install kubernetes-image-puller -n k8s-image-puller deploy/helm`
 
