@@ -64,6 +64,7 @@ The following values can be set:
 | `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"` |
 | `CACHING_CPU_REQUEST` | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05` |
 | `CACHING_CPU_LIMIT` | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap | `.2` |
+| `NAMESPACE` | The value of `NAMESPACE` to be set in the ConfigMap | `k8s-image-puller` |
 | `NODE_SELECTOR` | The value of `NODE_SELECTOR` to be set in the ConfigMap | `"{}"` |
 | `IMAGE_PULL_SECRETS` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 | `AFFINITY` | The value of `AFFINITY` to be set in the ConfigMap | `"{}"` |

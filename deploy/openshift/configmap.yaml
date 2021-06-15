@@ -33,7 +33,7 @@ parameters:
 - name: CACHING_INTERVAL_HOURS
   value: "1"
 - name: NAMESPACE
-  value: "kubernetes-image-puller"
+  value: "k8s-image-puller"
 - name: CACHING_MEMORY_REQUEST
   value: "10Mi"
 - name: CACHING_MEMORY_LIMIT
