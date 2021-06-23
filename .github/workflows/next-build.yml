@@ -45,7 +45,7 @@ jobs:
         SHORT_SHA1=$(git rev-parse --short HEAD)
         echo ::set-output name=short_sha1::${SHORT_SHA1}
         echo ::set-output name=version::next
-        IMAGE=che-devfile-registry
+        IMAGE=kubernetes-image-puller
         echo ::set-output name=image::${IMAGE}
     -
       name: "Build and push"
@@ -59,7 +59,7 @@ jobs:
       name: Create failure MM message
       if: ${{ failure() }}
       run: |
-        echo "{\"text\":\":no_entry_sign: Kubernetes Image puller build has failed: https://github.com/eclipse-che/che-server/actions/workflows/next-build.yml\"}" > mattermost.json
+        echo "{\"text\":\":no_entry_sign: Kubernetes Image puller build has failed: https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml\"}" > mattermost.json
     - 
       name: Send MM message
       if: ${{ failure() }}
