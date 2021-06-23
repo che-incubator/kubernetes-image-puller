@@ -1,5 +1,4 @@
-[![master](https://ci.centos.org/buildStatus/icon?subject=master&job=devtools-che-incubator-kubernetes-image-puller-build-master/)](https://ci.centos.org/job/devtools-che-incubator-kubernetes-image-puller-build-master/)
-[![nightly](https://ci.centos.org/buildStatus/icon?subject=nightly&job=devtools-kubernetes-image-puller-nightly/)](https://ci.centos.org/job/devtools-kubernetes-image-puller-nightly/)
+[![next](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml/badge.svg)](https://github.com/eclipse-che/che-devfile-registry/actions/workflows/next-build.yml)
 
 [![Contribute](https://www.eclipse.org/che/contribute.svg)](https://che.openshift.io/f?url=https://github.com/che-incubator/kubernetes-image-puller)
 

@@ -1,0 +1,70 @@
+#
+# Copyright (c) 2021 Red Hat, Inc.
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+name: build-next
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    -
+      name: "Set up QEMU"
+      uses: docker/setup-qemu-action@v1
+    -
+      name: "Set up Docker Buildx"
+      uses: docker/setup-buildx-action@v1
+    -
+      name: "Docker quay.io Login"
+      uses: docker/login-action@v1
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+    - 
+      name: Clone source code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - 
+      name: Prepare
+      id: prep
+      run: |
+        set -e
+        SHORT_SHA1=$(git rev-parse --short HEAD)
+        echo ::set-output name=short_sha1::${SHORT_SHA1}
+        echo ::set-output name=version::next
+        IMAGE=che-devfile-registry
+        echo ::set-output name=image::${IMAGE}
+    -
+      name: "Build and push"
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        tags:  quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.version }},quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.short_sha1 }}
+        push: true
+    - 
+      name: Create failure MM message
+      if: ${{ failure() }}
+      run: |
+        echo "{\"text\":\":no_entry_sign: Kubernetes Image puller build has failed: https://github.com/eclipse-che/che-server/actions/workflows/next-build.yml\"}" > mattermost.json
+    - 
+      name: Send MM message
+      if: ${{ failure() }}
+      uses: mattermost/action-mattermost-notify@1.0.2
+      env:
+        MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+        MATTERMOST_CHANNEL: eclipse-che-ci
+        MATTERMOST_USERNAME: che-bot
