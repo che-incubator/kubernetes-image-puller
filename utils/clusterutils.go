@@ -29,6 +29,9 @@ import (
 
 var propagationPolicy = metav1.DeletePropagationForeground
 var terminationGracePeriodSeconds = int64(1)
+var containerVolumeMounts = []corev1.VolumeMount{
+	{Name: "kip", MountPath: "/kip"},
+}
 
 // Set up watch on daemonset
 func watchDaemonset(clientset *kubernetes.Clientset) watch.Interface {
@@ -99,9 +102,19 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 				Spec: corev1.PodSpec{
 					NodeSelector:                  cfg.NodeSelector,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
-					Containers:                    getContainers(),
-					ImagePullSecrets:              imgPullSecrets,
-					Affinity:                      cfg.Affinity,
+					InitContainers: []corev1.Container{{
+						Name:            "copy-sleep",
+						Image:           "quay.io/eclipse/kubernetes-image-puller:next",
+						ImagePullPolicy: corev1.PullAlways,
+						Command:         []string{"/bin/sh"},
+						Args:            []string{"-c", "cp bin/sleep kip/sleep"},
+						VolumeMounts:    containerVolumeMounts,
+						Resources:       getContainerResources(cfg),
+					}},
+					Containers:       getContainers(),
+					ImagePullSecrets: imgPullSecrets,
+					Affinity:         cfg.Affinity,
+					Volumes:          []corev1.Volume{{Name: "kip"}},
 				},
 			},
 		},
@@ -228,7 +241,23 @@ func getContainers() []corev1.Container {
 	containers := make([]corev1.Container, len(images))
 	idx := 0
 
-	cachedImageResources := corev1.ResourceRequirements{
+	for name, image := range images {
+		containers[idx] = corev1.Container{
+			Name:            name,
+			Image:           image,
+			Command:         []string{"/kip/sleep"},
+			Args:            []string{"720h"},
+			Resources:       getContainerResources(cfg),
+			ImagePullPolicy: corev1.PullAlways,
+			VolumeMounts:    containerVolumeMounts,
+		}
+		idx++
+	}
+	return containers
+}
+
+func getContainerResources(cfg cfg.Config) corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
 		Limits: corev1.ResourceList{
 			"memory": resource.MustParse(cfg.CachingMemLimit),
 			"cpu":    resource.MustParse(cfg.CachingCpuLimit),
@@ -238,17 +267,4 @@ func getContainers() []corev1.Container {
 			"cpu":    resource.MustParse(cfg.CachingCpuRequest),
 		},
 	}
-
-	for name, image := range images {
-		containers[idx] = corev1.Container{
-			Name:            name,
-			Image:           image,
-			Command:         []string{"sleep"},
-			Args:            []string{"720h"},
-			Resources:       cachedImageResources,
-			ImagePullPolicy: corev1.PullAlways,
-		}
-		idx++
-	}
-	return containers
 }

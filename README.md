@@ -33,14 +33,14 @@ The following values can be set:
 | Value                            | Usage                                                        | Default                                               |
 | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
 | `deploymentName`                 | The value of `DAEMONSET_NAME` to be set in the ConfigMap, as well as the name of the deployment     | `kubernetes-image-puller`                             |
-| `image.repository`               | The repository to pull the image from                        | `quay.io/eclpise/kubernetes-image-puller`             |
+| `image.repository`               | The repository to pull the image from                        | `quay.io/eclipse/kubernetes-image-puller`             |
 | `image.tag`                      | The image tag to pull                                        | `latest`                                              |
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
 | `configMap.name`                 | The name of the ConfigMap to create                          | `k8s-image-puller`                                    |
 | `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap             | // TODO create a reasonable set of default containers |
 | `configMap.cachingIntervalHours` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"`                                                 |
-| `configMap.cachingMemoryRequest` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"`                                              |
-| `configMap.cachingMemeryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"`                                              |
+| `configMap.cachingMemoryRequest` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"1Mi"`                                              |
+| `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"5Mi"`                                              |
 | `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05`                                                 |
 | `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap  | `.2`                                                  |
 | `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
@@ -54,13 +54,13 @@ The following values can be set:
 | Parameter | Usage | Default |
 | -- | -- | -- |
 | `SERVICEACCOUNT_NAME`             | Name of service account used by main pod | `k8s-image-puller` |
-| `IMAGE`                           | Name of image used for main pod | `quay.io/eclpise/kubernetes-image-puller` |
+| `IMAGE`                           | Name of image used for main pod | `quay.io/eclipse/kubernetes-image-puller` |
 | `IMAGE_TAG`                       | Tag of image used for main pod | `latest` |
 | `DAEMONSET_NAME` | The value of `DAEMONSET_NAME` to be set in the ConfigMap | `"kubernetes-image-puller"` |
 | `DEPLOYMENT_NAME` | The name of the image puller deployment | `"kubernetes-image-puller"` |
 | `CACHING_INTERVAL_HOURS` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"` |
-| `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"` |
-| `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"` |
+| `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"1Mi"` |
+| `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"5Mi"` |
 | `CACHING_CPU_REQUEST` | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05` |
 | `CACHING_CPU_LIMIT` | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap | `.2` |
 | `NAMESPACE` | The value of `NAMESPACE` to be set in the ConfigMap | `k8s-image-puller` |
@@ -86,7 +86,7 @@ OpenShift has a notion of [project quotas](https://docs.openshift.com/container-
 (memory/CPU limit) * (number of images) * (number of nodes in cluster)
 ```
 
-For example, running the image puller that caches 5 images on 20 nodes, with a container memory limit of `20Mi`, your namespace would need a quota of `2000Mi`.
+For example, running the image puller that caches 5 images on 20 nodes, with a container memory limit of `5Mi`, your namespace would need a quota of `500Mi`.
 
 #### Installing the image puller
 
