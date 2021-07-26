@@ -43,4 +43,4 @@ parameters:
 - name: IMAGE
   value: quay.io/eclipse/kubernetes-image-puller
 - name: IMAGE_TAG
-  value: latest
+  value: next
