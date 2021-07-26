@@ -63,7 +63,7 @@ jobs:
     - 
       name: Send MM message
       if: ${{ failure() }}
-      uses: mattermost/action-mattermost-notify@1.0.2
+      uses: mattermost/action-mattermost-notify@1.0.3
       env:
         MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
         MATTERMOST_CHANNEL: eclipse-che-ci
