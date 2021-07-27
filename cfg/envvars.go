@@ -35,6 +35,7 @@ const (
 	nodeSelectorEnvVar      = "NODE_SELECTOR"
 	imagePullSecretsEnvVar  = "IMAGE_PULL_SECRETS"
 	affinityEnvVar          = "AFFINITY"
+	kipImageEnvVar          = "KIP_IMAGE"
 )
 
 // Default values where applicable
@@ -50,6 +51,7 @@ const (
 	defaultNodeSelector      = "{}"
 	defaultImagePullSecret   = ""
 	defaultAffinity          = "{}"
+	defaultImage             = "quay.io/eclipse/kubernetes-image-puller:next"
 )
 
 func getCachingInterval() int {

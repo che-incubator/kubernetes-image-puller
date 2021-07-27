@@ -26,6 +26,7 @@ type Config struct {
 	NodeSelector      map[string]string
 	ImagePullSecrets  []string
 	Affinity          *corev1.Affinity
+	ImagePullerImage  string
 }
 
 func GetConfig() Config {
@@ -41,5 +42,6 @@ func GetConfig() Config {
 		NodeSelector:      processNodeSelectorEnvVar(),
 		ImagePullSecrets:  processImagePullSecretsEnvVar(),
 		Affinity:          processAffinityEnvVar(),
+		ImagePullerImage:  getEnvVarOrDefault(kipImageEnvVar, defaultImage),
 	}
 }
