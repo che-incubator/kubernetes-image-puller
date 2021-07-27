@@ -29,6 +29,11 @@ import (
 
 var propagationPolicy = metav1.DeletePropagationForeground
 var terminationGracePeriodSeconds = int64(1)
+
+// Volume mount to copy the sleep binary into.
+// To allow the image puller to cache scratch images, an initContainer copies
+// the sleep binary to this volume mount. As a result, every container has
+// access to the sleep binary via this volume mount.
 var containerVolumeMounts = []corev1.VolumeMount{
 	{Name: "kip", MountPath: "/kip"},
 }
@@ -104,7 +109,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					InitContainers: []corev1.Container{{
 						Name:            "copy-sleep",
-						Image:           "quay.io/eclipse/kubernetes-image-puller:next",
+						Image:           cfg.ImagePullerImage,
 						ImagePullPolicy: corev1.PullAlways,
 						Command:         []string{"/bin/sh"},
 						Args:            []string{"-c", "cp bin/sleep kip/sleep"},
