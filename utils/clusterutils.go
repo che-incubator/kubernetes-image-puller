@@ -27,16 +27,29 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-var propagationPolicy = metav1.DeletePropagationForeground
-var terminationGracePeriodSeconds = int64(1)
+const (
+	kipVolumeName         = "kip"
+	kipVolumeMountPath    = "/kip"
+	copySleepCommand      = "cp /bin/sleep /kip/sleep"
+	containerSleepCommand = "/kip/sleep"
+	sleepDuration         = "720h"
+)
 
-// Volume mount to copy the sleep binary into.
-// To allow the image puller to cache scratch images, an initContainer copies
-// the sleep binary to this volume mount. As a result, every container has
-// access to the sleep binary via this volume mount.
-var containerVolumeMounts = []corev1.VolumeMount{
-	{Name: "kip", MountPath: "/kip"},
-}
+var (
+	propagationPolicy             = metav1.DeletePropagationForeground
+	terminationGracePeriodSeconds = int64(1)
+
+	// Volume mount to copy the sleep binary into.
+	// To allow the image puller to cache scratch images, an initContainer copies
+	// the sleep binary to this volume mount. As a result, every container has
+	// access to the sleep binary via this volume mount.
+	containerVolumeMounts = []corev1.VolumeMount{
+		{
+			Name:      kipVolumeName,
+			MountPath: kipVolumeMountPath,
+		},
+	}
+)
 
 // Set up watch on daemonset
 func watchDaemonset(clientset *kubernetes.Clientset) watch.Interface {
@@ -112,14 +125,14 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 						Image:           cfg.ImagePullerImage,
 						ImagePullPolicy: corev1.PullAlways,
 						Command:         []string{"/bin/sh"},
-						Args:            []string{"-c", "cp bin/sleep kip/sleep"},
+						Args:            []string{"-c", copySleepCommand},
 						VolumeMounts:    containerVolumeMounts,
 						Resources:       getContainerResources(cfg),
 					}},
 					Containers:       getContainers(),
 					ImagePullSecrets: imgPullSecrets,
 					Affinity:         cfg.Affinity,
-					Volumes:          []corev1.Volume{{Name: "kip"}},
+					Volumes:          []corev1.Volume{{Name: kipVolumeName}},
 				},
 			},
 		},
@@ -250,8 +263,8 @@ func getContainers() []corev1.Container {
 		containers[idx] = corev1.Container{
 			Name:            name,
 			Image:           image,
-			Command:         []string{"/kip/sleep"},
-			Args:            []string{"720h"},
+			Command:         []string{containerSleepCommand},
+			Args:            []string{sleepDuration},
 			Resources:       getContainerResources(cfg),
 			ImagePullPolicy: corev1.PullAlways,
 			VolumeMounts:    containerVolumeMounts,
