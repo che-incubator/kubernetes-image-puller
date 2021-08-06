@@ -42,8 +42,8 @@ The following values can be set:
 | `configMap.name`                 | The name of the ConfigMap to create                          | `k8s-image-puller`                                    |
 | `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap             | // TODO create a reasonable set of default containers |
 | `configMap.cachingIntervalHours` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"`                                                 |
-| `configMap.cachingMemoryRequest` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"1Mi"`                                              |
-| `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"5Mi"`                                              |
+| `configMap.cachingMemoryRequest` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"`                                              |
+| `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"`                                              |
 | `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05`                                                 |
 | `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap  | `.2`                                                  |
 | `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
@@ -62,8 +62,8 @@ The following values can be set:
 | `DAEMONSET_NAME` | The value of `DAEMONSET_NAME` to be set in the ConfigMap | `"kubernetes-image-puller"` |
 | `DEPLOYMENT_NAME` | The name of the image puller deployment | `"kubernetes-image-puller"` |
 | `CACHING_INTERVAL_HOURS` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"` |
-| `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"1Mi"` |
-| `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"5Mi"` |
+| `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"` |
+| `CACHING_MEMORY_LIMIT` | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"` |
 | `CACHING_CPU_REQUEST` | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05` |
 | `CACHING_CPU_LIMIT` | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap | `.2` |
 | `NAMESPACE` | The value of `NAMESPACE` to be set in the ConfigMap | `k8s-image-puller` |
@@ -77,7 +77,7 @@ The following values can be set:
 
 `helm install kubernetes-image-puller -n k8s-image-puller deploy/helm`
 
-To set values, changes `deploy/helm/values.yaml` or use `--set property.name=value`
+To set values, change `deploy/helm/values.yaml` or use `--set property.name=value`
 
 ### Installation - Openshift
 
