@@ -1,0 +1,15 @@
+on: pull_request
+
+jobs:
+  example_comment_pr:
+    runs-on: ubuntu-latest
+    name: Try the PR on Eclipse Che hosted by Red Hat
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@master
+        with:
+          message: 'Try the PR on Eclipse Che hosted by Red Hat https://workspaces.openshift.com#https://github.com/${{ github.event.pull_request.head.repo.full_name }}/tree/${{ github.head_ref }}'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
