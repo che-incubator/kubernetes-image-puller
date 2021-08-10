@@ -156,4 +156,4 @@ However, the daemonset created by the image puller now:
 1. creates an `initContainer` that copies a golang-based `sleep` binary to a common `kip` volume.
 2. creates containers `volumeMounts` set to the `kip` volume, and with `command` set to `/kip/sleep 720h`
 
-As a result, every container (including scratch image containers) uses the provided golang-based `sleep` binary
+As a result, every container (including scratch image containers) uses the provided golang-based `sleep` binary.
