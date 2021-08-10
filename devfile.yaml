@@ -9,7 +9,7 @@ projects:
 attributes:
   persistVolumes: 'false'
 components:
-  - id: ms-vscode/go/latest
+  - id: golang/go/latest
     memoryLimit: 512Mi
     preferences:
       go.lintTool: golangci-lint
