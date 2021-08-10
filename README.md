@@ -152,7 +152,7 @@ Will start a kind cluster and run the end-to-end tests in `./e2e`.  To remove th
 The image puller now supports pre-pulling scratch images.
 Previously the image puller was not able to pull scratch images, as they do not contain a `sleep` command.
 
-However, the daemonset created by the image puller now:
+However, the daemonset created by the Kubernetes Image Puller now:
 1. creates an `initContainer` that copies a golang-based `sleep` binary to a common `kip` volume.
 2. creates containers `volumeMounts` set to the `kip` volume, and with `command` set to `/kip/sleep 720h`
 
