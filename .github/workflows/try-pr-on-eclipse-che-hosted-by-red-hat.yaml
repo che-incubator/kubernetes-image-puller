@@ -1,8 +1,8 @@
 on: pull_request_target
 
 jobs:
-  example_comment_pr:
-    runs-on: ubuntu-latest
+  comment_pr:
+    runs-on: ubuntu-20.04
     name: Try the PR on Eclipse Che hosted by Red Hat
     steps:
       - name: Checkout
