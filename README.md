@@ -79,7 +79,7 @@ The following values can be set:
 
 To set values, change `deploy/helm/values.yaml` or use `--set property.name=value`
 
-### Installation - Openshift
+### Installation - OpenShift
 
 #### Openshift special consideration - Project Quotas
 
