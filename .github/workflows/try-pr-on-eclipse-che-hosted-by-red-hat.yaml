@@ -1,4 +1,6 @@
-on: pull_request_target
+on:
+  pull_request_target:
+    types: [opened, reopened]
 
 jobs:
   comment_pr:
