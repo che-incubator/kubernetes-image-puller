@@ -5,9 +5,6 @@ jobs:
     runs-on: ubuntu-20.04
     name: Try the PR on Eclipse Che hosted by Red Hat
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@1.0.1
         with:
