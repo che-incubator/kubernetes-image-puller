@@ -1,10 +1,5 @@
 metadata:
   generateName: kubernetes-image-puller-
-projects:
-  - name: kubernetes-image-puller
-    source:
-      location: 'git@github.com:che-incubator/kubernetes-image-puller.git'
-      type: git
 
 attributes:
   persistVolumes: 'false'
