@@ -1,6 +1,5 @@
 metadata:
   generateName: kubernetes-image-puller-
-
 attributes:
   persistVolumes: 'false'
 components:
@@ -24,6 +23,10 @@ components:
         name: GOPATH
       - value: /tmp/.cache
         name: GOCACHE
+ 
+  - id: github/vscode-pull-request-github/latest
+    type: chePlugin
+    registryUrl: 'https://che-plugin-registry-main.surge.sh/v3'
 apiVersion: 1.0.0
 commands:
   - name: build kubernetes-image-puller
