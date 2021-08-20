@@ -131,17 +131,16 @@ docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .
 ```
 
 ## Testing
-
+To run the unit tests:
 ```shell
 make test
 ```
 
-Will run unit tests.
-
-End to end tests require [kind](https://github.com/kubernetes-sigs/kind):
+End to end tests require [kind](https://github.com/kubernetes-sigs/kind).
+Note that kind should not be installed with `go get` from this repository's directory.
 
 ```shell
-GO111MODULE="on" go get sigs.k8s.io/kind@v0.7.0
+cd $HOME && GO111MODULE="on" go get sigs.k8s.io/kind@v0.7.0 && cd ~-
 
 ./hack/run-e2e.sh
 ```

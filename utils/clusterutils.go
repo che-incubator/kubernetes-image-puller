@@ -170,8 +170,8 @@ func waitDaemonsetReady(c <-chan watch.Event) error {
 		select {
 		case ev, ok := <-c:
 			if !ok {
-				log.Printf("WARN: Watch closed before deamonset ready")
-				return fmt.Errorf("Watch closed before deamonset ready")
+				log.Printf("WARN: Watch closed before daemonset ready")
+				return fmt.Errorf("Watch closed before daemonset ready")
 			}
 			// log.Printf("(DEBUG) Create watch event received: %s", ev.Type)
 			if ev.Type == watch.Modified {
@@ -241,7 +241,7 @@ func waitDaemonsetDeleted(c <-chan watch.Event) {
 		select {
 		case ev, ok := <-c:
 			if !ok {
-				log.Printf("WARN: Watch closed before deamonset deleted")
+				log.Printf("WARN: Watch closed before daemonset deleted")
 				return
 			}
 			log.Printf("(DEBUG) Delete watch event received: %s", ev.Type)
