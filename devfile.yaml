@@ -16,7 +16,7 @@ components:
         port: 8080
     memoryLimit: 2Gi
     type: dockerimage
-    image: 'quay.io/eclipse/che-golang-1.12:nightly'
+    image: 'quay.io/eclipse/che-golang-1.12:next'
     alias: go-cli
     env:
       - value: '/go:$(CHE_PROJECTS_ROOT)'
