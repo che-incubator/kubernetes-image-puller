@@ -1,6 +1,6 @@
 [![next](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml/badge.svg)](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml)
 
-[![Contribute](https://www.eclipse.org/che/contribute.svg)](https://che.openshift.io/f?url=https://github.com/che-incubator/kubernetes-image-puller)
+[![Contribute](https://www.eclipse.org/che/contribute.svg)](https://workspaces.openshift.com#https://github.com/che-incubator/kubernetes-image-puller)
 
 ## About
 
