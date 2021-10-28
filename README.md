@@ -148,7 +148,7 @@ cd $HOME && GO111MODULE="on" go get sigs.k8s.io/kind@v0.7.0 && cd ~-
 Will start a kind cluster and run the end-to-end tests in `./e2e`.  To remove the cluster after running the tests, pass the `--rm` argument to the script, or run `kind delete cluster --name k8s-image-puller-e2e`.
 
 ## Scratch Images
-The image puller now supports pre-pulling scratch images.
+The image puller also supports pre-pulling the scratch images.
 Previously the image puller was not able to pull scratch images, as they do not contain a `sleep` command.
 
 However, the daemonset created by the Kubernetes Image Puller now:
