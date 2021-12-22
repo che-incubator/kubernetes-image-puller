@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     name: Create branch
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with: 
@@ -25,7 +25,7 @@ jobs:
         run: |
           git config --global user.name "Mykhailo Kuznietsov"
           git config --global user.email "mkuznets@redhat.com"
-          curl https://raw.githubusercontent.com/eclipse-che/che-release/main/make-branch.sh | bash -s -- \
+          curl -sSL https://raw.githubusercontent.com/eclipse-che/che-release/main/make-branch.sh | bash -s -- \
           --branch ${{ github.event.inputs.branch }} \
           --branchfrom ${{ github.event.inputs.branchfrom }} \
           --repo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
