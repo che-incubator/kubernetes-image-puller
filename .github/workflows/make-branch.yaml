@@ -1,3 +1,4 @@
+
 name: Create branch
 on:
   # to be run once every 3 weeks for a 7.yy.0 release, so we can get a stable 7.yy.x branch for use by downstream consumers
@@ -8,7 +9,7 @@ on:
         required: true
       branchfrom:
         description: 'The source branch from which to branch, eg., main'
-        default: 'master'
+        default: 'main'
       forceflag:
         description: 'To force creation of .x branch, use --force flag here'
         default: ''
@@ -24,5 +25,8 @@ jobs:
         run: |
           git config --global user.name "Mykhailo Kuznietsov"
           git config --global user.email "mkuznets@redhat.com"
-          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          .github/bin/make-branch.sh --branch ${{ github.event.inputs.branch }} --branchfrom ${{ github.event.inputs.branchfrom }} ${{ github.event.inputs.forceflag }}
+          curl -sSL https://raw.githubusercontent.com/eclipse-che/che-release/main/make-branch.sh | bash -s -- \
+          --branch ${{ github.event.inputs.branch }} \
+          --branchfrom ${{ github.event.inputs.branchfrom }} \
+          --repo "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+          ${{ github.event.inputs.forceflag }}
