@@ -9,7 +9,7 @@
 #   Red Hat, Inc. - initial API and implementation
 #
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8/go-toolset
-FROM registry.access.redhat.com/ubi8/go-toolset:1.16.12-10 as builder
+FROM registry.access.redhat.com/ubi8/go-toolset:1.17.7-13 as builder
 ENV GOPATH=/go/ \
     GO111MODULE=on
 
@@ -37,7 +37,7 @@ RUN adduser appuser && \
     make build 
 
 # https://access.redhat.com/containers/?tab=tags#/registry.access.redhat.com/ubi8-minimal
-FROM registry.access.redhat.com/ubi8-minimal:8.5-243.1651231653
+FROM registry.access.redhat.com/ubi8-minimal:8.6-751
 USER root
 RUN microdnf -y update && microdnf clean all && rm -rf /var/cache/yum && echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 # CRW-528 copy actual cert
