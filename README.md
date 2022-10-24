@@ -23,10 +23,10 @@ The config values to be set are:
 | `CACHING_CPU_LIMIT` | The CPU limit for each cached image when the puller is running | `.2` or 200 millicores |
 | `DAEMONSET_NAME`         | Name of daemonset to be created | `kubernetes-image-puller` |
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
-| `IMAGES`                 | List of images to be cached, in the format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
-| `NODE_SELECTOR` | Node selector applied to pods created by the daemonset       | `'{}'` |
-| `IMAGE_PULL_SECRETS` | List of image pull secrets, in the format `pullsecret1;...` to add to pods created by the DaemonSet. Those secrets need to be in the image puller's namespace and a cluster administrator must create them.       | `""` |
-| `AFFINITY` | Affinity applied to pods created by the daemonset       | `'{}'` |
+| `IMAGES`                 | List of images to be cached, in this format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
+| `NODE_SELECTOR` | Node selector applied to pods created by the daemonset, provided in this format `'{"key":"value"}'`      | `'{}'` |
+| `IMAGE_PULL_SECRETS` | List of image pull secrets, in this format `pullsecret1;...` to add to pods created by the DaemonSet. Those secrets need to be in the image puller's namespace and a cluster administrator must create them.       | `""` |
+| `AFFINITY` | Affinity applied to pods created by the daemonset, in this format `'{"nodeAffinity":{ ... }}'`       | `'{}'` |
 | `KIP_IMAGE` | The image puller image to copy the `sleep` binary from | `quay.io/eclipse/kubernetes-image-puller:next` |
 
 ### Configuration - Helm 
