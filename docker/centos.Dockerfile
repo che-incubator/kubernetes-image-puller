@@ -1,4 +1,4 @@
-FROM golang:1.13.8 AS dependencies
+FROM docker.io/golang:1.18 AS dependencies
 
 WORKDIR /kubernetes-image-puller
 
