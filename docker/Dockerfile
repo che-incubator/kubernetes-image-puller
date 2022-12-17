@@ -37,7 +37,7 @@ RUN adduser appuser && \
     make build 
 
 # https://registry.access.redhat.com/ubi8-minimal
-FROM registry.access.redhat.com/ubi8-minimal:8.7-923.1669829893
+FROM registry.access.redhat.com/ubi8-minimal:8.7-1031
 USER root
 RUN microdnf -y update && microdnf clean all && rm -rf /var/cache/yum && echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 # CRW-528 copy actual cert
