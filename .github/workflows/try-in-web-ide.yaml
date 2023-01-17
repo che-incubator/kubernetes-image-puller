@@ -7,10 +7,10 @@ on:
 
 jobs:
   add-link:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Web IDE Pull Request Check
         id: try-in-web-ide
-        uses: redhat-actions/try-in-web-ide@v1
+        uses: redhat-actions/try-in-web-ide@v1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
