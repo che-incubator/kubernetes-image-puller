@@ -127,7 +127,7 @@ GOOS=linux go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
 ```
 Make docker image:
 ```bash
-docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .
+docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./build/dockerfiles/Dockerfile .
 ```
 
 ## Testing
