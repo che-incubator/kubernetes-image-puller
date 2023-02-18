@@ -19,7 +19,7 @@ Implementations in `pkg` basically create a k8s client config, set up some chann
 
 * `deploy` - Helm chart and openshift templates to deploy the image puller
 
-* `docker` - dockerfiles
+* `build/dockerfiles` - dockerfiles
 
 * `pkg` - core logic for the puller. Should satisfy the interface
 +
@@ -59,7 +59,7 @@ The docker build, by default, will use a multi-stage build that
 2. Builds the Go project (`--target=builder`)
 3. Copies the binary into a clean image
 
-Since multi-stage builds are not supported by all versions of docker, there is also a simpler dockerfile (see `./docker/dev.Dockerfile`) that copies an already-built binary into a distroless image. This build can be invoked using the `docker-dev` target in the Makefile.
+Since multi-stage builds are not supported by all versions of docker, there is also a simpler dockerfile (see `./build/dockerfiles/dev.Dockerfile`) that copies an already-built binary into a distroless image. This build can be invoked using the `docker-dev` target in the Makefile.
 
 == Outstanding issues
 

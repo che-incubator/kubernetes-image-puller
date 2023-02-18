@@ -52,7 +52,7 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         context: .
-        file: ./docker/Dockerfile
+        file: ./build/dockerfiles/Dockerfile
         tags:  quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.version }},quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.short_sha1 }}
         push: true
     - 

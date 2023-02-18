@@ -17,10 +17,10 @@ test:
 	go test -v ./cfg... ./pkg... ./sleep... ./utils...
 
 docker:
-	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/Dockerfile .
+	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./build/dockerfiles/Dockerfile .
 
 docker-dev: build
-	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./docker/dev.Dockerfile .
+	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./build/dockerfiles/dev.Dockerfile .
 
 local-setup:
 	oc process -f ./deploy/serviceaccount.yaml | oc apply -f -
