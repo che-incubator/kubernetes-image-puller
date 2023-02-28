@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.configMap.name }}
 data:
   IMAGES: "{{ .Values.configMap.images }}"
-  DAEMONSET_NAME: "kubernetes-image-puller"
+  DAEMONSET_NAME: "{{ .Values.deploymentName }}"
   CACHING_INTERVAL_HOURS: "{{ .Values.configMap.cachingIntervalHours }}"
   NAMESPACE: "{{ .Release.Namespace }}"
   CACHING_MEMORY_REQUEST: "{{ .Values.configMap.cachingMemoryRequest }}"
