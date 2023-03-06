@@ -9,7 +9,7 @@
 #   Red Hat, Inc. - initial API and implementation
 #
 # https://registry.access.redhat.com/rhel8/go-toolset
-FROM rhel8/go-toolset:1.18.9-8 as builder
+FROM rhel8/go-toolset:1.18.9-13 as builder
 ENV GOPATH=/go/ \
     GO111MODULE=on
 
@@ -26,7 +26,7 @@ RUN adduser appuser && \
     make build 
 
 # https://registry.access.redhat.com/ubi8-minimal
-FROM ubi8-minimal:8.7-1049.1675784874
+FROM ubi8-minimal:8.7-1085
 USER root
 RUN microdnf -y update && microdnf clean all && rm -rf /var/cache/yum && echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 
