@@ -4,6 +4,8 @@
 
 ## About
 
+
+
 To cache images, Kubernetes Image Puller creates a Daemonset on the desired cluster, which in turn creates a pod on each node in the cluster consisting of a list of containers with command `sleep 720h`.
 This ensures that all nodes in the cluster have those images cached. The `sleep` binary being used is [golang-based](https://github.com/che-incubator/kubernetes-image-puller/tree/main/sleep) (please see [Scratch Images](#scratch-images)).
 We also periodically check the health of the daemonset and re-create it if necessary.
