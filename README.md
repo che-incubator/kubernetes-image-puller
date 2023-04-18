@@ -159,4 +159,4 @@ As a result, every container (including scratch image containers) uses the provi
 
 ## Trademark
 
-
+"Che" is a trademark of the Eclipse Foundation.
