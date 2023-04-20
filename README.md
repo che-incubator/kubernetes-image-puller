@@ -156,3 +156,7 @@ However, the daemonset created by the Kubernetes Image Puller now:
 2. creates containers `volumeMounts` set to the `kip` volume, and with `command` set to `/kip/sleep 720h`
 
 As a result, every container (including scratch image containers) uses the provided golang-based `sleep` binary.
+
+## Trademark
+
+"Che" is a trademark of the Eclipse Foundation.
