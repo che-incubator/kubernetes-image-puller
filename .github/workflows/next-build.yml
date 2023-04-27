@@ -42,11 +42,9 @@ jobs:
       id: prep
       run: |
         set -e
-        SHORT_SHA1=$(git rev-parse --short HEAD)
-        echo ::set-output name=short_sha1::${SHORT_SHA1}
-        echo ::set-output name=version::next
-        IMAGE=kubernetes-image-puller
-        echo ::set-output name=image::${IMAGE}
+        echo "short_sha1=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        echo "version=next" >> $GITHUB_OUTPUT
+        echo "image=kubernetes-image-puller" >> $GITHUB_OUTPUT
     -
       name: "Build and push"
       uses: docker/build-push-action@v3
