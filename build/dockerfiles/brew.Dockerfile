@@ -26,7 +26,7 @@ RUN adduser appuser && \
     make build 
 
 # https://registry.access.redhat.com/ubi8-minimal
-FROM ubi8-minimal:8.8-860
+FROM ubi8-minimal:8.8-1014
 USER root
 RUN microdnf -y update && microdnf clean all && rm -rf /var/cache/yum && echo "Installed Packages" && rpm -qa | sort -V && echo "End Of Installed Packages"
 
