@@ -11,8 +11,7 @@
 # https://registry.access.redhat.com/rhel8/go-toolset
 FROM rhel8/go-toolset:1.19.6-4 as builder
 ENV GOPATH=/go/ \
-    GO111MODULE=on \
-    CGO_ENABLED=1
+    GO111MODULE=on
 
 ARG BOOTSTRAP=false
 ENV BOOTSTRAP=${BOOTSTRAP}
