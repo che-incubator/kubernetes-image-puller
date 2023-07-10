@@ -122,15 +122,25 @@ The provided Makefile has two parameters:
 
 ### Manual
 Build:
-```bash
-GOOS=linux go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
+```shell
+CGO_ENABLED=1
+BINARY_NAME=kubernetes-image-puller
+
+GOOS=linux go build -v -o ./bin/${BINARY_NAME} ./cmd/main.go
+GOOS=linux go build -a -ldflags '-w -s' -a -installsuffix cgo -o ./bin/sleep ./sleep/sleep.go
 ```
 Make docker image:
-```bash
+```shell
+DOCKERIMAGE_NAME=kubernetes-image-puller
+DOCKERIMAGE_TAG=next
+
 docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./build/dockerfiles/Dockerfile .
 ```
 
 ## Testing
+
+Once built and published to a registry, you can test FIPS compliance using https://github.com/openshift/check-payload#scan-a-container-or-operator-image
+
 To run the unit tests:
 ```shell
 make test
