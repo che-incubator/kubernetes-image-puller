@@ -8,7 +8,7 @@ all: build docker
 
 build: test
 	GOOS=linux go build -v -o ./bin/${BINARY_NAME} ./cmd/main.go
-	CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -s' -a -installsuffix cgo -o ./bin/sleep ./sleep/sleep.go
+	GOOS=linux go build -a -ldflags '-w -s' -a -installsuffix cgo -o ./bin/sleep ./sleep/sleep.go
 
 lint:
 	golangci-lint run -v

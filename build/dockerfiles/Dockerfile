@@ -11,7 +11,8 @@
 # https://registry.access.redhat.com/ubi8/go-toolset
 FROM registry.access.redhat.com/ubi8/go-toolset:1.19.6-4 as builder
 ENV GOPATH=/go/ \
-    GO111MODULE=on
+    GO111MODULE=on \
+    CGO_ENABLED=1
 
 ARG BOOTSTRAP=true
 ENV BOOTSTRAP=${BOOTSTRAP}
@@ -33,6 +34,7 @@ RUN if [[ ${BOOTSTRAP} != "false" ]]; then \
 
 COPY . .
 
+# to test FIPS compliance, run https://github.com/openshift/check-payload#scan-a-container-or-operator-image against a built image
 RUN adduser appuser && \
     make build 
 

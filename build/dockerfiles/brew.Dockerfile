@@ -11,7 +11,8 @@
 # https://registry.access.redhat.com/rhel8/go-toolset
 FROM rhel8/go-toolset:1.19.6-4 as builder
 ENV GOPATH=/go/ \
-    GO111MODULE=on
+    GO111MODULE=on \
+    CGO_ENABLED=1
 
 ARG BOOTSTRAP=false
 ENV BOOTSTRAP=${BOOTSTRAP}
@@ -22,6 +23,7 @@ COPY $REMOTE_SOURCES $REMOTE_SOURCES_DIR
 RUN source $REMOTE_SOURCES_DIR/devspaces-images-imagepuller/cachito.env
 WORKDIR $REMOTE_SOURCES_DIR/devspaces-images-imagepuller/app/devspaces-imagepuller
 
+# to test FIPS compliance, run https://github.com/openshift/check-payload#scan-a-container-or-operator-image against a built image
 RUN adduser appuser && \
     make build 
 
