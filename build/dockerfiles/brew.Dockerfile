@@ -22,6 +22,7 @@ COPY $REMOTE_SOURCES $REMOTE_SOURCES_DIR
 RUN source $REMOTE_SOURCES_DIR/devspaces-images-imagepuller/cachito.env
 WORKDIR $REMOTE_SOURCES_DIR/devspaces-images-imagepuller/app/devspaces-imagepuller
 
+# to test FIPS compliance, run https://github.com/openshift/check-payload#scan-a-container-or-operator-image against a built image
 RUN adduser appuser && \
     make build 
 

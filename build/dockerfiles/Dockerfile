@@ -33,6 +33,7 @@ RUN if [[ ${BOOTSTRAP} != "false" ]]; then \
 
 COPY . .
 
+# to test FIPS compliance, run https://github.com/openshift/check-payload#scan-a-container-or-operator-image against a built image
 RUN adduser appuser && \
     make build 
 
