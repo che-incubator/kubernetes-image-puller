@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   registry: quay.io/eclipse
   repository: kubernetes-image-puller
-  tag: "bdf0ed3"
+  tag: "next"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
