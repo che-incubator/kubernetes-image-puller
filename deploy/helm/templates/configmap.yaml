@@ -14,3 +14,4 @@ data:
   NODE_SELECTOR: "{{ .Values.configMap.nodeSelector }}"
   IMAGE_PULL_SECRETS: "{{ .Values.configMap.imagePullSecrets }}"
   AFFINITY: "{{ .Values.configMap.affinity }}"
+  TOLERATIONS: "{{ .Values.configMap.tolerations }}"
