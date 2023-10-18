@@ -25,6 +25,7 @@ type Config struct {
 	CachingInterval   int
 	NodeSelector      map[string]string
 	ImagePullSecrets  []string
+	Tolerations       []map[string]string
 	Affinity          *corev1.Affinity
 	ImagePullerImage  string
 }
@@ -41,6 +42,7 @@ func GetConfig() Config {
 		CachingCpuLimit:   getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
 		NodeSelector:      processNodeSelectorEnvVar(),
 		ImagePullSecrets:  processImagePullSecretsEnvVar(),
+		Tolerations:       processTolerationsEnvVar(),
 		Affinity:          processAffinityEnvVar(),
 		ImagePullerImage:  getEnvVarOrDefault(kipImageEnvVar, defaultImage),
 	}

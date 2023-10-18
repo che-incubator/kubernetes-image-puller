@@ -119,6 +119,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 				},
 				Spec: corev1.PodSpec{
 					NodeSelector:                  cfg.NodeSelector,
+					Tolerations:                   cfg.Tolerations,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					InitContainers: []corev1.Container{{
 						Name:            "copy-sleep",
