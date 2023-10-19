@@ -20,6 +20,7 @@ objects:
     CACHING_CPU_REQUEST: ${CACHING_CPU_REQUEST}
     CACHING_CPU_LIMIT: ${CACHING_CPU_LIMIT}
     NODE_SELECTOR: ${NODE_SELECTOR}
+    TOLERATIONS: ${TOLERATIONS}
     IMAGE_PULL_SECRETS: ${IMAGE_PULL_SECRETS}
     AFFINITY: ${AFFINITY}
 parameters:
@@ -44,6 +45,8 @@ parameters:
   value: ".2"
 - name: NODE_SELECTOR
   value: "{}"
+- name: TOLERATIONS
+  value: ""
 - name: IMAGE_PULL_SECRETS
   value: ""
 - name: AFFINITY

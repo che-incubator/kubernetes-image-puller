@@ -25,6 +25,7 @@ The config values to be set are:
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in this format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset, provided in this format `'{"key":"value"}'`      | `'{}'` |
+| `TOLERATIONS` | Tolerations to be applied to pods to be scheduled on to tainted nodes. Format: `"key=value:Effect"` | `""` |
 | `IMAGE_PULL_SECRETS` | List of image pull secrets, in this format `pullsecret1;...` to add to pods created by the DaemonSet. Those secrets need to be in the image puller's namespace and a cluster administrator must create them.       | `""` |
 | `AFFINITY` | Affinity applied to pods created by the daemonset, in this format `'{"nodeAffinity":{ ... }}'`       | `'{}'` |
 | `KIP_IMAGE` | The image puller image to copy the `sleep` binary from | `quay.io/eclipse/kubernetes-image-puller:next` |
@@ -46,7 +47,8 @@ The following values can be set:
 | `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"`                                              |
 | `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05`                                                 |
 | `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap  | `.2`                                                  |
-| `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
+| `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                 |
+| `configMap.tolerations`         | The value of `TOLERATIONS` to be set in the ConfigMap      | `""`                                                 |
 | `configMap.imagePullSecrets` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 | `configMap.affinity`         | The value of `AFFINITY` to be set in the ConfigMap      | `"{}"`                                                |
 
@@ -68,6 +70,7 @@ The following values can be set:
 | `CACHING_CPU_LIMIT` | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap | `.2` |
 | `NAMESPACE` | The value of `NAMESPACE` to be set in the ConfigMap | `k8s-image-puller` |
 | `NODE_SELECTOR` | The value of `NODE_SELECTOR` to be set in the ConfigMap | `"{}"` |
+| `TOLERATIONS` | The value of `TOLERATIONS` to be set in the ConfigMap | `""` |
 | `IMAGE_PULL_SECRETS` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 | `AFFINITY` | The value of `AFFINITY` to be set in the ConfigMap | `"{}"` |
 
