@@ -121,18 +121,23 @@ func convertToTaintEffect(effectString string) (corev1.TaintEffect, error) {
 }
 
 func processTolerationsEnvVar() []corev1.Toleration {
-	rawTolerations := getEnvVarOrDefault(corev1.TolerationsAnnotationKey, defaultTolerations)
-	tolerationString := strings.Split(rawTolerations, ";")
+	rawTolerations := getEnvVarOrDefault(tolerationsEnvVar, defaultTolerations)
+	rawTolerations = strings.TrimSpace(rawTolerations)
+
+	if rawTolerations == "" {
+		return []corev1.Toleration{}
+	}
+
+	tolerationList := strings.Split(rawTolerations, ";")
 	var tolerations []corev1.Toleration
 
-	for _, toleration := range tolerationString {
-		parts := strings.Split(toleration, ":")
+	for _, toleration := range tolerationList {
+		parts := strings.Split(strings.TrimSpace(toleration), ":")
 		if len(parts) != 2 {
 			log.Fatalf("invalid toleration format")
 		}
 
 		keyValue := parts[0]
-
 		effect, err := convertToTaintEffect(parts[1])
 		if err != nil {
 			log.Fatalf("invalid toleration effect")

@@ -92,6 +92,63 @@ func TestProcessNodeSElectorEnvVar(t *testing.T) {
 	}
 }
 
+func TestTolerationsEnvVar(t *testing.T) {
+	type testcase struct {
+		name            string
+		tolerations     string
+		isTolerationSet bool
+		want            []v1.Toleration
+	}
+
+	testcases := []testcase{
+		{
+			name:            "default tolerations, TOLERATIONS set",
+			tolerations:     "",
+			isTolerationSet: true,
+			want:            []v1.Toleration{},
+		},
+		{
+			name:            "multiple tolerations, TOLERATIONS set",
+			tolerations:     "key=value:NoSchedule; test=hello:NoExecute",
+			isTolerationSet: true,
+			want: []v1.Toleration{
+				v1.Toleration{
+					Key:      "key",
+					Value:    "value",
+					Operator: "Equal",
+					Effect:   v1.TaintEffectNoSchedule,
+				},
+				v1.Toleration{
+					Key:      "test",
+					Value:    "hello",
+					Operator: "Equal",
+					Effect:   v1.TaintEffectNoExecute,
+				},
+			},
+		},
+		{
+			name:            "default env var, TOLERATIONS not set",
+			tolerations:     "key=value:NoSchedule",
+			isTolerationSet: false,
+			want:            []v1.Toleration{},
+		},
+	}
+
+	for _, c := range testcases {
+		t.Run(c.name, func(t *testing.T) {
+			defer os.Clearenv()
+			if c.isTolerationSet {
+				os.Setenv("TOLERATIONS", c.tolerations)
+			}
+			got := processTolerationsEnvVar()
+
+			if d := cmp.Diff(c.want, got); d != "" {
+				t.Errorf("(-want, +got): %s", d)
+			}
+		})
+	}
+}
+
 func TestGetEnvVarOrDefaultBool(t *testing.T) {
 	defer os.Clearenv()
 	os.Setenv("DEFINED_ENV_VAR", "true")
