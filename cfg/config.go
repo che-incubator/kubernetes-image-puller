@@ -25,7 +25,7 @@ type Config struct {
 	CachingInterval   int
 	NodeSelector      map[string]string
 	ImagePullSecrets  []string
-	Tolerations       []map[string]string
+	Tolerations       []corev1.Toleration
 	Affinity          *corev1.Affinity
 	ImagePullerImage  string
 }

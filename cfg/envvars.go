@@ -14,6 +14,7 @@ package cfg
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -106,10 +107,23 @@ func processNodeSelectorEnvVar() map[string]string {
 	return nodeSelector
 }
 
-func processTolerationsEnvVar() []map[string]string {
+func convertToTaintEffect(effectString string) (corev1.TaintEffect, error) {
+	switch strings.ToLower(effectString) {
+	case "noschedule":
+		return corev1.TaintEffectNoSchedule, nil
+	case "prefernoschedule":
+		return corev1.TaintEffectPreferNoSchedule, nil
+	case "noexecute":
+		return corev1.TaintEffectNoExecute, nil
+	default:
+		return "", fmt.Errorf("invalid taint effect: %s", effectString)
+	}
+}
+
+func processTolerationsEnvVar() []corev1.Toleration {
 	rawTolerations := getEnvVarOrDefault(corev1.TolerationsAnnotationKey, defaultTolerations)
 	tolerationString := strings.Split(rawTolerations, ";")
-	var tolerations []map[string]string
+	var tolerations []corev1.Toleration
 
 	for _, toleration := range tolerationString {
 		parts := strings.Split(toleration, ":")
@@ -118,7 +132,11 @@ func processTolerationsEnvVar() []map[string]string {
 		}
 
 		keyValue := parts[0]
-		effect := parts[1]
+
+		effect, err := convertToTaintEffect(parts[1])
+		if err != nil {
+			log.Fatalf("invalid toleration effect")
+		}
 
 		keyValueParts := strings.Split(keyValue, "=")
 		if len(keyValueParts) != 2 {
@@ -128,11 +146,11 @@ func processTolerationsEnvVar() []map[string]string {
 		key := keyValueParts[0]
 		value := keyValueParts[1]
 
-		result := map[string]string{
-			"key":      key,
-			"operator": "Equal",
-			"value":    value,
-			"effect":   effect,
+		result := corev1.Toleration{
+			Key:      key,
+			Operator: "Equal",
+			Value:    value,
+			Effect:   effect,
 		}
 
 		tolerations = append(tolerations, result)
