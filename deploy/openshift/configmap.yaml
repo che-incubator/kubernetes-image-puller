@@ -1,5 +1,5 @@
 kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 metadata:
   labels:
     app: kubernetes-image-puller
@@ -22,6 +22,7 @@ objects:
     NODE_SELECTOR: ${NODE_SELECTOR}
     IMAGE_PULL_SECRETS: ${IMAGE_PULL_SECRETS}
     AFFINITY: ${AFFINITY}
+    KIP_IMAGE: ${KIP_IMAGE}
 parameters:
 - name: IMAGES
   value: >
@@ -48,3 +49,5 @@ parameters:
   value: ""
 - name: AFFINITY
   value: "{}"
+- name: KIP_IMAGE
+  value: quay.io/eclipse/kubernetes-image-puller:next
