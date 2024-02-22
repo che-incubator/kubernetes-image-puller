@@ -1,16 +1,16 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.configMap.name }}
+  name: {{ include "common.fullname" . }}
+  labels: {{- include "common.labels" . | nindent 4 }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 data:
-  IMAGES: "{{ .Values.configMap.images }}"
-  DAEMONSET_NAME: "{{ .Values.deploymentName }}"
-  CACHING_INTERVAL_HOURS: "{{ .Values.configMap.cachingIntervalHours }}"
   NAMESPACE: "{{ .Release.Namespace }}"
-  CACHING_MEMORY_REQUEST: "{{ .Values.configMap.cachingMemoryRequest }}"
-  CACHING_MEMORY_LIMIT: "{{ .Values.configMap.cachingMemoryLimit }}"
-  CACHING_CPU_REQUEST: "{{ .Values.configMap.cachingCpuRequest }}"
-  CACHING_CPU_LIMIT: "{{ .Values.configMap.cachingCpuLimit }}"
-  NODE_SELECTOR: "{{ .Values.configMap.nodeSelector }}"
-  IMAGE_PULL_SECRETS: "{{ .Values.configMap.imagePullSecrets }}"
-  AFFINITY: "{{ .Values.configMap.affinity }}"
+  DEPLOYMENT_NAME: "{{ template "common.fullname" . }}"
+  DAEMONSET_NAME: "{{ template "common.fullname" . }}"
+  {{- range $key,$value := .Values.environment }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}

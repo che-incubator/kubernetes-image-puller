@@ -1,20 +1,45 @@
-deploymentName: kubernetes-image-puller
-image: 
-  repository: quay.io/eclipse/kubernetes-image-puller
-  tag: next
-serviceAccount:
-  name: k8s-image-puller
-configMap:
-  name: k8s-image-puller
-  images: >
+---
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  registry: quay.io/eclipse
+  repository: kubernetes-image-puller
+  tag: "next"
+  digest: ""
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+commonLabels: {}
+
+environment:
+  AFFINITY: "{}"
+  CACHING_CPU_LIMIT: ".2"
+  CACHING_CPU_REQUEST: ".05"
+  CACHING_INTERVAL_HOURS: 1
+  CACHING_MEMORY_LIMIT: "20Mi"
+  CACHING_MEMORY_REQUEST: "10Mi"
+  IMAGE_PULL_SECRETS: ""
+  IMAGES: >
     java11-maven=quay.io/eclipse/che-java11-maven:nightly;
     che-theia=quay.io/eclipse/che-theia:next;
     java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
-  cachingIntervalHours: 1
-  cachingMemoryRequest: "10Mi"
-  cachingMemoryLimit: "20Mi"
-  cachingCpuRequest: ".05"
-  cachingCpuLimit: ".2"
-  nodeSelector: "{}"
-  imagePullSecrets: ""
-  affinity: "{}"
+  NODE_SELECTOR: "{}"
+
+deployment:
+  annotations: {}
+  labels: {}
+
+pod:
+  annotations: {}
+  labels: {}
+
+affinity: {}
+nodeSelector: {}
+resources:
+  limits:
+    cpu: 10m
+    memory: 20Mi
+tolerations: []

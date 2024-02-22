@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "common.fullname" . }}
+  {{- with .Values.deployment.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels: {{- include "common.labels" . | nindent 4 }}
+    {{- with .Values.commonLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.deployment.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: {{- include "common.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: "Recreate"
+  template:
+    metadata:
+      annotations:
+        "checksum/config": {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote }}
+        {{- with .Values.pod.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels: {{- include "common.labels" . | nindent 8 }}
+        {{- with .Values.commonLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.pod.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "common.fullname" . }}
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: kubernetes-image-puller
+          image: {{ include "common.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "common.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
