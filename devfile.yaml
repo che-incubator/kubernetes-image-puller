@@ -1,38 +1,24 @@
+schemaVersion: 2.2.0
 metadata:
-  generateName: kubernetes-image-puller-
-attributes:
-  persistVolumes: 'false'
+  generateName: kubernetes-image-puller
 components:
-  - id: golang/go/latest
-    memoryLimit: 512Mi
-    preferences:
-      go.lintTool: golangci-lint
-      go.lintFlags: '--fast'
-    type: chePlugin
-    alias: go-plugin
-  - mountSources: true
-    endpoints:
-      - name: 8080/tcp
-        port: 8080
-    memoryLimit: 2Gi
-    type: dockerimage
-    image: 'quay.io/eclipse/che-golang-1.12:next'
-    alias: go-cli
-    env:
-      - value: '/go:$(CHE_PROJECTS_ROOT)'
-        name: GOPATH
-      - value: /tmp/.cache
-        name: GOCACHE
- 
-  - id: github/vscode-pull-request-github/latest
-    type: chePlugin
-    registryUrl: 'https://che-plugin-registry-main.surge.sh/v3'
-apiVersion: 1.0.0
+  - name: universal-developer-image
+    container:
+      image: quay.io/devfile/universal-developer-image:ubi8-latest
+      memoryLimit: 6Gi
+      mountSources: true
 commands:
-  - name: build kubernetes-image-puller
-    actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/kubernetes-image-puller'
-        type: exec
-        command: go build -v -o ./bin/kubernetes-image-puller ./cmd/main.go
-        component: go-cli
-
+  - id: build
+    exec:
+      label: "Build kubernetes-image-puller"
+      component: universal-developer-image
+      commandLine: "make build"
+      group:
+        kind: build
+  - id: build-kip-and-image
+    exec:
+      label: "Build kubernetes-image-puller and the container image"
+      component: universal-developer-image
+      commandLine: "make"
+      group:
+        kind: build

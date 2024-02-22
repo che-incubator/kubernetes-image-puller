@@ -1,7 +1,8 @@
 BINARY_NAME=kubernetes-image-puller
-DOCKERIMAGE_NAME=kubernetes-image-puller
-DOCKERIMAGE_TAG=next
+IMAGE_NAME=kubernetes-image-puller
+IMAGE_TAG=next
 CGO_ENABLED=1
+PODMAN=podman
 
 all: build docker
 
@@ -18,10 +19,10 @@ test:
 	CGO_ENABLED=${CGO_ENABLED} go test -v ./cfg... ./pkg... ./sleep... ./utils...
 
 docker:
-	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./build/dockerfiles/Dockerfile .
+	${PODMAN} build -t ${IMAGE_NAME}:${IMAGE_TAG} -f ./build/dockerfiles/Dockerfile .
 
 docker-dev: build
-	docker build -t ${DOCKERIMAGE_NAME}:${DOCKERIMAGE_TAG} -f ./build/dockerfiles/dev.Dockerfile .
+	${PODMAN} build -t ${IMAGE_NAME}:${IMAGE_TAG} -f ./build/dockerfiles/dev.Dockerfile .
 
 local-setup:
 	oc process -f ./deploy/serviceaccount.yaml | oc apply -f -
