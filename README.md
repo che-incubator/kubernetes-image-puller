@@ -28,6 +28,7 @@ The config values to be set are:
 | `IMAGE_PULL_SECRETS` | List of image pull secrets, in this format `pullsecret1;...` to add to pods created by the DaemonSet. Those secrets need to be in the image puller's namespace and a cluster administrator must create them.       | `""` |
 | `AFFINITY` | Affinity applied to pods created by the daemonset, in this format `'{"nodeAffinity":{ ... }}'`       | `'{}'` |
 | `KIP_IMAGE` | The image puller image to copy the `sleep` binary from | `quay.io/eclipse/kubernetes-image-puller:next` |
+| `TOLERATIONS` | Tolerations applied to pods created by the daemonset, provided in this format `'[{"operator":"Exists"}]'` | `'[]'` |
 
 ### Configuration - Helm 
 
@@ -49,6 +50,7 @@ The following values can be set:
 | `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
 | `configMap.imagePullSecrets` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 | `configMap.affinity`         | The value of `AFFINITY` to be set in the ConfigMap      | `"{}"`                                                |
+| `configMap.tolerations`      | The value of `TOLERATIONS` to be set in the ConfigMap   | `"[]"`                                                |
 
 ### Configuration - OpenShift
 
@@ -70,6 +72,7 @@ The following values can be set:
 | `NODE_SELECTOR` | The value of `NODE_SELECTOR` to be set in the ConfigMap | `"{}"` |
 | `IMAGE_PULL_SECRETS` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 | `AFFINITY` | The value of `AFFINITY` to be set in the ConfigMap | `"{}"` |
+| `TOLERATIONS` | The value of `TOLERATIONS` to be set in the ConfigMap | `"[]"` |
 
 ### Installation - Helm
 

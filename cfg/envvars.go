@@ -36,6 +36,7 @@ const (
 	imagePullSecretsEnvVar  = "IMAGE_PULL_SECRETS"
 	affinityEnvVar          = "AFFINITY"
 	kipImageEnvVar          = "KIP_IMAGE"
+	tolerationsEnvVar       = "TOLERATIONS"
 )
 
 // Default values where applicable
@@ -52,6 +53,7 @@ const (
 	defaultImagePullSecret   = ""
 	defaultAffinity          = "{}"
 	defaultImage             = "quay.io/eclipse/kubernetes-image-puller:next"
+	defaultTolerations       = "[]"
 )
 
 func getCachingInterval() int {
@@ -126,6 +128,15 @@ func processAffinityEnvVar() *corev1.Affinity {
 		log.Fatalf("Failed to unmarshal affinity json: %s", err)
 	}
 	return affinity
+}
+
+func processTolerationsEnvVar() []corev1.Toleration {
+	rawTolerations := getEnvVarOrDefault(tolerationsEnvVar, defaultTolerations)
+	var tolerations []corev1.Toleration
+	if err := json.Unmarshal([]byte(rawTolerations), &tolerations); err != nil {
+		log.Fatalf("Failed to unmarshal tolerations json: %s", err)
+	}
+	return tolerations
 }
 
 func getEnvVarOrExit(envVar string) string {

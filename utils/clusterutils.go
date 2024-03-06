@@ -133,6 +133,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					ImagePullSecrets: imgPullSecrets,
 					Affinity:         cfg.Affinity,
 					Volumes:          []corev1.Volume{{Name: kipVolumeName}},
+					Tolerations:      cfg.Tolerations,
 				},
 			},
 		},

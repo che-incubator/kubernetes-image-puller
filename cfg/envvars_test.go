@@ -164,3 +164,64 @@ func Test_processAffinityEnvVar(t *testing.T) {
 		})
 	}
 }
+
+func TestProcessTolerationsEnvVar(t *testing.T) {
+	type testcase struct {
+		name             string
+		tolerations      string
+		isTolerationsSet bool
+		want             []v1.Toleration
+	}
+
+	tests := []testcase{
+		{
+			name:             "default tolerations, TOLERATIONS set",
+			tolerations:      "[]",
+			isTolerationsSet: true,
+			want:             []v1.Toleration{},
+		},
+		{
+			name:             "app prod, TOLERATIONS set",
+			tolerations:      `[{"effect":"NoSchedule","key":"app","operator":"Equal","value": "prod"}]`,
+			isTolerationsSet: true,
+			want: []v1.Toleration{
+				{
+					Key:      "app",
+					Operator: "Equal",
+					Value:    "prod",
+					Effect:   "NoSchedule",
+				},
+			},
+		},
+		{
+			name:             "operator exists, TOLERATIONS set",
+			tolerations:      `[{"operator":"Exists"}]`,
+			isTolerationsSet: true,
+			want: []v1.Toleration{
+				{
+					Operator: "Exists",
+				},
+			},
+		},
+		{
+			name:             "default env var, TOLERATIONS not set",
+			tolerations:      "[{\"this\": \"shouldn't be set\"}]",
+			isTolerationsSet: false,
+			want:             []v1.Toleration{},
+		},
+	}
+
+	for _, c := range tests {
+		t.Run(c.name, func(t *testing.T) {
+			defer os.Clearenv()
+			if c.isTolerationsSet {
+				os.Setenv("TOLERATIONS", c.tolerations)
+			}
+			got := processTolerationsEnvVar()
+
+			if d := cmp.Diff(c.want, got); d != "" {
+				t.Errorf("(-want, +got): %s", d)
+			}
+		})
+	}
+}

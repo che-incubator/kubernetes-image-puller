@@ -23,6 +23,7 @@ objects:
     IMAGE_PULL_SECRETS: ${IMAGE_PULL_SECRETS}
     AFFINITY: ${AFFINITY}
     KIP_IMAGE: ${KIP_IMAGE}
+    TOLERATIONS: ${TOLERATIONS}
 parameters:
 - name: IMAGES
   value: >
@@ -51,3 +52,5 @@ parameters:
   value: "{}"
 - name: KIP_IMAGE
   value: quay.io/eclipse/kubernetes-image-puller:next
+- name: TOLERATIONS
+  value: "[]"

@@ -18,3 +18,4 @@ configMap:
   nodeSelector: "{}"
   imagePullSecrets: ""
   affinity: "{}"
+  tolerations: "[]"

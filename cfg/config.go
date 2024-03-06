@@ -27,6 +27,7 @@ type Config struct {
 	ImagePullSecrets  []string
 	Affinity          *corev1.Affinity
 	ImagePullerImage  string
+	Tolerations       []corev1.Toleration
 }
 
 func GetConfig() Config {
@@ -43,5 +44,6 @@ func GetConfig() Config {
 		ImagePullSecrets:  processImagePullSecretsEnvVar(),
 		Affinity:          processAffinityEnvVar(),
 		ImagePullerImage:  getEnvVarOrDefault(kipImageEnvVar, defaultImage),
+		Tolerations:       processTolerationsEnvVar(),
 	}
 }
