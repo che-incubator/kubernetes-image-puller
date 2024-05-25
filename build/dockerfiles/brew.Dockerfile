@@ -9,7 +9,7 @@
 #   Red Hat, Inc. - initial API and implementation
 #
 # https://registry.access.redhat.com/rhel8/go-toolset
-FROM rhel8/go-toolset:1.20.12-5 as builder
+FROM rhel8/go-toolset:1.21.9-3 as builder
 ENV GOPATH=/go/ \
     GO111MODULE=on
 
