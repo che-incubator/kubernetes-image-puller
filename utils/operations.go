@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 Red Hat, Inc.
+// Copyright (c) 2019-2024 Red Hat, Inc.
 // This program and the accompanying materials are made
 // available under the terms of the Eclipse Public License 2.0
 // which is available at https://www.eclipse.org/legal/epl-2.0/
@@ -13,6 +13,7 @@
 package utils
 
 import (
+	"context"
 	"log"
 
 	"github.com/che-incubator/kubernetes-image-puller/cfg"
@@ -52,7 +53,7 @@ func EnsureDaemonsetExists(clientset *kubernetes.Clientset) {
 		clientset.
 			AppsV1().
 			DaemonSets(cfg.Namespace).
-			Get(cfg.DaemonsetName, metav1.GetOptions{})
+			Get(context.Background(), cfg.DaemonsetName, metav1.GetOptions{})
 	if err != nil || daemonset == nil {
 		log.Printf("Recreating daemonset due to error")
 		DeleteDaemonsetIfExists(clientset)
@@ -69,7 +70,7 @@ func DeleteDaemonsetIfExists(clientset *kubernetes.Clientset) {
 		clientset.
 			AppsV1().
 			DaemonSets(cfg.Namespace).
-			Get(cfg.DaemonsetName, metav1.GetOptions{})
+			Get(context.Background(), cfg.DaemonsetName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		return
 	} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
@@ -90,7 +91,7 @@ func LogNumNodesScheduled(clientset *kubernetes.Clientset, user string) {
 		clientset.
 			AppsV1().
 			DaemonSets(cfg.Namespace).
-			Get(cfg.DaemonsetName, metav1.GetOptions{})
+			Get(context.Background(), cfg.DaemonsetName, metav1.GetOptions{})
 	if err != nil {
 		log.Printf("Failed to get daemonset for user '%s': %s", user, err)
 	}
