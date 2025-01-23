@@ -4,7 +4,7 @@ image:
   tag: next
 serviceAccount:
   name: k8s-image-puller
-priorityClassName: {}
+priorityClassName: ""
 configMap:
   name: k8s-image-puller
   images: >
