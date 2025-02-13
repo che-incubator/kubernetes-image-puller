@@ -19,3 +19,5 @@ configMap:
   imagePullSecrets: ""
   affinity: "{}"
   tolerations: "[]"
+tolerations: []
+nodeSelector: {}
