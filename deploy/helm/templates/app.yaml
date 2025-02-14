@@ -17,14 +17,6 @@ spec:
       labels:
         app: {{ .Values.deploymentName }}
     spec:
-      {{- if .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-        {{ toYaml .Values.nodeSelector }}
-      {{- end }}
       containers:
       - name: {{ .Values.deploymentName }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -35,4 +27,12 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .Values.configMap.name }}
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{ toYaml .Values.nodeSelector }}
+      {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
