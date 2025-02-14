@@ -6,6 +6,7 @@ serviceAccount:
   name: k8s-image-puller
 updateStrategy:
   type: Recreate
+priorityClassName: ""
 configMap:
   name: k8s-image-puller
   images: >
