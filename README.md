@@ -40,6 +40,7 @@ The following values can be set:
 | `image.repository`               | The repository to pull the image from                        | `quay.io/eclipse/kubernetes-image-puller`             |
 | `image.tag`                      | The image tag to pull                                        | `next`                                                |
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
+| `updateStrategy.type`            | The updateStrategy type to use when restarting the Deployment| `Recreate`                                            |
 | `priorityClassName`              | The updateStrategy type to use when restarting the Deployment| `""`                                                  |
 | `configMap.name`                 | The name of the ConfigMap to create                          | `k8s-image-puller`                                    |
 | `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap             | // TODO create a reasonable set of default containers |
