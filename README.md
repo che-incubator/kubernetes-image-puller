@@ -42,6 +42,7 @@ The following values can be set:
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
 | `tolerations`                    | The value of `tolerations` to be set for the Deployment      | `"[]"`                                                |
 | `nodeSelector`                   | The value of `nodeSelector` to be set in the Deployment      | `"{}"`                                                |
+| `updateStrategy.type`            | The updateStrategy type to use when restarting the Deployment| `Recreate`                                            |
 | `priorityClassName`              | The updateStrategy type to use when restarting the Deployment| `""`                                                  |
 | `configMap.name`                 | The name of the ConfigMap to create                          | `k8s-image-puller`                                    |
 | `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap             | // TODO create a reasonable set of default containers |

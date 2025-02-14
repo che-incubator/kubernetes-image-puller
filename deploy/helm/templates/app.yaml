@@ -11,7 +11,7 @@ spec:
     matchLabels:
       app:  {{ .Values.deploymentName }}
   strategy:
-    type: "Recreate"
+    type: {{ .Values.updateStrategy.type }}
   template:
     metadata:
       labels:
