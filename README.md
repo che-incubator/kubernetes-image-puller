@@ -30,7 +30,7 @@ The config values to be set are:
 | `KIP_IMAGE` | The image puller image to copy the `sleep` binary from | `quay.io/eclipse/kubernetes-image-puller:next` |
 | `TOLERATIONS` | Tolerations applied to pods created by the daemonset, provided in this format `'[{"operator":"Exists"}]'` | `'[]'` |
 
-### Configuration - Helm 
+### Configuration - Helm
 
 The following values can be set:
 
@@ -42,6 +42,7 @@ The following values can be set:
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
 | `tolerations`                    | The value of `tolerations` to be set for the Deployment      | `"[]"`                                                |
 | `nodeSelector`                   | The value of `nodeSelector` to be set in the Deployment      | `"{}"`                                                |
+| `priorityClassName`              | The updateStrategy type to use when restarting the Deployment| `""`                                                  |
 | `configMap.name`                 | The name of the ConfigMap to create                          | `k8s-image-puller`                                    |
 | `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap             | // TODO create a reasonable set of default containers |
 | `configMap.cachingIntervalHours` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"`                                                 |
