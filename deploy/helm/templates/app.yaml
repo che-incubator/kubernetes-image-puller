@@ -28,8 +28,10 @@ spec:
         - configMapRef:
             name: {{ .Values.configMap.name }}
       {{- if .Values.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
