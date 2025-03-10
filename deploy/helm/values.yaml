@@ -21,6 +21,7 @@ configMap:
   nodeSelector: "{}"
   imagePullSecrets: ""
   affinity: "{}"
-  tolerations: "[]"
+  # Tolerations applied to pods created by the daemonset, provided in this format (escaped JSON) `'[{\"key\":\"foo\",\"operator\":\"Equal\",\"value\":\"bar\"}
+  tolerations: '[]'
 tolerations: []
 nodeSelector: {}
