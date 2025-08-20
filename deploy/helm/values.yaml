@@ -24,3 +24,4 @@ configMap:
   tolerations: "[]"
 tolerations: []
 nodeSelector: {}
+securityContext: {}
