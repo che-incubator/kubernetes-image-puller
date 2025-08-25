@@ -37,8 +37,8 @@ spec:
       nodeSelector:
         {{ toYaml .Values.nodeSelector }}
       {{- end }}
-      {{- if .Values.securityContext }}
-      securityContext: {{ toYaml .Values.securityContext | nindent 8 }}
+      {{- if .Values.containerSecurityContext }}
+      securityContext: {{ toYaml .Values.containerSecurityContext | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       priorityClassName: {{ .Values.priorityClassName }}
