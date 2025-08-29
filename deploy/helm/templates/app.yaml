@@ -27,6 +27,9 @@ spec:
         envFrom:
         - configMapRef:
             name: {{ .Values.configMap.name }}
+      {{- if .Values.containerSecurityContext }}
+        securityContext: {{ toYaml .Values.containerSecurityContext | nindent 10 }}
+      {{- end }}
       {{- if .Values.tolerations }}
       {{- with .Values.tolerations }}
       tolerations:
@@ -36,9 +39,6 @@ spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
         {{ toYaml .Values.nodeSelector }}
-      {{- end }}
-      {{- if .Values.containerSecurityContext }}
-      securityContext: {{ toYaml .Values.containerSecurityContext | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       priorityClassName: {{ .Values.priorityClassName }}
