@@ -27,6 +27,7 @@ func TestEnvVars(t *testing.T) {
 			env:  map[string]string{},
 			want: Config{
 				DaemonsetName: "kubernetes-image-puller",
+				DaemonsetAnnotations: map[string]string{},
 				Namespace:     "k8s-image-puller",
 				Images: map[string]string{
 					"che-theia": "quay.io/eclipse/che-theia:nightly",
@@ -46,17 +47,21 @@ func TestEnvVars(t *testing.T) {
 		{
 			name: "overrides",
 			env: map[string]string{
-				"DAEMONSET_NAME":      "custom-daemonset-name",
-				"NAMESPACE":           "my-namespace",
-				"NODE_SELECTOR":       "{\"type\": \"compute\"}",
-				"CACHING_CPU_REQUEST": ".055",
-				"IMAGE_PULL_SECRETS":  "secret1; secret2",
-				"AFFINITY":            `{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"kubernetes.io/e2e-az-name","operator":"In","values":["e2e-az1","e2e-az2"]}]}]}}}`,
-				"KIP_IMAGE":           "quay.io/my-repo/kubernetes-image-puller:next",
-				"TOLERATIONS":         `[{"effect":"NoSchedule","key":"app","operator":"Equal","value": "prod"}]`,
+				"DAEMONSET_NAME":        "custom-daemonset-name",
+				"DAEMONSET_ANNOTATIONS": "{\"reloader.stakater.com/auto\": \"true\"}",
+				"NAMESPACE":             "my-namespace",
+				"NODE_SELECTOR":         "{\"type\": \"compute\"}",
+				"CACHING_CPU_REQUEST":   ".055",
+				"IMAGE_PULL_SECRETS":    "secret1; secret2",
+				"AFFINITY":              `{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"kubernetes.io/e2e-az-name","operator":"In","values":["e2e-az1","e2e-az2"]}]}]}}}`,
+				"KIP_IMAGE":             "quay.io/my-repo/kubernetes-image-puller:next",
+				"TOLERATIONS":           `[{"effect":"NoSchedule","key":"app","operator":"Equal","value": "prod"}]`,
 			},
 			want: Config{
 				DaemonsetName: "custom-daemonset-name",
+				DaemonsetAnnotations: map[string]string{
+					"reloader.stakater.com/auto": "true",
+				},
 				Namespace:     "my-namespace",
 				Images: map[string]string{
 					"che-theia": "quay.io/eclipse/che-theia:nightly",
