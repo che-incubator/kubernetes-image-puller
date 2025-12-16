@@ -56,13 +56,13 @@ func TestProcessDaemonsetAnnotationsEnvVar(t *testing.T) {
 
 	testcases := []testcase{
 		{
-			name:                      "default node selector, NODE_SELECTOR set",
+			name:                      "default daemonset annotations, DAEMONSET_ANNOTATIONS set",
 			daemonsetAnnotations:      "{}",
 			isDaemonsetAnnotationsSet: true,
 			want:                      map[string]string{},
 		},
 		{
-			name:                      "compute type, NODE_SELECTOR set",
+			name:                      "annotation for reloader, DAEMONSET_ANNOTATIONS set",
 			daemonsetAnnotations:      "{\"reloader.stakater.com/auto\": \"true\"}",
 			isDaemonsetAnnotationsSet: true,
 			want: map[string]string{
@@ -70,7 +70,7 @@ func TestProcessDaemonsetAnnotationsEnvVar(t *testing.T) {
 			},
 		},
 		{
-			name:                      "default env var, NODE_SELECTOR not set",
+			name:                      "default env var, DAEMONSET_ANNOTATIONS not set",
 			daemonsetAnnotations:      "{\"this\": \"shouldn't be set\"}",
 			isDaemonsetAnnotationsSet: false,
 			want:                      map[string]string{},
