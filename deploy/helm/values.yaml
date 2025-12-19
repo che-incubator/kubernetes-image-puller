@@ -18,6 +18,7 @@ configMap:
   cachingMemoryLimit: "20Mi"
   cachingCpuRequest: ".05"
   cachingCpuLimit: ".2"
+  daemonsetAnnotations: "{}"
   nodeSelector: "{}"
   imagePullSecrets: ""
   affinity: "{}"

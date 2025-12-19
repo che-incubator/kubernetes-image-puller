@@ -5,6 +5,7 @@ metadata:
 data:
   IMAGES: "{{ .Values.configMap.images }}"
   DAEMONSET_NAME: "{{ .Values.deploymentName }}"
+  DAEMONSET_ANNOTATIONS: "{{ .Values.configMap.daemonsetAnnotations }}"
   CACHING_INTERVAL_HOURS: "{{ .Values.configMap.cachingIntervalHours }}"
   NAMESPACE: "{{ .Release.Namespace }}"
   CACHING_MEMORY_REQUEST: "{{ .Values.configMap.cachingMemoryRequest }}"

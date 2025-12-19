@@ -46,6 +46,52 @@ func TestProcessImagesEnvVar(t *testing.T) {
 	}
 }
 
+func TestProcessDaemonsetAnnotationsEnvVar(t *testing.T) {
+	type testcase struct {
+		name                      string
+		daemonsetAnnotations      string
+		isDaemonsetAnnotationsSet bool
+		want                      map[string]string
+	}
+
+	testcases := []testcase{
+		{
+			name:                      "default daemonset annotations, DAEMONSET_ANNOTATIONS set",
+			daemonsetAnnotations:      "{}",
+			isDaemonsetAnnotationsSet: true,
+			want:                      map[string]string{},
+		},
+		{
+			name:                      "annotation for reloader, DAEMONSET_ANNOTATIONS set",
+			daemonsetAnnotations:      "{\"reloader.stakater.com/auto\": \"true\"}",
+			isDaemonsetAnnotationsSet: true,
+			want: map[string]string{
+				"reloader.stakater.com/auto": "true",
+			},
+		},
+		{
+			name:                      "default env var, DAEMONSET_ANNOTATIONS not set",
+			daemonsetAnnotations:      "{\"this\": \"shouldn't be set\"}",
+			isDaemonsetAnnotationsSet: false,
+			want:                      map[string]string{},
+		},
+	}
+
+	for _, c := range testcases {
+		t.Run(c.name, func(t *testing.T) {
+			defer os.Clearenv()
+			if c.isDaemonsetAnnotationsSet {
+				os.Setenv("DAEMONSET_ANNOTATIONS", c.daemonsetAnnotations)
+			}
+			got := processDaemonsetAnnotationsEnvVar()
+
+			if d := cmp.Diff(c.want, got); d != "" {
+				t.Errorf("(-want, +got): %s", d)
+			}
+		})
+	}
+}
+
 func TestProcessNodeSElectorEnvVar(t *testing.T) {
 	type testcase struct {
 		name              string

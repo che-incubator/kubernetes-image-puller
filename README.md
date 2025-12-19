@@ -22,6 +22,7 @@ The config values to be set are:
 | `CACHING_CPU_REQUEST` | The CPU request for each cached image when the puller is running | `.05` or 50 millicores |
 | `CACHING_CPU_LIMIT` | The CPU limit for each cached image when the puller is running | `.2` or 200 millicores |
 | `DAEMONSET_NAME`         | Name of daemonset to be created | `kubernetes-image-puller` |
+| `DAEMONSET_ANNOTATIONS` | Annotations applied to the daemonset, provided in this format `'{"key":"value"}'`      | `'{}'` |
 | `NAMESPACE`              | Namespace where daemonset is to be created | `kubernetes-image-puller` |
 | `IMAGES`                 | List of images to be cached, in this format `<name>=<image>;...` | Contains a default list of images, but should be configured when deploying |
 | `NODE_SELECTOR` | Node selector applied to pods created by the daemonset, provided in this format `'{"key":"value"}'`      | `'{}'` |
@@ -51,6 +52,7 @@ The following values can be set:
 | `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap | `"20Mi"`                                              |
 | `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap | `.05`                                                 |
 | `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap  | `.2`                                                  |
+| `configMap.daemonsetAnnotations`         | The value of `DAEMONSET_ANNOTATIONS` to be set in the ConfigMap      | `"{}"`                                                |
 | `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap      | `"{}"`                                                |
 | `configMap.imagePullSecrets` | The value of `IMAGE_PULL_SECRETS`       | `""` |
 | `configMap.affinity`         | The value of `AFFINITY` to be set in the ConfigMap      | `"{}"`                                                |

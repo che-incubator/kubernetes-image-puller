@@ -101,6 +101,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 	return &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: cfg.DaemonsetName,
+			Annotations: cfg.DaemonsetAnnotations,
 			OwnerReferences: []metav1.OwnerReference{
 				getOwnerReferenceFromDeployment(deployment),
 			},

@@ -15,35 +15,37 @@ package cfg
 import corev1 "k8s.io/api/core/v1"
 
 type Config struct {
-	DaemonsetName     string
-	Namespace         string
-	Images            map[string]string
-	CachingMemRequest string
-	CachingMemLimit   string
-	CachingCpuRequest string
-	CachingCpuLimit   string
-	CachingInterval   int
-	NodeSelector      map[string]string
-	ImagePullSecrets  []string
-	Affinity          *corev1.Affinity
-	ImagePullerImage  string
-	Tolerations       []corev1.Toleration
+	DaemonsetName        string
+	DaemonsetAnnotations map[string]string
+	Namespace            string
+	Images               map[string]string
+	CachingMemRequest    string
+	CachingMemLimit      string
+	CachingCpuRequest    string
+	CachingCpuLimit      string
+	CachingInterval      int
+	NodeSelector         map[string]string
+	ImagePullSecrets     []string
+	Affinity             *corev1.Affinity
+	ImagePullerImage     string
+	Tolerations          []corev1.Toleration
 }
 
 func GetConfig() Config {
 	return Config{
-		DaemonsetName:     getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName),
-		Namespace:         getEnvVarOrDefault(namespaceEnvVar, defaultNamespace),
-		Images:            processImagesEnvVar(),
-		CachingInterval:   getCachingInterval(),
-		CachingMemRequest: getEnvVarOrDefault(cachingMemRequestEnvVar, defaultCachingMemRequest),
-		CachingMemLimit:   getEnvVarOrDefault(cachingMemLimitEnvVar, defaultCachingMemLimit),
-		CachingCpuRequest: getEnvVarOrDefault(cachingCpuRequestEnvVar, defaultCachingCpuRequest),
-		CachingCpuLimit:   getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
-		NodeSelector:      processNodeSelectorEnvVar(),
-		ImagePullSecrets:  processImagePullSecretsEnvVar(),
-		Affinity:          processAffinityEnvVar(),
-		ImagePullerImage:  getEnvVarOrDefault(kipImageEnvVar, defaultImage),
-		Tolerations:       processTolerationsEnvVar(),
+		DaemonsetName:        getEnvVarOrDefault(daemonsetNameEnvVar, defaultDaemonsetName),
+		DaemonsetAnnotations: processDaemonsetAnnotationsEnvVar(),
+		Namespace:            getEnvVarOrDefault(namespaceEnvVar, defaultNamespace),
+		Images:               processImagesEnvVar(),
+		CachingInterval:      getCachingInterval(),
+		CachingMemRequest:    getEnvVarOrDefault(cachingMemRequestEnvVar, defaultCachingMemRequest),
+		CachingMemLimit:      getEnvVarOrDefault(cachingMemLimitEnvVar, defaultCachingMemLimit),
+		CachingCpuRequest:    getEnvVarOrDefault(cachingCpuRequestEnvVar, defaultCachingCpuRequest),
+		CachingCpuLimit:      getEnvVarOrDefault(cachingCpuLimitEnvVar, defaultCachingCpuLimit),
+		NodeSelector:         processNodeSelectorEnvVar(),
+		ImagePullSecrets:     processImagePullSecretsEnvVar(),
+		Affinity:             processAffinityEnvVar(),
+		ImagePullerImage:     getEnvVarOrDefault(kipImageEnvVar, defaultImage),
+		Tolerations:          processTolerationsEnvVar(),
 	}
 }
