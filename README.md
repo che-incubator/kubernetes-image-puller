@@ -37,6 +37,7 @@ The following values can be set:
 | Value                            | Usage                                                        | Default                                               |
 | -------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
 | `deploymentName`                 | The value of `DAEMONSET_NAME` to be set in the ConfigMap, as well as the name of the deployment     | `kubernetes-image-puller`                             |
+| `deploymentAnnotations`                   | The value of `annotations` to be set for the Deployment      | `"{}"`                                                |
 | `image.repository`               | The repository to pull the image from                        | `quay.io/eclipse/kubernetes-image-puller`             |
 | `image.tag`                      | The image tag to pull                                        | `next`                                                |
 | `serviceAccount.name`            | The name of the ServiceAccount to create                     | `k8s-image-puller`                                    |
