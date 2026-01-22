@@ -1,4 +1,5 @@
 deploymentName: kubernetes-image-puller
+deploymentAnnotations: {}
 image:
   repository: quay.io/eclipse/kubernetes-image-puller
   tag: next
