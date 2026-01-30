@@ -76,7 +76,7 @@ func DeleteDaemonsetIfExists(clientset *kubernetes.Clientset) {
 	} else if statusError, isStatus := err.(*errors.StatusError); isStatus {
 		log.Fatalf("Error getting daemonset: %v", statusError.ErrStatus.Message)
 	} else if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatalf("%s", err.Error())
 	}
 	if daemonset != nil {
 		deleteDaemonset(clientset)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"path"
 	"time"
@@ -67,7 +68,7 @@ func TestSingleClusterCacheImages(t *testing.T) {
 
 	clientset, err := getClientset(t)
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 
 	for _, test := range testCases {
@@ -86,7 +87,7 @@ func cacheImages(t *testing.T, clientset *kubernetes.Clientset) {
 
 	go func() {
 		for {
-			daemonsets, err := clientset.AppsV1().DaemonSets(namespace).List(metav1.ListOptions{})
+			daemonsets, err := clientset.AppsV1().DaemonSets(namespace).List(context.Background(), metav1.ListOptions{})
 			if err != nil {
 				t.Errorf("Error listing daemonsets: %v", err)
 			}
@@ -123,7 +124,7 @@ func cacheImages(t *testing.T, clientset *kubernetes.Clientset) {
 }
 
 func checkPods(t *testing.T, clientset *kubernetes.Clientset) {
-	pods, err := clientset.CoreV1().Pods(namespace).List(metav1.ListOptions{})
+	pods, err := clientset.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		t.Errorf("Error listing pods: %v", err)
 	}
