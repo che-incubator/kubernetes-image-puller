@@ -144,7 +144,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 
 // Create the daemonset, using to-be-cached images as init containers. Blocks
 // until daemonset is ready.
-func createDaemonset(clientset *kubernetes.Clientset) error {
+func createDaemonsetOrDie(clientset *kubernetes.Clientset) {
 	cfg := cfg.GetConfig()
 	thisDeployment := getImagePullerDeployment(clientset)
 	toCreate := getDaemonset(thisDeployment)
@@ -162,8 +162,9 @@ func createDaemonset(clientset *kubernetes.Clientset) error {
 	if watchErr != nil {
 		log.Printf("Unable to watch daemonset for readiness, falling back to manually checking.")
 		checkDaemonsetReadiness(clientset)
+	} else {
+		log.Printf("Daemonset ready.")
 	}
-	return err
 }
 
 // Wait for daemonset to be ready (MODIFIED event with all nodes scheduled)

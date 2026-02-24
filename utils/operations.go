@@ -26,10 +26,7 @@ import (
 func CacheImages(clientset *kubernetes.Clientset) {
 	log.Printf("Starting caching process")
 	// Create daemonset, wait for it to be ready
-	if err := createDaemonset(clientset); err != nil {
-		log.Printf("Could not create Daemonset: %v", err)
-	}
-	log.Printf("Daemonset ready.")
+	createDaemonsetOrDie(clientset)
 }
 
 // RefreshCache forces a refresh of all pods in the daemonset, to ensure images
@@ -37,9 +34,7 @@ func CacheImages(clientset *kubernetes.Clientset) {
 func RefreshCache(clientset *kubernetes.Clientset) {
 	log.Printf("Refreshing cached images")
 	DeleteDaemonsetIfExists(clientset)
-	if err := createDaemonset(clientset); err != nil {
-		log.Printf("Could not create Daemonset: %v", err)
-	}
+	CacheImages(clientset)
 	log.Printf("Refreshed images")
 }
 
