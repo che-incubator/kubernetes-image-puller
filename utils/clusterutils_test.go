@@ -25,9 +25,16 @@ var (
 		},
 	}
 
-	defaultCommand      = []string{"/kip/sleep"}
-	defaultArgs         = []string{"720h"}
-	defaultVolumeMounts = []corev1.VolumeMount{{Name: "kip", MountPath: "/kip"}}
+	defaultCommand         = []string{"/kip/sleep"}
+	defaultArgs            = []string{"720h"}
+	defaultVolumeMounts    = []corev1.VolumeMount{{Name: "kip", MountPath: "/kip"}}
+	defaultSecurityContext = corev1.SecurityContext{
+		Capabilities: &corev1.Capabilities{
+			Drop: []corev1.Capability{"ALL"},
+		},
+		ReadOnlyRootFilesystem:   &bTrue,
+		AllowPrivilegeEscalation: &bFalse,
+	}
 )
 
 // This is the only function that does not require a kubernetes client.  The rest of the tests are in ./e2e
@@ -49,6 +56,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
 			}, {
 				Name:            "che-plugin-registry",
 				Image:           "quay.io/eclipse/che-plugin-registry:nightly",
@@ -57,6 +65,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
 			}},
 			images: "che-theia=eclipse/che-theia:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly",
 		}, {
@@ -69,6 +78,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
 			}, {
 				Name:            "che-plugin-registry",
 				Image:           "quay.io/eclipse/che-plugin-registry:nightly",
@@ -77,6 +87,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
 			}, {
 				Name:            "che-devfile-registry",
 				Image:           "quay.io/eclipse/che-devfile-registry:nightly",
@@ -85,6 +96,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
 			}, {
 				Name:            "che-theia",
 				Image:           "quay.io/eclipse/che-theia:nightly",
@@ -93,6 +105,7 @@ func TestGetContainers(t *testing.T) {
 				ImagePullPolicy: corev1.PullAlways,
 				Resources:       defaultResourceRequirements,
 				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
 			}},
 			images: "che-sidecar-java=quay.io/eclipse/che-sidecar-java:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly;che-devfile-registry=quay.io/eclipse/che-devfile-registry:nightly;che-theia=quay.io/eclipse/che-theia:nightly",
 		},
