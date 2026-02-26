@@ -112,13 +112,15 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"test": "daemonset-test",
+					"test":                   "daemonset-test",
+					"app.kubernetes.io/name": "image-puller",
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"test": "daemonset-test",
+						"test":                   "daemonset-test",
+						"app.kubernetes.io/name": "image-puller",
 					},
 					Name: "test-po",
 				},
