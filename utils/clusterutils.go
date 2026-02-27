@@ -40,6 +40,9 @@ var (
 	propagationPolicy             = metav1.DeletePropagationForeground
 	terminationGracePeriodSeconds = int64(1)
 
+	bTrue  = true
+	bFalse = false
+
 	// Volume mount to copy the sleep binary into.
 	// To allow the image puller to cache scratch images, an initContainer copies
 	// the sleep binary to this volume mount. As a result, every container has
@@ -100,7 +103,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 
 	return &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: cfg.DaemonsetName,
+			Name:        cfg.DaemonsetName,
 			Annotations: cfg.DaemonsetAnnotations,
 			OwnerReferences: []metav1.OwnerReference{
 				getOwnerReferenceFromDeployment(deployment),
@@ -109,13 +112,15 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 		Spec: appsv1.DaemonSetSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"test": "daemonset-test",
+					"test":                   "daemonset-test",
+					"app.kubernetes.io/name": "image-puller",
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"test": "daemonset-test",
+						"test":                   "daemonset-test",
+						"app.kubernetes.io/name": "image-puller",
 					},
 					Name: "test-po",
 				},
@@ -130,6 +135,13 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 						Args:            []string{"-c", copySleepCommand},
 						VolumeMounts:    containerVolumeMounts,
 						Resources:       getContainerResources(cfg),
+						SecurityContext: &corev1.SecurityContext{
+							Capabilities: &corev1.Capabilities{
+								Drop: []corev1.Capability{"ALL"},
+							},
+							ReadOnlyRootFilesystem:   &bTrue,
+							AllowPrivilegeEscalation: &bFalse,
+						},
 					}},
 					Containers:       getContainers(),
 					ImagePullSecrets: imgPullSecrets,
@@ -271,6 +283,13 @@ func getContainers() []corev1.Container {
 			Resources:       getContainerResources(cfg),
 			ImagePullPolicy: corev1.PullAlways,
 			VolumeMounts:    containerVolumeMounts,
+			SecurityContext: &corev1.SecurityContext{
+				Capabilities: &corev1.Capabilities{
+					Drop: []corev1.Capability{"ALL"},
+				},
+				ReadOnlyRootFilesystem:   &bTrue,
+				AllowPrivilegeEscalation: &bFalse,
+			},
 		}
 		idx++
 	}
