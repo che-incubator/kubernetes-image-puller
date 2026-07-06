@@ -87,7 +87,7 @@ The `sleep/` directory contains a standalone Go implementation of `sleep` that a
 
 ### CGO and Static Linking
 
-The Makefile default is `CGO_ENABLED=0` for static binaries. This is required for the distroless dev image (which has no glibc). The production UBI8 Dockerfile can use CGO but static linking is preferred for consistency.
+The Makefile default is `CGO_ENABLED=1`. This is required for FIPS compliance on Red Hat UBI images, which link against the FIPS-certified OpenSSL library instead of Go's native crypto. The dev Dockerfile uses a distroless image and may need `CGO_ENABLED=0` for static binaries — see `build/dockerfiles/dev.Dockerfile`.
 
 ### Error Handling Style
 
