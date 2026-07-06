@@ -49,12 +49,12 @@ type InClusterConfig interface {
 	Possible() bool
 }
 
-// NewNonInteractiveDeferredLoadingClientConfig creates a ConfigClientClientConfig using the passed context name
+// NewNonInteractiveDeferredLoadingClientConfig creates a ClientConfig using the passed context name
 func NewNonInteractiveDeferredLoadingClientConfig(loader ClientConfigLoader, overrides *ConfigOverrides) ClientConfig {
 	return &DeferredLoadingClientConfig{loader: loader, overrides: overrides, icc: &inClusterClientConfig{overrides: overrides}}
 }
 
-// NewInteractiveDeferredLoadingClientConfig creates a ConfigClientClientConfig using the passed context name and the fallback auth reader
+// NewInteractiveDeferredLoadingClientConfig creates a ClientConfig using the passed context name and the fallback auth reader
 func NewInteractiveDeferredLoadingClientConfig(loader ClientConfigLoader, overrides *ConfigOverrides, fallbackReader io.Reader) ClientConfig {
 	return &DeferredLoadingClientConfig{loader: loader, overrides: overrides, icc: &inClusterClientConfig{overrides: overrides}, fallbackReader: fallbackReader}
 }
@@ -118,6 +118,7 @@ func (config *DeferredLoadingClientConfig) ClientConfig() (*restclient.Config, e
 
 	// check for in-cluster configuration and use it
 	if config.icc.Possible() {
+		//nolint:logcheck // A helper function like this should not log. But this is probably part of the the established client-go API and not worth changing.
 		klog.V(4).Infof("Using in-cluster configuration")
 		return config.icc.ClientConfig()
 	}
@@ -160,6 +161,7 @@ func (config *DeferredLoadingClientConfig) Namespace() (string, bool, error) {
 		}
 	}
 
+	//nolint:logcheck // A helper function like this should not log. But this is probably part of the the established client-go API and not worth changing.
 	klog.V(4).Infof("Using in-cluster namespace")
 
 	// allow the namespace from the service account token directory to be used.

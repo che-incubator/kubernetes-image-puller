@@ -24,7 +24,6 @@ import (
 	goruntime "runtime"
 	"strings"
 
-	"github.com/imdario/mergo"
 	"k8s.io/klog/v2"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -128,6 +127,29 @@ type ClientConfigLoadingRules struct {
 	// WarnIfAllMissing indicates whether the configuration files pointed by KUBECONFIG environment variable are present or not.
 	// In case of missing files, it warns the user about the missing files.
 	WarnIfAllMissing bool
+
+	// Warner is the warning log callback to use in case of missing files.
+	Warner WarningHandler
+}
+
+// WarningHandler allows to set the logging function to use
+type WarningHandler func(error)
+
+func (handler WarningHandler) Warn(err error) {
+	if handler == nil {
+		//nolint:logcheck // This is the fallback when logging is not initialized. With nothing provided, using the global logger is the only option.
+		klog.V(1).Info(err)
+	} else {
+		handler(err)
+	}
+}
+
+type MissingConfigError struct {
+	Missing []string
+}
+
+func (c MissingConfigError) Error() string {
+	return fmt.Sprintf("Config not found: %s", strings.Join(c.Missing, ", "))
 }
 
 // ClientConfigLoadingRules implements the ClientConfigLoader interface.
@@ -219,14 +241,16 @@ func (rules *ClientConfigLoadingRules) Load() (*clientcmdapi.Config, error) {
 	}
 
 	if rules.WarnIfAllMissing && len(missingList) > 0 && len(kubeconfigs) == 0 {
-		klog.Warningf("Config not found: %s", strings.Join(missingList, ", "))
+		rules.Warner.Warn(MissingConfigError{Missing: missingList})
 	}
 
 	// first merge all of our maps
 	mapConfig := clientcmdapi.NewConfig()
 
 	for _, kubeconfig := range kubeconfigs {
-		mergo.Merge(mapConfig, kubeconfig, mergo.WithOverride)
+		if err := merge(mapConfig, kubeconfig); err != nil {
+			return nil, err
+		}
 	}
 
 	// merge all of the struct values in the reverse order so that priority is given correctly
@@ -234,14 +258,20 @@ func (rules *ClientConfigLoadingRules) Load() (*clientcmdapi.Config, error) {
 	nonMapConfig := clientcmdapi.NewConfig()
 	for i := len(kubeconfigs) - 1; i >= 0; i-- {
 		kubeconfig := kubeconfigs[i]
-		mergo.Merge(nonMapConfig, kubeconfig, mergo.WithOverride)
+		if err := merge(nonMapConfig, kubeconfig); err != nil {
+			return nil, err
+		}
 	}
 
 	// since values are overwritten, but maps values are not, we can merge the non-map config on top of the map config and
 	// get the values we expect.
 	config := clientcmdapi.NewConfig()
-	mergo.Merge(config, mapConfig, mergo.WithOverride)
-	mergo.Merge(config, nonMapConfig, mergo.WithOverride)
+	if err := merge(config, mapConfig); err != nil {
+		return nil, err
+	}
+	if err := merge(config, nonMapConfig); err != nil {
+		return nil, err
+	}
 
 	if rules.ResolvePaths() {
 		if err := ResolveLocalPaths(config); err != nil {
@@ -302,7 +332,10 @@ func (rules *ClientConfigLoadingRules) GetLoadingPrecedence() []string {
 		return []string{rules.ExplicitPath}
 	}
 
-	return rules.Precedence
+	// Create a copy in case something tries to sort the returned slice.
+	precedence := make([]string, len(rules.Precedence))
+	copy(precedence, rules.Precedence)
+	return precedence
 }
 
 // GetStartingConfig implements ConfigAccess
@@ -370,6 +403,7 @@ func LoadFromFile(filename string) (*clientcmdapi.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	//nolint:logcheck // A helper function like this should not log. But this is probably part of the the established client-go API and not worth changing.
 	klog.V(6).Infoln("Config loaded from file: ", filename)
 
 	// set LocationOfOrigin on every Cluster, User, and Context
