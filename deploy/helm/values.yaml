@@ -26,6 +26,13 @@ configMap:
   # Tolerations applied to pods created by the daemonset, provided in this format (escaped JSON) `'[{\"key\":\"foo\",\"operator\":\"Equal\",\"value\":\"bar\"}
   tolerations: '[]'
   kipImage: "quay.io/eclipse/kubernetes-image-puller:next"
+resources:
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
 tolerations: []
 nodeSelector: {}
 containerSecurityContext: {}
