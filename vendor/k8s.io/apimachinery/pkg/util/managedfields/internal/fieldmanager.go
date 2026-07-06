@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/klog/v2"
-	"sigs.k8s.io/structured-merge-diff/v4/merge"
+	"sigs.k8s.io/structured-merge-diff/v6/merge"
 )
 
 // DefaultMaxUpdateManagers defines the default maximum retained number of managedFields entries from updates
@@ -56,17 +56,20 @@ func NewFieldManager(f Manager, subresource string) *FieldManager {
 // newDefaultFieldManager is a helper function which wraps a Manager with certain default logic.
 func NewDefaultFieldManager(f Manager, typeConverter TypeConverter, objectConverter runtime.ObjectConvertor, objectCreater runtime.ObjectCreater, kind schema.GroupVersionKind, subresource string) *FieldManager {
 	return NewFieldManager(
-		NewLastAppliedUpdater(
-			NewLastAppliedManager(
-				NewProbabilisticSkipNonAppliedManager(
-					NewCapManagersManager(
-						NewBuildManagerInfoManager(
-							NewManagedFieldsUpdater(
-								NewStripMetaManager(f),
-							), kind.GroupVersion(), subresource,
-						), DefaultMaxUpdateManagers,
-					), objectCreater, kind, DefaultTrackOnCreateProbability,
-				), typeConverter, objectConverter, kind.GroupVersion()),
+		NewVersionCheckManager(
+			NewLastAppliedUpdater(
+				NewLastAppliedManager(
+					NewProbabilisticSkipNonAppliedManager(
+						NewCapManagersManager(
+							NewBuildManagerInfoManager(
+								NewManagedFieldsUpdater(
+									NewStripMetaManager(f),
+								), kind.GroupVersion(), subresource,
+							), DefaultMaxUpdateManagers,
+						), objectCreater, DefaultTrackOnCreateProbability,
+					), typeConverter, objectConverter, kind.GroupVersion(),
+				),
+			), kind,
 		), subresource,
 	)
 }
