@@ -1,7 +1,6 @@
 package cfg
 
 import (
-	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -10,10 +9,8 @@ import (
 
 func TestEnvVars(t *testing.T) {
 
-	defer unsetEnv()
-
-	os.Setenv("IMAGES", "che-theia=quay.io/eclipse/che-theia:nightly")
-	os.Setenv("CACHING_INTERVAL_HOURS", "5")
+	t.Setenv("IMAGES", "che-theia=quay.io/eclipse/che-theia:nightly")
+	t.Setenv("CACHING_INTERVAL_HOURS", "5")
 
 	type testcase struct {
 		name string
@@ -108,7 +105,7 @@ func TestEnvVars(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			for k, v := range c.env {
-				os.Setenv(k, v)
+				t.Setenv(k, v)
 			}
 			cfg := GetConfig()
 			if d := cmp.Diff(c.want, cfg); d != "" {
@@ -116,9 +113,4 @@ func TestEnvVars(t *testing.T) {
 			}
 		})
 	}
-}
-
-func unsetEnv() {
-	os.Unsetenv("IMAGES")
-	os.Unsetenv("CACHING_INTERVAL_HOURS")
 }

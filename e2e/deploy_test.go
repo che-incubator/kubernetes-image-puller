@@ -23,7 +23,7 @@ var (
 	namespace               = os.Getenv("NAMESPACE")
 	kubeConfig              = os.Getenv("KUBECONFIG")
 	daemonsetName           = os.Getenv("DAEMONSET_NAME")
-	daemonsetTimeoutSeconds = time.Duration(120) * time.Second
+	daemonsetTimeout = 120 * time.Second
 )
 
 func getKubeConfig(t *testing.T) (*rest.Config, error) {
@@ -74,7 +74,7 @@ func TestSingleClusterCacheImages(t *testing.T) {
 	for _, test := range testCases {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
-			os.Setenv("IMAGES", test.images)
+			t.Setenv("IMAGES", test.images)
 			cacheImages(t, clientset)
 		})
 	}
@@ -105,9 +105,9 @@ func cacheImages(t *testing.T, clientset *kubernetes.Clientset) {
 	select {
 	case gotDS := <-dsListChan:
 		gotDaemonsets = gotDS
-	case <-time.After(daemonsetTimeoutSeconds):
+	case <-time.After(daemonsetTimeout):
 		checkPods(t, clientset)
-		t.Errorf("Timeout waiting for a ready daemonset (%v)", daemonsetTimeoutSeconds)
+		t.Errorf("Timeout waiting for a ready daemonset (%v)", daemonsetTimeout)
 	}
 
 	if len(gotDaemonsets.Items) != 1 {
