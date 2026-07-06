@@ -119,6 +119,25 @@ For example, running the image puller that caches 5 images on 20 nodes, with a c
 
 To change parameters, add `-p PARAM=value` to the `oc process` command, before piping to `oc apply`.
 
+## Security
+
+### Pod Security
+
+DaemonSet pods created by the image puller run with a restricted security profile:
+
+- **Non-root execution**: The `copy-sleep` initContainer (which runs `KIP_IMAGE`) executes as UID/GID 65532 with `runAsNonRoot: true`. Cached-image containers do not inherit this UID and run as whatever user their image defines. If you use a custom `KIP_IMAGE`, ensure it supports running as UID 65532.
+- **Seccomp profile**: `RuntimeDefault` seccomp profile is applied to all pods. This requires **Kubernetes 1.19+**.
+- **Read-only filesystem**: All containers run with a read-only root filesystem.
+- **No privilege escalation**: `allowPrivilegeEscalation` is set to `false` and all capabilities are dropped.
+- **Bounded ephemeral storage**: The shared `kip` volume is an `emptyDir` with a 50Mi size limit.
+
+### RBAC
+
+The image puller service account uses least-privilege RBAC:
+
+- **DaemonSets**: `create`, `delete`, `list`, `watch`, `get`
+- **Deployments**: `get` only (used for owner reference lookup)
+
 ## Building
 
 ### Makefile
