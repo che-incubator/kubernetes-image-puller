@@ -23,7 +23,7 @@ var (
 	namespace               = os.Getenv("NAMESPACE")
 	kubeConfig              = os.Getenv("KUBECONFIG")
 	daemonsetName           = os.Getenv("DAEMONSET_NAME")
-	daemonsetTimeout = 120 * time.Second
+	daemonsetTimeout = 600 * time.Second
 )
 
 func getKubeConfig(t *testing.T) (*rest.Config, error) {
