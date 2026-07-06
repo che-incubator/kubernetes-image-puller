@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -112,9 +111,8 @@ func TestGetContainers(t *testing.T) {
 	}
 	for _, c := range testcases {
 		t.Run(c.name, func(t *testing.T) {
-			defer os.Clearenv()
-			os.Setenv("IMAGES", c.images)
-			os.Setenv("CACHING_INTERVAL_HOURS", "1")
+			t.Setenv("IMAGES", c.images)
+			t.Setenv("CACHING_INTERVAL_HOURS", "1")
 			got := getContainers()
 			assert.ElementsMatch(t, c.want, got, "Should contain the same elements, order is not guaranteed")
 		})

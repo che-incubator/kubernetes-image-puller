@@ -182,27 +182,23 @@ func createDaemonsetOrDie(clientset *kubernetes.Clientset) {
 // Wait for daemonset to be ready (MODIFIED event with all nodes scheduled)
 func waitDaemonsetReady(c <-chan watch.Event) error {
 	log.Printf("Waiting for daemonset to be ready")
-	for {
-		select {
-		case ev, ok := <-c:
-			if !ok {
-				log.Printf("WARN: Watch closed before daemonset ready")
-				return fmt.Errorf("Watch closed before daemonset ready")
+	for ev := range c {
+		switch ev.Type {
+		case watch.Modified:
+			daemonset := ev.Object.(*appsv1.DaemonSet)
+			if daemonset.Status.NumberReady == daemonset.Status.DesiredNumberScheduled {
+				log.Printf("%d/%d nodes ready in daemonset", daemonset.Status.NumberReady, daemonset.Status.DesiredNumberScheduled)
+				return nil
 			}
-			// log.Printf("(DEBUG) Create watch event received: %s", ev.Type)
-			if ev.Type == watch.Modified {
-				daemonset := ev.Object.(*appsv1.DaemonSet)
-				// TODO: Not sure if this is the correct logic
-				if daemonset.Status.NumberReady == daemonset.Status.DesiredNumberScheduled {
-					log.Printf("%d/%d nodes ready in daemonset", daemonset.Status.NumberReady, daemonset.Status.DesiredNumberScheduled)
-					return nil
-				}
-				log.Printf("%d/%d nodes ready", daemonset.Status.NumberReady, daemonset.Status.DesiredNumberScheduled)
-			} else if ev.Type == watch.Deleted || ev.Type == watch.Error {
-				log.Fatalf("Error occurred while waiting for daemonset to be ready -- event %s detected", watch.Deleted)
-			}
+			log.Printf("%d/%d nodes ready", daemonset.Status.NumberReady, daemonset.Status.DesiredNumberScheduled)
+		case watch.Deleted, watch.Error:
+			log.Fatalf("Error occurred while waiting for daemonset to be ready -- event %s detected", ev.Type)
+		default:
+			log.Printf("Unexpected watch event type while waiting for daemonset ready: %s", ev.Type)
 		}
 	}
+	log.Printf("WARN: Watch closed before daemonset ready")
+	return fmt.Errorf("watch closed before daemonset ready")
 }
 
 func checkDaemonsetReadiness(clientset *kubernetes.Clientset) {
@@ -253,19 +249,18 @@ func deleteDaemonset(clientset *kubernetes.Clientset) {
 
 // Use watch channel to wait for DELETED event on daemonset, then return
 func waitDaemonsetDeleted(c <-chan watch.Event) {
-	for {
-		select {
-		case ev, ok := <-c:
-			if !ok {
-				log.Printf("WARN: Watch closed before daemonset deleted")
-				return
-			}
-			log.Printf("(DEBUG) Delete watch event received: %s", ev.Type)
-			if ev.Type == watch.Deleted {
-				return
-			}
+	for ev := range c {
+		switch ev.Type {
+		case watch.Deleted:
+			log.Printf("Daemonset deleted")
+			return
+		case watch.Error:
+			log.Printf("Error event received while waiting for daemonset deletion: %s", ev.Type)
+		default:
+			log.Printf("Unexpected watch event type while waiting for daemonset deletion: %s", ev.Type)
 		}
 	}
+	log.Printf("WARN: Watch closed before daemonset deleted")
 }
 
 // Get array of all images in containers to be cached.

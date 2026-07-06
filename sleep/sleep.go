@@ -20,8 +20,8 @@ import (
 )
 
 func displayUsage(out io.Writer) int {
-	fmt.Fprintf(out, "Usage: %s <duration>\n", os.Args[0])
-	fmt.Fprintln(out, "See https://pkg.go.dev/time#ParseDuration")
+	_, _ = fmt.Fprintf(out, "Usage: %s <duration>\n", os.Args[0])
+	_, _ = fmt.Fprintln(out, "See https://pkg.go.dev/time#ParseDuration")
 	return -1
 }
 
@@ -38,7 +38,7 @@ func entryPoint(out io.Writer) int {
 	}
 	duration, err := time.ParseDuration(os.Args[1])
 	if err != nil {
-		fmt.Fprintf(out, "Invalid duration: %s\n", err)
+		_, _ = fmt.Fprintf(out, "Invalid duration: %s\n", err)
 		return displayUsage(out)
 	}
 	time.Sleep(duration)
