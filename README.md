@@ -35,52 +35,57 @@ The config values to be set are:
 
 The following values can be set:
 
-| Value                            | Usage                                                                                                                                 | Default                                                |
-|----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------|
-| `deploymentName`                 | The value of `DAEMONSET_NAME` to be set in the ConfigMap, as well as the name of the deployment                                       | `kubernetes-image-puller`                              |
-| `deploymentAnnotations`          | The value of `annotations` to be set for the Deployment                                                                               | `"{}"`                                                 |
-| `image.repository`               | The repository to pull the image from                                                                                                 | `quay.io/eclipse/kubernetes-image-puller`              |
-| `image.tag`                      | The image tag to pull                                                                                                                 | `next`                                                 |
-| `serviceAccount.name`            | The name of the ServiceAccount to create                                                                                              | `k8s-image-puller`                                     |
-| `tolerations`                    | The value of `tolerations` to be set for the Deployment                                                                               | `"[]"`                                                 |
-| `nodeSelector`                   | The value of `nodeSelector` to be set in the Deployment                                                                               | `"{}"`                                                 |
-| `updateStrategy.type`            | The updateStrategy type to use when restarting the Deployment                                                                         | `Recreate`                                             |
-| `priorityClassName`              | The updateStrategy type to use when restarting the Deployment                                                                         | `""`                                                   |
-| `configMap.name`                 | The name of the ConfigMap to create                                                                                                   | `k8s-image-puller`                                     |
-| `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap                                                                                      | // TODO create a reasonable set of default containers  |
-| `configMap.cachingIntervalHours` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap                                                                      | `"1"`                                                  |
-| `configMap.cachingMemoryRequest` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap                                                                      | `"10Mi"`                                               |
-| `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap                                                                        | `"20Mi"`                                               |
-| `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap                                                                         | `.05`                                                  |
-| `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap                                                                           | `.2`                                                   |
-| `configMap.daemonsetAnnotations` | The value of `DAEMONSET_ANNOTATIONS` to be set in the ConfigMap                                                                       | `"{}"`                                                 |
-| `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap                                                                               | `"{}"`                                                 |
-| `configMap.imagePullSecrets`     | The value of `IMAGE_PULL_SECRETS`                                                                                                     | `""`                                                   |
-| `configMap.affinity`             | The value of `AFFINITY` to be set in the ConfigMap                                                                                    | `"{}"`                                                 |
-| `configMap.tolerations`          | The value of `TOLERATIONS` to be set in the ConfigMap (escaped JSON) `'[{\"key\":\"foo\",\"operator\":\"Equal\",\"value\":\"bar\"}]'` | `"[]"`                                                 |
-| `configMap.kipImage`             | The value of `KIP_IMAGE` to be set in the ConfigMap                                                                                   | `quay.io/eclipse/kubernetes-image-puller:next`         |
+| Value                            | Usage                                                                                                                                 | Default                                                                    |
+|----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| `deploymentName`                 | The value of `DAEMONSET_NAME` to be set in the ConfigMap, as well as the name of the deployment                                       | `kubernetes-image-puller`                                                  |
+| `deploymentAnnotations`          | The value of `annotations` to be set for the Deployment                                                                               | `"{}"`                                                                     |
+| `image.repository`               | The repository to pull the image from                                                                                                 | `quay.io/eclipse/kubernetes-image-puller`                                  |
+| `image.tag`                      | The image tag to pull                                                                                                                 | `next`                                                                     |
+| `serviceAccount.name`            | The name of the ServiceAccount to create                                                                                              | `k8s-image-puller`                                                         |
+| `resources`                      | Resource requests and limits for the image puller Deployment                                                                          | `requests: {cpu: 50m, memory: 64Mi}, limits: {cpu: 200m, memory: 256Mi}`  |
+| `tolerations`                    | The value of `tolerations` to be set for the Deployment                                                                               | `"[]"`                                                                     |
+| `nodeSelector`                   | The value of `nodeSelector` to be set in the Deployment                                                                               | `"{}"`                                                                     |
+| `updateStrategy.type`            | The updateStrategy type to use when restarting the Deployment                                                                         | `Recreate`                                                                 |
+| `priorityClassName`              | The updateStrategy type to use when restarting the Deployment                                                                         | `""`                                                                       |
+| `configMap.name`                 | The name of the ConfigMap to create                                                                                                   | `k8s-image-puller`                                                         |
+| `configMap.images`               | The value of `IMAGES` to be set in the ConfigMap                                                                                      | // TODO create a reasonable set of default containers                      |
+| `configMap.cachingIntervalHours` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap                                                                      | `"1"`                                                                      |
+| `configMap.cachingMemoryRequest` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap                                                                      | `"10Mi"`                                                                   |
+| `configMap.cachingMemoryLimit`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap                                                                        | `"20Mi"`                                                                   |
+| `configMap.cachingCpuRequest`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap                                                                         | `.05`                                                                      |
+| `configMap.cachingCpuLimit`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap                                                                           | `.2`                                                                       |
+| `configMap.daemonsetAnnotations` | The value of `DAEMONSET_ANNOTATIONS` to be set in the ConfigMap                                                                       | `"{}"`                                                                     |
+| `configMap.nodeSelector`         | The value of `NODE_SELECTOR` to be set in the ConfigMap                                                                               | `"{}"`                                                                     |
+| `configMap.imagePullSecrets`     | The value of `IMAGE_PULL_SECRETS`                                                                                                     | `""`                                                                       |
+| `configMap.affinity`             | The value of `AFFINITY` to be set in the ConfigMap                                                                                    | `"{}"`                                                                     |
+| `configMap.tolerations`          | The value of `TOLERATIONS` to be set in the ConfigMap (escaped JSON) `'[{\"key\":\"foo\",\"operator\":\"Equal\",\"value\":\"bar\"}]'` | `"[]"`                                                                     |
+| `configMap.kipImage`             | The value of `KIP_IMAGE` to be set in the ConfigMap                                                                                   | `quay.io/eclipse/kubernetes-image-puller:next`                             |
 
 ### Configuration - OpenShift
 
 The following values can be set:
 
-| Parameter                | Usage                                                            | Default                                   |
-|--------------------------|------------------------------------------------------------------|-------------------------------------------|
-| `SERVICEACCOUNT_NAME`    | Name of service account used by main pod                         | `k8s-image-puller`                        |
-| `IMAGE`                  | Name of image used for main pod                                  | `quay.io/eclipse/kubernetes-image-puller` |
-| `IMAGE_TAG`              | Tag of image used for main pod                                   | `next`                                    |
-| `DAEMONSET_NAME`         | The value of `DAEMONSET_NAME` to be set in the ConfigMap         | `"kubernetes-image-puller"`               |
-| `DEPLOYMENT_NAME`        | The name of the image puller deployment                          | `"kubernetes-image-puller"`               |
-| `CACHING_INTERVAL_HOURS` | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"`                                     |
-| `CACHING_MEMORY_REQUEST` | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"`                                  |
-| `CACHING_MEMORY_LIMIT`   | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap   | `"20Mi"`                                  |
-| `CACHING_CPU_REQUEST`    | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap    | `.05`                                     |
-| `CACHING_CPU_LIMIT`      | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap      | `.2`                                      |
-| `NAMESPACE`              | The value of `NAMESPACE` to be set in the ConfigMap              | `k8s-image-puller`                        |
-| `NODE_SELECTOR`          | The value of `NODE_SELECTOR` to be set in the ConfigMap          | `"{}"`                                    |
-| `IMAGE_PULL_SECRETS`     | The value of `IMAGE_PULL_SECRETS`                                | `""`                                      |
-| `AFFINITY`               | The value of `AFFINITY` to be set in the ConfigMap               | `"{}"`                                    |
-| `TOLERATIONS`            | The value of `TOLERATIONS` to be set in the ConfigMap            | `"[]"`                                    |
+| Parameter                  | Usage                                                            | Default                                   |
+|----------------------------|------------------------------------------------------------------|-------------------------------------------|
+| `SERVICEACCOUNT_NAME`      | Name of service account used by main pod                         | `k8s-image-puller`                        |
+| `IMAGE`                    | Name of image used for main pod                                  | `quay.io/eclipse/kubernetes-image-puller` |
+| `IMAGE_TAG`                | Tag of image used for main pod                                   | `next`                                    |
+| `DAEMONSET_NAME`           | The value of `DAEMONSET_NAME` to be set in the ConfigMap         | `"kubernetes-image-puller"`               |
+| `DEPLOYMENT_NAME`          | The name of the image puller deployment                          | `"kubernetes-image-puller"`               |
+| `CACHING_INTERVAL_HOURS`   | The value of `CACHING_INTERVAL_HOURS` to be set in the ConfigMap | `"1"`                                     |
+| `CACHING_MEMORY_REQUEST`   | The value of `CACHING_MEMORY_REQUEST` to be set in the ConfigMap | `"10Mi"`                                  |
+| `CACHING_MEMORY_LIMIT`     | The value of `CACHING_MEMORY_LIMIT` to be set in the ConfigMap   | `"20Mi"`                                  |
+| `CACHING_CPU_REQUEST`      | The value of `CACHING_CPU_REQUEST` to be set in the ConfigMap    | `.05`                                     |
+| `CACHING_CPU_LIMIT`        | The value of `CACHING_CPU_LIMIT` to be set in the ConfigMap      | `.2`                                      |
+| `NAMESPACE`                | The value of `NAMESPACE` to be set in the ConfigMap              | `k8s-image-puller`                        |
+| `NODE_SELECTOR`            | The value of `NODE_SELECTOR` to be set in the ConfigMap          | `"{}"`                                    |
+| `IMAGE_PULL_SECRETS`       | The value of `IMAGE_PULL_SECRETS`                                | `""`                                      |
+| `AFFINITY`                 | The value of `AFFINITY` to be set in the ConfigMap               | `"{}"`                                    |
+| `TOLERATIONS`              | The value of `TOLERATIONS` to be set in the ConfigMap            | `"[]"`                                    |
+| `DEPLOYMENT_CPU_REQUEST`   | CPU request for the image puller deployment                      | `"50m"`                                   |
+| `DEPLOYMENT_MEMORY_REQUEST`| Memory request for the image puller deployment                   | `"64Mi"`                                  |
+| `DEPLOYMENT_CPU_LIMIT`     | CPU limit for the image puller deployment                        | `"200m"`                                  |
+| `DEPLOYMENT_MEMORY_LIMIT`  | Memory limit for the image puller deployment                     | `"256Mi"`                                 |
 
 ### Installation - Helm
 
