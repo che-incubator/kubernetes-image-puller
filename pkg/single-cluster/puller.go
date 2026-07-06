@@ -59,7 +59,7 @@ func cacheImagesLocally(config *rest.Config,
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		log.Printf("Error creating Clientset: %v", err)
+		log.Fatalf("Error creating Clientset: %v", err)
 	}
 
 	// Clean up existing deployment if necessary
@@ -74,6 +74,7 @@ func cacheImagesLocally(config *rest.Config,
 			log.Printf("Received SIGTERM, deleting daemonset")
 			utils.DeleteDaemonsetIfExists(clientset)
 			wg.Done()
+			return
 		case <-time.After(time.Duration(cfg.CachingInterval) * time.Hour):
 			utils.RefreshCache(clientset)
 			utils.LogNumNodesScheduled(clientset, "(single user mode)")
