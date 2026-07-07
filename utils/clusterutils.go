@@ -43,6 +43,14 @@ var (
 	bTrue  = true
 	bFalse = false
 
+	// UID/GID 65532 is the standard "nonroot" user in distroless images and
+	// must match the UID created by 'adduser -u 65532 appuser' in build/dockerfiles/Dockerfile.
+	nonRootUID       = int64(65532)
+	nonRootGID       = int64(65532)
+	seccompProfile   = corev1.SeccompProfile{Type: corev1.SeccompProfileTypeRuntimeDefault}
+	// Sleep binary is ~500KB; 50Mi provides ample headroom for platform variations.
+	kipVolumeSizeLimit = resource.MustParse("50Mi")
+
 	// Volume mount to copy the sleep binary into.
 	// To allow the image puller to cache scratch images, an initContainer copies
 	// the sleep binary to this volume mount. As a result, every container has
@@ -125,6 +133,10 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					Name: "test-po",
 				},
 				Spec: corev1.PodSpec{
+					SecurityContext: &corev1.PodSecurityContext{
+						FSGroup:        &nonRootGID,
+						SeccompProfile: &seccompProfile,
+					},
 					NodeSelector:                  cfg.NodeSelector,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					InitContainers: []corev1.Container{{
@@ -136,6 +148,9 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 						VolumeMounts:    containerVolumeMounts,
 						Resources:       getContainerResources(cfg),
 						SecurityContext: &corev1.SecurityContext{
+							RunAsNonRoot:             &bTrue,
+							RunAsUser:                &nonRootUID,
+							RunAsGroup:               &nonRootGID,
 							Capabilities: &corev1.Capabilities{
 								Drop: []corev1.Capability{"ALL"},
 							},
@@ -146,7 +161,14 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					Containers:       getContainers(),
 					ImagePullSecrets: imgPullSecrets,
 					Affinity:         cfg.Affinity,
-					Volumes:          []corev1.Volume{{Name: kipVolumeName}},
+					Volumes: []corev1.Volume{{
+						Name: kipVolumeName,
+						VolumeSource: corev1.VolumeSource{
+							EmptyDir: &corev1.EmptyDirVolumeSource{
+								SizeLimit: &kipVolumeSizeLimit,
+							},
+						},
+					}},
 					Tolerations:      cfg.Tolerations,
 				},
 			},

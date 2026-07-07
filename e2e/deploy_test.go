@@ -130,6 +130,27 @@ func checkPods(t *testing.T, clientset *kubernetes.Clientset) {
 	}
 	for _, pod := range pods.Items {
 		if pod.ObjectMeta.OwnerReferences[0].Name == daemonsetName {
+			ctx := pod.Spec.SecurityContext
+			if ctx == nil {
+				t.Error("Pod SecurityContext is nil")
+			} else {
+				if ctx.SeccompProfile == nil || ctx.SeccompProfile.Type != "RuntimeDefault" {
+					t.Error("Pod SeccompProfile is not RuntimeDefault")
+				}
+			}
+			for _, initContainer := range pod.Spec.InitContainers {
+				initCtx := initContainer.SecurityContext
+				if initCtx == nil {
+					t.Errorf("InitContainer %s SecurityContext is nil", initContainer.Name)
+				} else {
+					if initCtx.RunAsUser == nil || *initCtx.RunAsUser != 65532 {
+						t.Errorf("InitContainer %s not running as UID 65532: %v", initContainer.Name, initCtx.RunAsUser)
+					}
+					if initCtx.RunAsNonRoot == nil || !*initCtx.RunAsNonRoot {
+						t.Errorf("InitContainer %s RunAsNonRoot is not true", initContainer.Name)
+					}
+				}
+			}
 			for _, containerStatus := range pod.Status.ContainerStatuses {
 				if containerStatus.State.Waiting != nil {
 					t.Error(getWaitingErrorMessage(containerStatus))

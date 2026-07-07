@@ -58,11 +58,8 @@ This project vendors all Go dependencies. After any `go get` or `go mod tidy`, y
 
 ### Two Dockerfiles, Two Base Images
 
-- **`build/dockerfiles/Dockerfile`** (production): Multi-stage build on UBI8. Creates `appuser` with UID 65532 to match the PodSecurityContext. Used by CI for the `quay.io/eclipse/kubernetes-image-puller` image.
+- **`build/dockerfiles/Dockerfile`** (production): Multi-stage build on UBI8. Creates `appuser` with UID 65532 to match the initContainer SecurityContext. Used by CI for the `quay.io/eclipse/kubernetes-image-puller` image.
 - **`build/dockerfiles/dev.Dockerfile`** (dev): Single-stage, copies pre-built binaries into `gcr.io/distroless/static-debian12:nonroot` (which also uses UID 65532). Requires running `make build` first.
-
-If you change the UID in PodSecurityContext (`utils/clusterutils.go`), you must also update the `adduser` command in `Dockerfile`. The dev.Dockerfile inherits UID 65532 from the `:nonroot` distroless tag.
-
 ### Configuration Is Environment-Variable Driven
 
 All runtime configuration comes from environment variables (see `cfg/envvars.go`). There are no config files or flags. The `cfg.GetConfig()` function is called from multiple packages — it reads env vars fresh each time (no caching). Tests that call functions using config **must** set the required env vars (at minimum `IMAGES` and `CACHING_INTERVAL_HOURS`).
@@ -73,6 +70,24 @@ All runtime configuration comes from environment variables (see `cfg/envvars.go`
 - **E2e tests** (`e2e/`): Require a running cluster with `NAMESPACE`, `KUBECONFIG`, and `DAEMONSET_NAME` env vars set. These are **not** run by `make test` — they must be invoked manually against a cluster.
 - The `utils/` package tests only cover functions that don't require a Kubernetes client. Functions that need a client are covered by e2e tests.
 
+### Running E2e Tests Before Pushing
+
+Changes to pod specs, security contexts, RBAC, DaemonSet construction, or watch logic **must** be validated with e2e tests before pushing. Unit tests alone cannot catch issues like container startup failures due to security constraints or RBAC misconfigurations that only manifest at runtime on a real cluster.
+
+To run e2e tests locally using [kind](https://github.com/kubernetes-sigs/kind):
+
+```bash
+# Install kind if needed
+go install sigs.k8s.io/kind@latest
+
+# Run e2e tests (creates a kind cluster, runs tests, cleans up)
+./hack/run-e2e.sh
+
+# Or to also delete the cluster afterwards
+./hack/run-e2e.sh --rm
+```
+
+Note: The e2e test images (e.g. `che-plugin-registry`) can be multi-GB. The first run on a fresh cluster may time out while pulling images. Subsequent runs with cached images should complete in under 30 seconds. If the first run times out, re-run — the images will be cached on the node.
 ### RBAC Templates Must Stay In Sync
 
 RBAC rules are defined in two places that must match:
@@ -84,6 +99,16 @@ When changing RBAC permissions, update both files identically.
 ### The Sleep Binary
 
 The `sleep/` directory contains a standalone Go implementation of `sleep` that accepts Go duration strings (e.g. `720h`). It exists because scratch-based container images lack coreutils. The binary is built separately (`./bin/sleep`) and copied into containers. It is not a library — it has its own `package main`.
+
+### DaemonSet Pod Security
+
+The DaemonSet runs arbitrary user-specified images (whatever `IMAGES` is configured to). Security context constraints must not break arbitrary images:
+
+- **PodSecurityContext**: Only `FSGroup` and `SeccompProfile` are set at the pod level. `RunAsUser`/`RunAsGroup`/`RunAsNonRoot` are **not** set here because cached images may have restrictive WORKDIR permissions or require specific UIDs.
+- **InitContainer SecurityContext**: `RunAsNonRoot`, `RunAsUser: 65532`, and `RunAsGroup: 65532` are set on the initContainer (which uses the KIP image where UID 65532 is valid).
+- **Container SecurityContext**: `Capabilities: Drop: ALL`, `ReadOnlyRootFilesystem`, and `AllowPrivilegeEscalation: false` are set on each cached image container. These are safe because the command is overridden to `/kip/sleep`.
+
+If you change the UID in the initContainer SecurityContext, you must also update `adduser` in `build/dockerfiles/Dockerfile`.
 
 ### CGO and Static Linking
 

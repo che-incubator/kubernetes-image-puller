@@ -34,8 +34,8 @@ RUN if [[ ${BOOTSTRAP} != "false" ]]; then \
 COPY . .
 
 # to test FIPS compliance, run https://github.com/openshift/check-payload#scan-a-container-or-operator-image against a built image
-RUN adduser appuser && \
-    make build 
+RUN adduser -u 65532 appuser && \
+    make build
 
 # https://registry.access.redhat.com/ubi9/ubi-minimal
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.8
