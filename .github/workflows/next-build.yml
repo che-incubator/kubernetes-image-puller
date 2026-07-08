@@ -83,16 +83,14 @@ jobs:
         file: ./build/dockerfiles/Dockerfile
         tags:  quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.version }},quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.short_sha1 }}
         push: true
-    - 
-      name: Create failure MM message
-      if: ${{ failure() }}
-      run: |
-        echo "{\"text\":\":no_entry_sign: Kubernetes Image puller build has failed: https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml\"}" > mattermost.json
-    - 
-      name: Send MM message
-      if: ${{ failure() }}
-      uses: mattermost/action-mattermost-notify@826343e28f7ff679a883b01161387142ee429a85 # 1.1.0
-      env:
-        MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
-        MATTERMOST_CHANNEL: eclipse-che-ci
-        MATTERMOST_USERNAME: che-bot
+    # To enable Slack build failure notifications:
+    # 1. Create a Slack Incoming Webhook for your channel
+    # 2. Add the webhook URL as a repository secret named SLACK_WEBHOOK_URL
+    # 3. Uncomment the step below
+    #-
+    #  name: Notify Slack on failure
+    #  if: ${{ failure() }}
+    #  run: |
+    #    curl -X POST -H 'Content-type: application/json' \
+    #      --data '{"text":":no_entry_sign: Kubernetes Image Puller build has failed: https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml"}' \
+    #      ${{ secrets.SLACK_WEBHOOK_URL }}
