@@ -16,4 +16,4 @@ data:
   IMAGE_PULL_SECRETS: "{{ .Values.configMap.imagePullSecrets }}"
   AFFINITY: {{ if kindIs "string" .Values.configMap.affinity }}{{ .Values.configMap.affinity | quote }}{{ else }}{{ .Values.configMap.affinity | toJson | quote }}{{ end }}
   TOLERATIONS: {{ if kindIs "string" .Values.configMap.tolerations }}{{ .Values.configMap.tolerations | quote }}{{ else }}{{ .Values.configMap.tolerations | toJson | quote }}{{ end }}
-  KIP_IMAGE: "{{ .Values.configMap.kipImage }}"
+  KIP_IMAGE: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

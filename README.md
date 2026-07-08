@@ -59,7 +59,6 @@ The following values can be set:
 | `configMap.imagePullSecrets`     | The value of `IMAGE_PULL_SECRETS`                                                                                                     | `""`                                                                       |
 | `configMap.affinity`             | The value of `AFFINITY` to be set in the ConfigMap                                                                                    | `"{}"`                                                                     |
 | `configMap.tolerations`          | The value of `TOLERATIONS` to be set in the ConfigMap (escaped JSON) `'[{\"key\":\"foo\",\"operator\":\"Equal\",\"value\":\"bar\"}]'` | `"[]"`                                                                     |
-| `configMap.kipImage`             | The value of `KIP_IMAGE` to be set in the ConfigMap                                                                                   | `quay.io/eclipse/kubernetes-image-puller:next`                             |
 
 ### Configuration - OpenShift
 
