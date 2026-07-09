@@ -35,6 +35,14 @@ jobs:
       with:
         go-version-file: go.mod
     -
+      name: Check go mod tidy
+      run: |
+        go mod tidy
+        git diff --exit-code go.mod go.sum
+    -
+      name: Run golangci-lint
+      uses: golangci/golangci-lint-action@d583c34f0599d37dbac4a198b9c83201be380893 # v9
+    -
       name: Run tests
       run: make test
     -

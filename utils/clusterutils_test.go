@@ -75,8 +75,8 @@ func TestGetDaemonsetEmptyDirVolume(t *testing.T) {
 	volumes := ds.Spec.Template.Spec.Volumes
 	assert.Len(t, volumes, 1, "Should have exactly one volume")
 	assert.Equal(t, "kip", volumes[0].Name)
-	assert.NotNil(t, volumes[0].VolumeSource.EmptyDir, "Volume should be EmptyDir")
-	assert.Equal(t, resource.MustParse("50Mi"), *volumes[0].VolumeSource.EmptyDir.SizeLimit, "SizeLimit should be 50Mi")
+	assert.NotNil(t, volumes[0].EmptyDir, "Volume should be EmptyDir")
+	assert.Equal(t, resource.MustParse("50Mi"), *volumes[0].EmptyDir.SizeLimit, "SizeLimit should be 50Mi")
 }
 
 // This is the only function that does not require a kubernetes client.  The rest of the tests are in ./e2e
