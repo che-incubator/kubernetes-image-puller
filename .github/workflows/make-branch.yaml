@@ -18,7 +18,7 @@ jobs:
     name: Create branch
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
         with: 
           fetch-depth: 0
       - name: Create branch
