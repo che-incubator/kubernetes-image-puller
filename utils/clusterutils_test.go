@@ -52,15 +52,18 @@ func TestGetDaemonsetPodSecurityContext(t *testing.T) {
 	assert.Nil(t, ctx.RunAsNonRoot, "RunAsNonRoot should not be set at pod level")
 	assert.Nil(t, ctx.RunAsUser, "RunAsUser should not be set at pod level")
 	assert.Nil(t, ctx.RunAsGroup, "RunAsGroup should not be set at pod level")
-	assert.Equal(t, int64(65532), *ctx.FSGroup, "FSGroup should be 65532")
+	assert.Nil(t, ctx.FSGroup, "FSGroup should not be set — let the platform assign it")
 	assert.Equal(t, corev1.SeccompProfileTypeRuntimeDefault, ctx.SeccompProfile.Type, "SeccompProfile should be RuntimeDefault")
 
 	initContainer := ds.Spec.Template.Spec.InitContainers[0]
 	initCtx := initContainer.SecurityContext
 	assert.NotNil(t, initCtx, "InitContainer SecurityContext should be set")
 	assert.True(t, *initCtx.RunAsNonRoot, "InitContainer RunAsNonRoot should be true")
-	assert.Equal(t, int64(65532), *initCtx.RunAsUser, "InitContainer RunAsUser should be 65532")
-	assert.Equal(t, int64(65532), *initCtx.RunAsGroup, "InitContainer RunAsGroup should be 65532")
+	assert.Nil(t, initCtx.RunAsUser, "RunAsUser should not be set — let the platform assign it")
+	assert.Nil(t, initCtx.RunAsGroup, "RunAsGroup should not be set — let the platform assign it")
+	assert.True(t, *initCtx.ReadOnlyRootFilesystem, "InitContainer ReadOnlyRootFilesystem should be true")
+	assert.False(t, *initCtx.AllowPrivilegeEscalation, "InitContainer AllowPrivilegeEscalation should be false")
+	assert.Equal(t, []corev1.Capability{"ALL"}, initCtx.Capabilities.Drop, "InitContainer should drop all capabilities")
 }
 
 func TestGetDaemonsetEmptyDirVolume(t *testing.T) {
