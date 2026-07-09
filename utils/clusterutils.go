@@ -43,12 +43,7 @@ var (
 	bTrue  = true
 	bFalse = false
 
-	// UID/GID 65532 is the standard "nonroot" user in distroless images and
-	// must match the UID created by 'adduser -u 65532 appuser' in build/dockerfiles/Dockerfile.
-	nonRootUID       = int64(65532)
-	nonRootGID       = int64(65532)
-	seccompProfile   = corev1.SeccompProfile{Type: corev1.SeccompProfileTypeRuntimeDefault}
-	// Sleep binary is ~500KB; 50Mi provides ample headroom for platform variations.
+	seccompProfile     = corev1.SeccompProfile{Type: corev1.SeccompProfileTypeRuntimeDefault}
 	kipVolumeSizeLimit = resource.MustParse("50Mi")
 
 	// Volume mount to copy the sleep binary into.
@@ -134,7 +129,6 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 				},
 				Spec: corev1.PodSpec{
 					SecurityContext: &corev1.PodSecurityContext{
-						FSGroup:        &nonRootGID,
 						SeccompProfile: &seccompProfile,
 					},
 					NodeSelector:                  cfg.NodeSelector,
@@ -148,9 +142,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 						VolumeMounts:    containerVolumeMounts,
 						Resources:       getContainerResources(cfg),
 						SecurityContext: &corev1.SecurityContext{
-							RunAsNonRoot:             &bTrue,
-							RunAsUser:                &nonRootUID,
-							RunAsGroup:               &nonRootGID,
+							RunAsNonRoot: &bTrue,
 							Capabilities: &corev1.Capabilities{
 								Drop: []corev1.Capability{"ALL"},
 							},

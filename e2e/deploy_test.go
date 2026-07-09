@@ -143,9 +143,6 @@ func checkPods(t *testing.T, clientset *kubernetes.Clientset) {
 				if initCtx == nil {
 					t.Errorf("InitContainer %s SecurityContext is nil", initContainer.Name)
 				} else {
-					if initCtx.RunAsUser == nil || *initCtx.RunAsUser != 65532 {
-						t.Errorf("InitContainer %s not running as UID 65532: %v", initContainer.Name, initCtx.RunAsUser)
-					}
 					if initCtx.RunAsNonRoot == nil || !*initCtx.RunAsNonRoot {
 						t.Errorf("InitContainer %s RunAsNonRoot is not true", initContainer.Name)
 					}
