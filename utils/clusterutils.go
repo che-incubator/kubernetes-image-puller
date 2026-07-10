@@ -26,6 +26,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/utils/ptr"
 )
 
 const (
@@ -40,9 +41,8 @@ var (
 	propagationPolicy             = metav1.DeletePropagationForeground
 	terminationGracePeriodSeconds = int64(1)
 
-	bTrue  = true
-	bFalse = false
-
+	nonRootUID         = int64(65532)
+	nonRootGID         = int64(65532)
 	seccompProfile     = corev1.SeccompProfile{Type: corev1.SeccompProfileTypeRuntimeDefault}
 	kipVolumeSizeLimit = resource.MustParse("50Mi")
 
@@ -94,7 +94,23 @@ func getOwnerReferenceFromDeployment(deployment *appsv1.Deployment) metav1.Owner
 	}
 }
 
-func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
+func isOpenShift(clientset *kubernetes.Clientset) bool {
+	apiGroups, err := clientset.Discovery().ServerGroups()
+	if err != nil {
+		log.Printf("Failed to discover API groups, assuming vanilla Kubernetes: %v", err)
+		return false
+	}
+
+	for _, group := range apiGroups.Groups {
+		if group.Name == "route.openshift.io" {
+			return true
+		}
+	}
+
+	return false
+}
+
+func getDaemonset(deployment *appsv1.Deployment, openShift bool) *appsv1.DaemonSet {
 	cfg := cfg.GetConfig()
 
 	imgPullSecrets := []corev1.LocalObjectReference{}
@@ -128,9 +144,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 					Name: "test-po",
 				},
 				Spec: corev1.PodSpec{
-					SecurityContext: &corev1.PodSecurityContext{
-						SeccompProfile: &seccompProfile,
-					},
+					SecurityContext:               podSecurityContext(openShift),
 					NodeSelector:                  cfg.NodeSelector,
 					TerminationGracePeriodSeconds: &terminationGracePeriodSeconds,
 					InitContainers: []corev1.Container{{
@@ -141,14 +155,7 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 						Args:            []string{"-c", copySleepCommand},
 						VolumeMounts:    containerVolumeMounts,
 						Resources:       getContainerResources(cfg),
-						SecurityContext: &corev1.SecurityContext{
-							RunAsNonRoot: &bTrue,
-							Capabilities: &corev1.Capabilities{
-								Drop: []corev1.Capability{"ALL"},
-							},
-							ReadOnlyRootFilesystem:   &bTrue,
-							AllowPrivilegeEscalation: &bFalse,
-						},
+						SecurityContext: initContainerSecurityContext(openShift),
 					}},
 					Containers:       getContainers(),
 					ImagePullSecrets: imgPullSecrets,
@@ -161,11 +168,40 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 							},
 						},
 					}},
-					Tolerations:      cfg.Tolerations,
+					Tolerations: cfg.Tolerations,
 				},
 			},
 		},
 	}
+}
+
+func podSecurityContext(openShift bool) *corev1.PodSecurityContext {
+	ctx := &corev1.PodSecurityContext{
+		SeccompProfile: &seccompProfile,
+	}
+
+	if !openShift {
+		ctx.FSGroup = &nonRootGID
+	}
+
+	return ctx
+}
+
+func initContainerSecurityContext(openShift bool) *corev1.SecurityContext {
+	ctx := &corev1.SecurityContext{
+		RunAsNonRoot: ptr.To(true),
+		Capabilities: &corev1.Capabilities{
+			Drop: []corev1.Capability{"ALL"},
+		},
+		ReadOnlyRootFilesystem:   ptr.To(true),
+		AllowPrivilegeEscalation: ptr.To(false),
+	}
+
+	if !openShift {
+		ctx.RunAsUser = &nonRootUID
+		ctx.RunAsGroup = &nonRootGID
+	}
+	return ctx
 }
 
 // Create the daemonset, using to-be-cached images as init containers. Blocks
@@ -173,7 +209,8 @@ func getDaemonset(deployment *appsv1.Deployment) *appsv1.DaemonSet {
 func createDaemonsetOrDie(clientset *kubernetes.Clientset) {
 	cfg := cfg.GetConfig()
 	thisDeployment := getImagePullerDeployment(clientset)
-	toCreate := getDaemonset(thisDeployment)
+	isOpenShiftInfra := isOpenShift(clientset)
+	toCreate := getDaemonset(thisDeployment, isOpenShiftInfra)
 	dsWatch := watchDaemonset(clientset)
 	defer dsWatch.Stop()
 	watchChan := dsWatch.ResultChan()
@@ -297,8 +334,8 @@ func getContainers() []corev1.Container {
 				Capabilities: &corev1.Capabilities{
 					Drop: []corev1.Capability{"ALL"},
 				},
-				ReadOnlyRootFilesystem:   &bTrue,
-				AllowPrivilegeEscalation: &bFalse,
+				ReadOnlyRootFilesystem:   ptr.To(true),
+				AllowPrivilegeEscalation: ptr.To(false),
 			},
 		}
 		idx++

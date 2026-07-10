@@ -29,7 +29,7 @@ parameters:
   value: >
       java11-maven=quay.io/eclipse/che-java11-maven:next;
       che-theia=quay.io/eclipse/che-theia:next;
-      java-plugin-runner=eclipse/che-remote-plugin-runner-java8:latest;
+      java-plugin-runner=docker.io/eclipse/che-remote-plugin-runner-java8:latest;
 - name: DAEMONSET_NAME
   value: "kubernetes-image-puller"
 - name: CACHING_INTERVAL_HOURS
