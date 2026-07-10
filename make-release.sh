@@ -22,6 +22,11 @@ if [ -z "${VERSION}" ]; then
   exit 1
 fi
 
+if ! echo "${VERSION}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+  echo "Error: version must be in semver format (e.g., 7.99.0)"
+  exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Releasing version ${VERSION}"
