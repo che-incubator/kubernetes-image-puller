@@ -1,6 +1,6 @@
 BINARY_NAME=kubernetes-image-puller
 IMAGE_NAME=kubernetes-image-puller
-IMAGE_TAG=next
+IMAGE_TAG=0.1.0
 CGO_ENABLED=1
 PODMAN=podman
 

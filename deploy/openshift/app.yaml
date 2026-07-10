@@ -50,7 +50,7 @@ parameters:
 - name: IMAGE
   value: quay.io/eclipse/kubernetes-image-puller
 - name: IMAGE_TAG
-  value: next
+  value: 0.1.0
 - name: DEPLOYMENT_CPU_REQUEST
   value: "50m"
 - name: DEPLOYMENT_MEMORY_REQUEST
