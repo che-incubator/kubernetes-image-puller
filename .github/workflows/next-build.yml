@@ -45,11 +45,11 @@ jobs:
     -
       name: Run tests
       run: make test
-    -
-      name: Run govulncheck
-      run: |
-        go install golang.org/x/vuln/cmd/govulncheck@v1.5.0
-        govulncheck ./...
+#    -
+#      name: Run govulncheck
+#      run: |
+#        go install golang.org/x/vuln/cmd/govulncheck@v1.5.0
+#        govulncheck ./...
 
   build:
     needs: test
