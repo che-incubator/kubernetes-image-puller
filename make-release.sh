@@ -13,7 +13,7 @@
 # Usage: ./make-release.sh <version>
 #   e.g. ./make-release.sh 7.99.0
 
-set -e
+set -euo pipefail
 
 VERSION=$1
 if [ -z "${VERSION}" ]; then
@@ -30,6 +30,8 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Releasing version ${VERSION}"
+
+git diff --quiet && git diff --cached --quiet || { echo 'Error: working tree is dirty'; exit 1; }
 
 # Makefile: IMAGE_TAG=next -> IMAGE_TAG=<version>
 sed -i "s/IMAGE_TAG=next/IMAGE_TAG=${VERSION}/" "${SCRIPT_DIR}/Makefile"
@@ -49,7 +51,12 @@ sed -i "s|kubernetes-image-puller:next|kubernetes-image-puller:${VERSION}|" "${S
 echo "Updated files:"
 git diff --name-only
 
-git add -A
+git add \
+  "${SCRIPT_DIR}/Makefile" \
+  "${SCRIPT_DIR}/cfg/envvars.go" \
+  "${SCRIPT_DIR}/deploy/helm/values.yaml" \
+  "${SCRIPT_DIR}/deploy/openshift/app.yaml" \
+  "${SCRIPT_DIR}/deploy/openshift/configmap.yaml"
 git commit -m "chore: Release ${VERSION}"
 git tag "v${VERSION}"
 git push origin "v${VERSION}"

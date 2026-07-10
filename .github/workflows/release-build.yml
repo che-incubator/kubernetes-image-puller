@@ -33,7 +33,7 @@ jobs:
         cache: false
     -
       name: Run golangci-lint
-      uses: golangci/golangci-lint-action@v9
+      uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
     -
       name: Run tests
       run: make test
@@ -61,25 +61,22 @@ jobs:
       name: Clone source code
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
-        fetch-depth: 0
+        fetch-depth: 1
         persist-credentials: false
     -
       name: Prepare
       id: prep
       run: |
         set -e
-        SHORT_SHA1=$(git rev-parse --short HEAD)
         VERSION=${GITHUB_REF_NAME#v}
-        echo "short_sha1=${SHORT_SHA1}" >> $GITHUB_OUTPUT
         echo "version=${VERSION}" >> $GITHUB_OUTPUT
-        echo "image=kubernetes-image-puller" >> $GITHUB_OUTPUT
     -
       name: "Build and push"
       uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
       with:
         context: .
         file: ./build/dockerfiles/Dockerfile
+        platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
         tags: |
-          quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.version }}
-          quay.io/eclipse/${{ steps.prep.outputs.image }}:latest
+          quay.io/eclipse/kubernetes-image-puller:${{ steps.prep.outputs.version }}
         push: true
