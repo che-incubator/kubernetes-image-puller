@@ -33,6 +33,10 @@ echo "Releasing version ${VERSION}"
 
 git diff --quiet && git diff --cached --quiet || { echo 'Error: working tree is dirty'; exit 1; }
 
+BRANCH="$(echo "${VERSION}" | sed 's/\.[0-9]*$/.x/')"
+echo "Creating branch ${BRANCH}"
+git checkout -b "${BRANCH}"
+
 # Makefile: IMAGE_TAG=next -> IMAGE_TAG=<version>
 sed -i "s/IMAGE_TAG=next/IMAGE_TAG=${VERSION}/" "${SCRIPT_DIR}/Makefile"
 
@@ -48,9 +52,6 @@ sed -i "s/  value: next/  value: ${VERSION}/" "${SCRIPT_DIR}/deploy/openshift/ap
 # OpenShift configmap
 sed -i "s|kubernetes-image-puller:next|kubernetes-image-puller:${VERSION}|" "${SCRIPT_DIR}/deploy/openshift/configmap.yaml"
 
-echo "Updated files:"
-git diff --name-only
-
 git add \
   "${SCRIPT_DIR}/Makefile" \
   "${SCRIPT_DIR}/cfg/envvars.go" \
@@ -59,6 +60,6 @@ git add \
   "${SCRIPT_DIR}/deploy/openshift/configmap.yaml"
 git commit -m "chore: Release ${VERSION}"
 git tag "v${VERSION}"
-git push origin "v${VERSION}"
+git push origin "${BRANCH}" "v${VERSION}"
 
-echo "Done. Tag v${VERSION} pushed — the release-build workflow will build and push the image."
+echo "Done. Branch ${BRANCH} and tag v${VERSION} pushed — the release-build workflow will build and push the image."

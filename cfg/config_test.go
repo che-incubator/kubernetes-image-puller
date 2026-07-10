@@ -38,7 +38,7 @@ func TestEnvVars(t *testing.T) {
 				NodeSelector:      map[string]string{},
 				ImagePullSecrets:  []string{},
 				Affinity:          &v1.Affinity{},
-				ImagePullerImage:  "quay.io/eclipse/kubernetes-image-puller:next",
+				ImagePullerImage:  defaultImage,
 				Tolerations:       []v1.Toleration{},
 			},
 		},
