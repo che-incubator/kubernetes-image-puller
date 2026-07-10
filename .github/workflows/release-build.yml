@@ -7,12 +7,12 @@
 # SPDX-License-Identifier: EPL-2.0
 #
 
-name: build-next
+name: build-release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
   test:
@@ -30,11 +30,7 @@ jobs:
       uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
       with:
         go-version-file: go.mod
-    -
-      name: Check go mod tidy
-      run: |
-        go mod tidy
-        git diff --exit-code go.mod go.sum
+        cache: false
     -
       name: Run golangci-lint
       uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
@@ -45,6 +41,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     steps:
     -
       name: "Set up QEMU"
@@ -63,15 +61,15 @@ jobs:
       name: Clone source code
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
-        fetch-depth: 0
+        fetch-depth: 1
         persist-credentials: false
     -
       name: Prepare
       id: prep
       run: |
         set -e
-        echo "short_sha1=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-        echo "version=next" >> $GITHUB_OUTPUT
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
     -
       name: "Build and push"
       uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
@@ -79,5 +77,6 @@ jobs:
         context: .
         file: ./build/dockerfiles/Dockerfile
         platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
-        tags:  quay.io/eclipse/kubernetes-image-puller:${{ steps.prep.outputs.version }},quay.io/eclipse/kubernetes-image-puller:${{ steps.prep.outputs.short_sha1 }}
+        tags: |
+          quay.io/eclipse/kubernetes-image-puller:${{ steps.prep.outputs.version }}
         push: true
