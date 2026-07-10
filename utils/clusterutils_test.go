@@ -8,6 +8,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/utils/ptr"
 )
 
 var (
@@ -33,47 +34,72 @@ var (
 		Capabilities: &corev1.Capabilities{
 			Drop: []corev1.Capability{"ALL"},
 		},
-		ReadOnlyRootFilesystem:   &bTrue,
-		AllowPrivilegeEscalation: &bFalse,
+		ReadOnlyRootFilesystem:   ptr.To(true),
+		AllowPrivilegeEscalation: ptr.To(false),
 	}
 )
 
-func TestGetDaemonsetPodSecurityContext(t *testing.T) {
-	t.Setenv("IMAGES", "test=quay.io/test:latest")
+func TestGetDaemonsetPodSecurityContextKubernetes(t *testing.T) {
+	t.Setenv("IMAGES", "che-code=quay.io/che-incubator/che-code:next;base-developer-image=quay.io/devfile/base-developer-image:ubi9-latest")
 	t.Setenv("CACHING_INTERVAL_HOURS", "1")
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: "test", UID: "test-uid"},
 	}
-	ds := getDaemonset(deployment)
+	ds := getDaemonset(deployment, false)
 
 	ctx := ds.Spec.Template.Spec.SecurityContext
 	assert.NotNil(t, ctx, "PodSecurityContext should be set")
 	assert.Nil(t, ctx.RunAsNonRoot, "RunAsNonRoot should not be set at pod level")
 	assert.Nil(t, ctx.RunAsUser, "RunAsUser should not be set at pod level")
 	assert.Nil(t, ctx.RunAsGroup, "RunAsGroup should not be set at pod level")
-	assert.Nil(t, ctx.FSGroup, "FSGroup should not be set — let the platform assign it")
+	assert.Equal(t, int64(65532), *ctx.FSGroup, "FSGroup should be 65532")
 	assert.Equal(t, corev1.SeccompProfileTypeRuntimeDefault, ctx.SeccompProfile.Type, "SeccompProfile should be RuntimeDefault")
 
 	initContainer := ds.Spec.Template.Spec.InitContainers[0]
 	initCtx := initContainer.SecurityContext
 	assert.NotNil(t, initCtx, "InitContainer SecurityContext should be set")
 	assert.True(t, *initCtx.RunAsNonRoot, "InitContainer RunAsNonRoot should be true")
-	assert.Nil(t, initCtx.RunAsUser, "RunAsUser should not be set — let the platform assign it")
-	assert.Nil(t, initCtx.RunAsGroup, "RunAsGroup should not be set — let the platform assign it")
+	assert.Equal(t, int64(65532), *initCtx.RunAsUser, "InitContainer RunAsUser should be 65532")
+	assert.Equal(t, int64(65532), *initCtx.RunAsGroup, "InitContainer RunAsGroup should be 65532")
+	assert.True(t, *initCtx.ReadOnlyRootFilesystem, "InitContainer ReadOnlyRootFilesystem should be true")
+	assert.False(t, *initCtx.AllowPrivilegeEscalation, "InitContainer AllowPrivilegeEscalation should be false")
+	assert.Equal(t, []corev1.Capability{"ALL"}, initCtx.Capabilities.Drop, "InitContainer should drop all capabilities")
+}
+
+func TestGetDaemonsetPodSecurityContextOpenShift(t *testing.T) {
+	t.Setenv("IMAGES", "che-code=quay.io/che-incubator/che-code:next;base-developer-image=quay.io/devfile/base-developer-image:ubi9-latest")
+	t.Setenv("CACHING_INTERVAL_HOURS", "1")
+
+	deployment := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{Name: "test", UID: "test-uid"},
+	}
+	ds := getDaemonset(deployment, true)
+
+	ctx := ds.Spec.Template.Spec.SecurityContext
+	assert.NotNil(t, ctx, "PodSecurityContext should be set")
+	assert.Nil(t, ctx.FSGroup, "FSGroup should not be set on OpenShift")
+	assert.Equal(t, corev1.SeccompProfileTypeRuntimeDefault, ctx.SeccompProfile.Type, "SeccompProfile should be RuntimeDefault")
+
+	initContainer := ds.Spec.Template.Spec.InitContainers[0]
+	initCtx := initContainer.SecurityContext
+	assert.NotNil(t, initCtx, "InitContainer SecurityContext should be set")
+	assert.True(t, *initCtx.RunAsNonRoot, "InitContainer RunAsNonRoot should be true")
+	assert.Nil(t, initCtx.RunAsUser, "RunAsUser should not be set on OpenShift")
+	assert.Nil(t, initCtx.RunAsGroup, "RunAsGroup should not be set on OpenShift")
 	assert.True(t, *initCtx.ReadOnlyRootFilesystem, "InitContainer ReadOnlyRootFilesystem should be true")
 	assert.False(t, *initCtx.AllowPrivilegeEscalation, "InitContainer AllowPrivilegeEscalation should be false")
 	assert.Equal(t, []corev1.Capability{"ALL"}, initCtx.Capabilities.Drop, "InitContainer should drop all capabilities")
 }
 
 func TestGetDaemonsetEmptyDirVolume(t *testing.T) {
-	t.Setenv("IMAGES", "test=quay.io/test:latest")
+	t.Setenv("IMAGES", "che-code=quay.io/che-incubator/che-code:next;base-developer-image=quay.io/devfile/base-developer-image:ubi9-latest")
 	t.Setenv("CACHING_INTERVAL_HOURS", "1")
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{Name: "test", UID: "test-uid"},
 	}
-	ds := getDaemonset(deployment)
+	ds := getDaemonset(deployment, false)
 
 	volumes := ds.Spec.Template.Spec.Volumes
 	assert.Len(t, volumes, 1, "Should have exactly one volume")
@@ -92,10 +118,23 @@ func TestGetContainers(t *testing.T) {
 
 	testcases := []testcase{
 		{
+			name: "one container",
+			want: []corev1.Container{{
+				Name:            "che-code",
+				Image:           "quay.io/che-incubator/che-code:next",
+				Command:         defaultCommand,
+				Args:            defaultArgs,
+				ImagePullPolicy: corev1.PullAlways,
+				Resources:       defaultResourceRequirements,
+				VolumeMounts:    defaultVolumeMounts,
+				SecurityContext: &defaultSecurityContext,
+			}},
+			images: "che-code=quay.io/che-incubator/che-code:next",
+		}, {
 			name: "two containers",
 			want: []corev1.Container{{
-				Name:            "che-theia",
-				Image:           "eclipse/che-theia:nightly",
+				Name:            "che-code",
+				Image:           "quay.io/che-incubator/che-code:next",
 				Command:         defaultCommand,
 				Args:            defaultArgs,
 				ImagePullPolicy: corev1.PullAlways,
@@ -103,8 +142,8 @@ func TestGetContainers(t *testing.T) {
 				VolumeMounts:    defaultVolumeMounts,
 				SecurityContext: &defaultSecurityContext,
 			}, {
-				Name:            "che-plugin-registry",
-				Image:           "quay.io/eclipse/che-plugin-registry:nightly",
+				Name:            "base-developer-image",
+				Image:           "quay.io/devfile/base-developer-image:ubi9-latest",
 				Command:         defaultCommand,
 				Args:            defaultArgs,
 				ImagePullPolicy: corev1.PullAlways,
@@ -112,47 +151,7 @@ func TestGetContainers(t *testing.T) {
 				VolumeMounts:    defaultVolumeMounts,
 				SecurityContext: &defaultSecurityContext,
 			}},
-			images: "che-theia=eclipse/che-theia:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly",
-		}, {
-			name: "four containers",
-			want: []corev1.Container{{
-				Name:            "che-sidecar-java",
-				Image:           "quay.io/eclipse/che-sidecar-java:nightly",
-				Command:         defaultCommand,
-				Args:            defaultArgs,
-				ImagePullPolicy: corev1.PullAlways,
-				Resources:       defaultResourceRequirements,
-				VolumeMounts:    defaultVolumeMounts,
-				SecurityContext: &defaultSecurityContext,
-			}, {
-				Name:            "che-plugin-registry",
-				Image:           "quay.io/eclipse/che-plugin-registry:nightly",
-				Command:         defaultCommand,
-				Args:            defaultArgs,
-				ImagePullPolicy: corev1.PullAlways,
-				Resources:       defaultResourceRequirements,
-				VolumeMounts:    defaultVolumeMounts,
-				SecurityContext: &defaultSecurityContext,
-			}, {
-				Name:            "che-devfile-registry",
-				Image:           "quay.io/eclipse/che-devfile-registry:nightly",
-				Command:         defaultCommand,
-				Args:            defaultArgs,
-				ImagePullPolicy: corev1.PullAlways,
-				Resources:       defaultResourceRequirements,
-				VolumeMounts:    defaultVolumeMounts,
-				SecurityContext: &defaultSecurityContext,
-			}, {
-				Name:            "che-theia",
-				Image:           "quay.io/eclipse/che-theia:nightly",
-				Command:         defaultCommand,
-				Args:            defaultArgs,
-				ImagePullPolicy: corev1.PullAlways,
-				Resources:       defaultResourceRequirements,
-				VolumeMounts:    defaultVolumeMounts,
-				SecurityContext: &defaultSecurityContext,
-			}},
-			images: "che-sidecar-java=quay.io/eclipse/che-sidecar-java:nightly;che-plugin-registry=quay.io/eclipse/che-plugin-registry:nightly;che-devfile-registry=quay.io/eclipse/che-devfile-registry:nightly;che-theia=quay.io/eclipse/che-theia:nightly",
+			images: "che-code=quay.io/che-incubator/che-code:next;base-developer-image=quay.io/devfile/base-developer-image:ubi9-latest",
 		},
 	}
 	for _, c := range testcases {

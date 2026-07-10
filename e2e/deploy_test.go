@@ -61,9 +61,7 @@ func TestSingleClusterCacheImages(t *testing.T) {
 	}
 
 	testCases := []testCase{
-		{name: "test images", images: "che-theia=quay.io/eclipse/che-theia:next;che-plugin-registry=quay.io/eclipse/che-plugin-registry:next"},
-		{name: "test scratch image", images: "che-machine-exec=quay.io/eclipse/che-machine-exec:next;"},
-		{name: "test volume mount image", images: "volume-mount-image=quay.io/dkwon17/volume-mount:latest"},
+		{name: "test images", images: "che-code=quay.io/che-incubator/che-code:next;base-developer-image=quay.io/devfile/base-developer-image:ubi9-latest"},
 	}
 
 	clientset, err := getClientset(t)

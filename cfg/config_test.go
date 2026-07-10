@@ -9,7 +9,7 @@ import (
 
 func TestEnvVars(t *testing.T) {
 
-	t.Setenv("IMAGES", "che-theia=quay.io/eclipse/che-theia:nightly")
+	t.Setenv("IMAGES", "che-code=quay.io/che-incubator/che-code:next;base-developer-image=quay.io/devfile/base-developer-image:ubi9-latest")
 	t.Setenv("CACHING_INTERVAL_HOURS", "5")
 
 	type testcase struct {
@@ -27,7 +27,8 @@ func TestEnvVars(t *testing.T) {
 				DaemonsetAnnotations: map[string]string{},
 				Namespace:     "k8s-image-puller",
 				Images: map[string]string{
-					"che-theia": "quay.io/eclipse/che-theia:nightly",
+					"che-code":              "quay.io/che-incubator/che-code:next",
+					"base-developer-image": "quay.io/devfile/base-developer-image:ubi9-latest",
 				},
 				CachingMemRequest: "1Mi",
 				CachingMemLimit:   "5Mi",
@@ -61,7 +62,8 @@ func TestEnvVars(t *testing.T) {
 				},
 				Namespace:     "my-namespace",
 				Images: map[string]string{
-					"che-theia": "quay.io/eclipse/che-theia:nightly",
+					"che-code":              "quay.io/che-incubator/che-code:next",
+					"base-developer-image": "quay.io/devfile/base-developer-image:ubi9-latest",
 				},
 				CachingMemRequest: "1Mi",
 				CachingMemLimit:   "5Mi",
