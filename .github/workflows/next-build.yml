@@ -10,11 +10,7 @@
 name: build-next
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -45,15 +41,9 @@ jobs:
     -
       name: Run tests
       run: make test
-#    -
-#      name: Run govulncheck
-#      run: |
-#        go install golang.org/x/vuln/cmd/govulncheck@v1.5.0
-#        govulncheck ./...
 
   build:
     needs: test
-    if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
     -
@@ -75,30 +65,19 @@ jobs:
       with:
         fetch-depth: 0
         persist-credentials: false
-    - 
+    -
       name: Prepare
       id: prep
       run: |
         set -e
         echo "short_sha1=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
         echo "version=next" >> $GITHUB_OUTPUT
-        echo "image=kubernetes-image-puller" >> $GITHUB_OUTPUT
     -
       name: "Build and push"
       uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
       with:
         context: .
         file: ./build/dockerfiles/Dockerfile
-        tags:  quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.version }},quay.io/eclipse/${{ steps.prep.outputs.image }}:${{ steps.prep.outputs.short_sha1 }}
+        platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+        tags:  quay.io/eclipse/kubernetes-image-puller:${{ steps.prep.outputs.version }},quay.io/eclipse/kubernetes-image-puller:${{ steps.prep.outputs.short_sha1 }}
         push: true
-    # To enable Slack build failure notifications:
-    # 1. Create a Slack Incoming Webhook for your channel
-    # 2. Add the webhook URL as a repository secret named SLACK_WEBHOOK_URL
-    # 3. Uncomment the step below
-    #-
-    #  name: Notify Slack on failure
-    #  if: ${{ failure() }}
-    #  run: |
-    #    curl -X POST -H 'Content-type: application/json' \
-    #      --data '{"text":":no_entry_sign: Kubernetes Image Puller build has failed: https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/next-build.yml"}' \
-    #      ${{ secrets.SLACK_WEBHOOK_URL }}
