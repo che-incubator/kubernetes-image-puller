@@ -54,7 +54,7 @@ const (
 	defaultNodeSelector         = "{}"
 	defaultImagePullSecret      = ""
 	defaultAffinity             = "{}"
-	defaultImage                = "quay.io/eclipse/kubernetes-image-puller:next"
+	defaultImage                = "quay.io/eclipse/kubernetes-image-puller:1.1.1"
 	defaultTolerations          = "[]"
 )
 
