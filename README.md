@@ -211,7 +211,7 @@ The release process consists of the following steps:
    ```
    This creates a `<version>-release` branch.
 
-2. Wait until the [release-build](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/release-build.yml) workflow completes successfully.
+2. Wait until the [build-release](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/release-build.yml) workflow completes successfully.
 
 3. Check out the release branch and test the image puller on both Kubernetes and OpenShift by deploying with Helm:
    ```shell
