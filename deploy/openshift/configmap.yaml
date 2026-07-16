@@ -50,6 +50,6 @@ parameters:
 - name: AFFINITY
   value: "{}"
 - name: KIP_IMAGE
-  value: quay.io/eclipse/kubernetes-image-puller:next
+  value: quay.io/eclipse/kubernetes-image-puller:1.1.2
 - name: TOLERATIONS
   value: "[]"
