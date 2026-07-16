@@ -216,6 +216,7 @@ The release process consists of the following steps:
 3. Check out the release branch and test the image puller on both Kubernetes and OpenShift by deploying with Helm:
    ```shell
    git checkout <version>-release
+   kubectl create namespace k8s-image-puller
    helm install kubernetes-image-puller -n k8s-image-puller deploy/helm
    ```
    Verify that the daemonset is created and pods are running on all nodes in both environments.
