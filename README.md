@@ -201,6 +201,27 @@ However, the daemonset created by the Kubernetes Image Puller now:
 
 As a result, every container (including scratch image containers) uses the provided golang-based `sleep` binary.
 
+## Release
+
+The release process consists of the following steps:
+
+1. Run the `make-release.sh` script from `main`:
+   ```shell
+   ./make-release.sh <version>
+   ```
+   This creates a `<version>-release` branch.
+
+2. Wait until the [build-release](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/release-build.yml) workflow completes successfully.
+
+3. Check out the release branch and test the image puller on both Kubernetes and OpenShift by deploying with Helm:
+   ```shell
+   git checkout <version>-release
+   kubectl create namespace k8s-image-puller
+   helm install kubernetes-image-puller -n k8s-image-puller deploy/helm
+   ```
+   Verify that the daemonset is created and pods are running on all nodes in both environments.
+
+
 ## Trademark
 
 "Che" is a trademark of the Eclipse Foundation.

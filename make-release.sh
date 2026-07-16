@@ -33,7 +33,7 @@ echo "Releasing version ${VERSION}"
 
 git diff --quiet && git diff --cached --quiet || { echo 'Error: working tree is dirty'; exit 1; }
 
-BRANCH="$(echo "${VERSION}" | sed 's/\.[0-9]*$/.x/')"
+BRANCH="${VERSION}-release"
 echo "Creating branch ${BRANCH}"
 git checkout -b "${BRANCH}"
 
