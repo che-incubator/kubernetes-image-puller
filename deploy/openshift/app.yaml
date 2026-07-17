@@ -42,6 +42,8 @@ objects:
               cpu: ${DEPLOYMENT_CPU_LIMIT}
               memory: ${DEPLOYMENT_MEMORY_LIMIT}
         serviceAccountName: ${SERVICEACCOUNT_NAME}
+        # Always rendered (OpenShift templates lack conditionals); empty string is a no-op.
+        priorityClassName: ${PRIORITY_CLASS_NAME}
 parameters:
 - name: DEPLOYMENT_NAME
   value: kubernetes-image-puller
@@ -51,6 +53,8 @@ parameters:
   value: quay.io/eclipse/kubernetes-image-puller
 - name: IMAGE_TAG
   value: next
+- name: PRIORITY_CLASS_NAME
+  value: ""
 - name: DEPLOYMENT_CPU_REQUEST
   value: "50m"
 - name: DEPLOYMENT_MEMORY_REQUEST

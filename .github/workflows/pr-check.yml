@@ -42,6 +42,31 @@ jobs:
       name: Run tests
       run: make test
 
+  helm-lint:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+    -
+      name: Clone source code
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      with:
+        persist-credentials: false
+    -
+      name: Set up Helm
+      uses: azure/setup-helm@59b1c81c6280f5abebb1fb1bc585696daa7dfb42 # v5
+    -
+      name: Lint chart
+      run: helm lint deploy/helm/
+    -
+      name: Install kubeconform
+      run: |
+        curl -sSL https://github.com/yannh/kubeconform/releases/download/v0.8.0/kubeconform-linux-amd64.tar.gz | tar xz
+        sudo mv kubeconform /usr/local/bin/
+    -
+      name: Validate template rendering
+      run: helm template test deploy/helm/ | kubeconform -strict -summary
+
   build:
     needs: test
     runs-on: ubuntu-22.04
