@@ -1,0 +1,13 @@
+kubernetes-image-puller has been deployed.
+
+  Deployment: {{ .Values.deploymentName }}
+  Namespace:  {{ .Release.Namespace }}
+
+Check the status:
+
+  kubectl get deployment {{ .Values.deploymentName }} -n {{ .Release.Namespace }}
+
+The image puller controller creates a DaemonSet to cache the configured images
+on every node after startup - it may take a moment to appear. View the DaemonSet:
+
+  kubectl get daemonset -n {{ .Release.Namespace }}

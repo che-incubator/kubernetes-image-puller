@@ -1,4 +1,17 @@
-apiVersion: v1
+apiVersion: v2
 name: kubernetes-image-puller
-version: 1.0.0
-description: The kubernetes image puller downloads che images ahead of time for faster workspace startup
+version: 1.1.2
+appVersion: "next"
+type: application
+description: Pre-pulls container images onto cluster nodes for faster pod startup
+home: https://github.com/che-incubator/kubernetes-image-puller
+sources:
+  - https://github.com/che-incubator/kubernetes-image-puller
+keywords:
+  - kubernetes
+  - image-puller
+  - caching
+  - daemonset
+maintainers:
+  - name: che-incubator
+    url: https://github.com/che-incubator

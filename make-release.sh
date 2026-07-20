@@ -43,8 +43,10 @@ sed -i "s/IMAGE_TAG=next/IMAGE_TAG=${VERSION}/" "${SCRIPT_DIR}/Makefile"
 # Go default image constant
 sed -i "s|kubernetes-image-puller:next|kubernetes-image-puller:${VERSION}|" "${SCRIPT_DIR}/cfg/envvars.go"
 
-# Helm chart values
+# Helm chart values and Chart.yaml
 sed -i "s/  tag: next/  tag: ${VERSION}/" "${SCRIPT_DIR}/deploy/helm/values.yaml"
+sed -i "s/^version: .*/version: ${VERSION}/" "${SCRIPT_DIR}/deploy/helm/Chart.yaml"
+sed -i "s/^appVersion: .*/appVersion: \"${VERSION}\"/" "${SCRIPT_DIR}/deploy/helm/Chart.yaml"
 
 # OpenShift app template
 sed -i "s/  value: next/  value: ${VERSION}/" "${SCRIPT_DIR}/deploy/openshift/app.yaml"
@@ -55,6 +57,7 @@ sed -i "s|kubernetes-image-puller:next|kubernetes-image-puller:${VERSION}|" "${S
 git add \
   "${SCRIPT_DIR}/Makefile" \
   "${SCRIPT_DIR}/cfg/envvars.go" \
+  "${SCRIPT_DIR}/deploy/helm/Chart.yaml" \
   "${SCRIPT_DIR}/deploy/helm/values.yaml" \
   "${SCRIPT_DIR}/deploy/openshift/app.yaml" \
   "${SCRIPT_DIR}/deploy/openshift/configmap.yaml"

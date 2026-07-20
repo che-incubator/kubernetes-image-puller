@@ -1,0 +1,47 @@
+#
+# Copyright (c) 2026 Red Hat, Inc.
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+name: helm-publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    if: github.repository == 'che-incubator/kubernetes-image-puller'
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+    -
+      name: Clone source code
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+    -
+      name: Set up Helm
+      uses: azure/setup-helm@59b1c81c6280f5abebb1fb1bc585696daa7dfb42 # v5
+    -
+      name: Lint chart
+      run: helm lint deploy/helm/
+    -
+      name: Login to quay.io
+      run: |
+        set -eo pipefail
+        echo "${{ secrets.QUAY_PASSWORD }}" | helm registry login quay.io --username "${{ secrets.QUAY_USERNAME }}" --password-stdin
+    -
+      name: Package and push chart
+      run: |
+        set -eo pipefail
+        CHART_PKG=$(helm package deploy/helm/ | awk '{print $NF}')
+        helm push "$CHART_PKG" oci://quay.io/eclipse

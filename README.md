@@ -88,11 +88,23 @@ The following values can be set:
 
 ### Installation - Helm
 
-`kubectl create namespace k8s-image-puller`
+The Helm chart is published as an OCI artifact to quay.io on each release.
 
-`helm install kubernetes-image-puller -n k8s-image-puller deploy/helm`
+Install from the OCI registry (recommended):
 
-To set values, change `deploy/helm/values.yaml` or use `--set property.name=value`
+```shell
+kubectl create namespace k8s-image-puller
+helm install kubernetes-image-puller -n k8s-image-puller oci://quay.io/eclipse/kubernetes-image-puller --version <version>
+```
+
+Or install from a local checkout:
+
+```shell
+kubectl create namespace k8s-image-puller
+helm install kubernetes-image-puller -n k8s-image-puller deploy/helm
+```
+
+To set values, use `--set property.name=value` or provide a custom values file with `-f values.yaml`.
 
 ### Installation - OpenShift
 
@@ -211,7 +223,7 @@ The release process consists of the following steps:
    ```
    This creates a `<version>-release` branch.
 
-2. Wait until the [build-release](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/release-build.yml) workflow completes successfully.
+2. Wait until the [build-release](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/release-build.yml) and [helm-publish](https://github.com/che-incubator/kubernetes-image-puller/actions/workflows/helm-publish.yml) workflows complete successfully.
 
 3. Check out the release branch and test the image puller on both Kubernetes and OpenShift by deploying with Helm:
    ```shell
