@@ -30,7 +30,7 @@ jobs:
         persist-credentials: false
     -
       name: Set up Helm
-      uses: azure/setup-helm@59b1c81c6280f5abebb1fb1bc585696daa7dfb42 # v5
+      uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
     -
       name: Lint chart
       run: helm lint deploy/helm/
