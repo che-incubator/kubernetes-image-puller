@@ -94,7 +94,7 @@ Install from the OCI registry (recommended):
 
 ```shell
 kubectl create namespace k8s-image-puller
-helm install kubernetes-image-puller -n k8s-image-puller oci://quay.io/eclipse/kubernetes-image-puller --version <version>
+helm install kubernetes-image-puller -n k8s-image-puller oci://quay.io/eclipse/helm/kubernetes-image-puller --version <version>
 ```
 
 Or install from a local checkout:
