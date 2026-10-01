@@ -44,4 +44,4 @@ jobs:
       run: |
         set -eo pipefail
         CHART_PKG=$(helm package deploy/helm/ | awk '{print $NF}')
-        helm push "$CHART_PKG" oci://quay.io/eclipse
+        helm push "$CHART_PKG" oci://quay.io/eclipse/helm

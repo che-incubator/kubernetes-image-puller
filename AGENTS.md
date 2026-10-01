@@ -138,7 +138,7 @@ The test job uses `go-version-file: go.mod` to install the Go version specified 
 
 ### Helm Chart
 
-The Helm chart lives in `deploy/helm/` and is published to `oci://quay.io/eclipse/kubernetes-image-puller` on each release. The chart uses `apiVersion: v2` and its version is kept in sync with the application version by `make-release.sh`.
+The Helm chart lives in `deploy/helm/` and is published to `oci://quay.io/eclipse/helm/kubernetes-image-puller` on each release. The chart uses `apiVersion: v2` and its version is kept in sync with the application version by `make-release.sh`.
 
 ```bash
 helm lint deploy/helm/                  # Validate chart
