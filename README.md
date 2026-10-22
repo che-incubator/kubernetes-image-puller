@@ -88,13 +88,15 @@ The following values can be set:
 
 ### Installation - Helm
 
-The Helm chart is published as an OCI artifact to quay.io on each release.
+The Helm chart is published to GitHub Pages on each release.
 
-Install from the OCI registry (recommended):
+Install from the Helm repository (recommended):
 
 ```shell
 kubectl create namespace k8s-image-puller
-helm install kubernetes-image-puller -n k8s-image-puller oci://quay.io/eclipse/kubernetes-image-puller --version <version>
+helm repo add kubernetes-image-puller https://che-incubator.github.io/kubernetes-image-puller/charts
+helm repo update
+helm install kubernetes-image-puller -n k8s-image-puller kubernetes-image-puller/kubernetes-image-puller --version <version>
 ```
 
 Or install from a local checkout:

@@ -124,7 +124,7 @@ The codebase uses `log.Fatalf()` for unrecoverable errors (failed client creatio
 |----------|---------|---------|
 | `next-build.yml` | Push to `main`, pull requests, manual | Runs test job (unit tests + govulncheck), then builds and pushes container image to quay.io |
 | `release-build.yml` | Push of `v*` tag | Runs tests, builds and pushes release container image to quay.io |
-| `helm-publish.yml` | Push of `v*` tag | Lints, packages, and pushes the Helm chart to `oci://quay.io/eclipse` |
+| `helm-publish.yml` | Push of `v*` tag | Lints, packages, and publishes the Helm chart to GitHub Pages (`gh-pages` branch) |
 | `pr-check.yml` | Pull requests to `main` | Runs tests, Helm lint/template validation, and a test build (no push) |
 
 The test job uses `go-version-file: go.mod` to install the Go version specified in the module. When bumping the Go version in `go.mod`, CI automatically picks up the new version.
@@ -138,7 +138,7 @@ The test job uses `go-version-file: go.mod` to install the Go version specified 
 
 ### Helm Chart
 
-The Helm chart lives in `deploy/helm/` and is published to `oci://quay.io/eclipse/kubernetes-image-puller` on each release. The chart uses `apiVersion: v2` and its version is kept in sync with the application version by `make-release.sh`.
+The Helm chart lives in `deploy/helm/` and is published to GitHub Pages (`https://che-incubator.github.io/kubernetes-image-puller/charts`) on each release via the `gh-pages` branch. The chart uses `apiVersion: v2` and its version is kept in sync with the application version by `make-release.sh`.
 
 ```bash
 helm lint deploy/helm/                  # Validate chart

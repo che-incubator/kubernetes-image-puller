@@ -20,14 +20,13 @@ jobs:
     if: github.repository == 'che-incubator/kubernetes-image-puller'
     timeout-minutes: 10
     permissions:
-      contents: read
+      contents: write
     steps:
     -
       name: Clone source code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
-        fetch-depth: 1
-        persist-credentials: false
+        fetch-depth: 0
     -
       name: Set up Helm
       uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5
@@ -35,13 +34,19 @@ jobs:
       name: Lint chart
       run: helm lint deploy/helm/
     -
-      name: Login to quay.io
+      name: Package and publish chart to GitHub Pages
       run: |
         set -eo pipefail
-        echo "${{ secrets.QUAY_PASSWORD }}" | helm registry login quay.io --username "${{ secrets.QUAY_USERNAME }}" --password-stdin
-    -
-      name: Package and push chart
-      run: |
-        set -eo pipefail
-        CHART_PKG=$(helm package deploy/helm/ | awk '{print $NF}')
-        helm push "$CHART_PKG" oci://quay.io/eclipse
+
+        cp -rf deploy/helm /tmp/chart
+        git checkout gh-pages
+
+        mkdir -p charts/stable
+        helm package /tmp/chart -d charts/stable/
+        helm repo index --url https://che-incubator.github.io/kubernetes-image-puller/charts charts
+
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add charts/
+        git commit -m "Add chart package for ${GITHUB_REF_NAME}" --signoff
+        git push origin gh-pages
