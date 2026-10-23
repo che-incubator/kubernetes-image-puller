@@ -1,7 +1,7 @@
 apiVersion: v2
 name: kubernetes-image-puller
-version: 1.1.2
-appVersion: "next"
+version: 1.1.3
+appVersion: "1.1.3"
 type: application
 description: Pre-pulls container images onto cluster nodes for faster pod startup
 home: https://github.com/che-incubator/kubernetes-image-puller
